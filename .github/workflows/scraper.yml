@@ -23,7 +23,7 @@ jobs:
           pip install requests beautifulsoup4
 
       - name: Run Telemetry Scraper
-        run: python live_scraper.py
+        run: python scraper.py
 
       - name: Commit Updated Telemetry Data
         run: |
