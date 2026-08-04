@@ -1,0 +1,33 @@
+name: 24/7 River Telemetry Scraper
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4
+
+      - name: Run Telemetry Scraper
+        run: python live_scraper.py
+
+      - name: Commit Updated Telemetry Data
+        run: |
+          git config --global user.name "PakFlood Automated Bot"
+          git config --global user.email "bot@pakflood.watch"
+          git add live_stations.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update live river telemetry [skip ci]" && git push)
