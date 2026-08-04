@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="128" fill="#081426"/>
+  <circle cx="256" cy="256" r="210" fill="#027a3a" opacity="0.15"/>
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#027a3a" stroke-width="8" opacity="0.4"/>
+  <!-- Water Drop & Wave Logo -->
+  <path d="M256 110 C256 110 170 230 170 290 C170 338 208 376 256 376 C304 376 342 338 342 290 C342 230 256 110 256 110 Z" fill="#027a3a"/>
+  <path d="M256 140 C256 140 190 240 190 290 C190 326 220 356 256 356 C292 356 322 326 322 290 C322 240 256 140 256 140 Z" fill="#03a050"/>
+  <!-- Wave Overlay -->
+  <path d="M190 300 Q225 270 256 300 T322 300 C322 326 292 356 256 356 C220 356 190 326 190 300 Z" fill="#4ade80" opacity="0.7"/>
+  <path d="M210 280 Q235 260 256 280 T302 280 C302 283 301 288 300 292 Q278 272 256 292 T212 292 Z" fill="#ffffff" opacity="0.6"/>
+</svg>

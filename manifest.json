@@ -1,0 +1,47 @@
+{
+  "name": "PakFlood Watch",
+  "short_name": "PakFlood",
+  "description": "Pakistan River Alerts & Flood Intelligence — PMD FFD · GloFAS · WAPDA",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#081426",
+  "theme_color": "#027a3a",
+  "lang": "ur",
+  "dir": "auto",
+  "categories": ["weather", "news", "utilities"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "River Status",
+      "short_name": "Rivers",
+      "description": "Live river discharge & flood status",
+      "url": "/index.html#rivers"
+    },
+    {
+      "name": "Emergency Helplines",
+      "short_name": "Helplines",
+      "description": "NDMA, Rescue 1122, PDMA",
+      "url": "/index.html#help"
+    }
+  ]
+}
