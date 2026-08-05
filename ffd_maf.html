@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
+    <meta name="keywords" content="MAF forecast, dam inflow forecast, Tarbela inflow, Mangla inflow, water availability Pakistan, seasonal forecast dams">
+    <meta name="description" content="Million Acre Feet (MAF) inflow forecast for Tarbela and Mangla dams. Seasonal water availability forecast by FFD, Pakistan Meteorological Department.">
+    <meta name="csrf-token" content="60fckJaOj7SoCFHQdOm8Z4mlIbjhOS2ctFnY63Zh">
+
+    <title>MAF Forecast — Tarbela &amp; Mangla Dam Inflows — FFD Lahore</title>
+
+    <link rel="icon" href="https://ffd.pmd.gov.pk/favicon.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="https://ffd.pmd.gov.pk/favicon.svg" type="image/svg+xml">
+
+    
+        <link rel="canonical" href="https://ffd.pmd.gov.pk/maf-forecast">
+
+    
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Flood Forecasting Division — FFD Lahore">
+    <meta property="og:title" content="MAF Forecast — Tarbela &amp; Mangla Dam Inflows — FFD Lahore">
+    <meta property="og:description" content="Million Acre Feet (MAF) inflow forecast for Tarbela and Mangla dams. Seasonal water availability forecast by FFD, Pakistan Meteorological Department.">
+    <meta property="og:url" content="https://ffd.pmd.gov.pk/maf-forecast">
+    <meta property="og:image" content="https://ffd.pmd.gov.pk/images/ffd-og-card.svg">
+    <meta property="og:locale" content="en_PK">
+
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MAF Forecast — Tarbela &amp; Mangla Dam Inflows — FFD Lahore">
+    <meta name="twitter:description" content="Million Acre Feet (MAF) inflow forecast for Tarbela and Mangla dams. Seasonal water availability forecast by FFD, Pakistan Meteorological Department.">
+    <meta name="twitter:image" content="https://ffd.pmd.gov.pk/images/ffd-og-card.svg">
+
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 4 (stackpath CDN is retired — served from jsDelivr, SRI-pinned) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
+          integrity="sha384-He3RckdFB2wffiHOcESa3sf4Ida+ni/fw9SSzAcfY2EPnU1zkK/sLUzw2C5Tyuhj" crossorigin="anonymous">
+
+    
+    <link rel="preload" as="style" href="https://ffd.pmd.gov.pk/build/assets/public-CjeqODCX.css" /><link rel="modulepreload" as="script" href="https://ffd.pmd.gov.pk/build/assets/public-BUUa4qWm.js" /><link rel="stylesheet" href="https://ffd.pmd.gov.pk/build/assets/public-CjeqODCX.css" /><script type="module" src="https://ffd.pmd.gov.pk/build/assets/public-BUUa4qWm.js"></script>
+    <style>
+        /* Critical inline stub — tokens + base font only. The full chrome
+           stylesheet lives in resources/css/public.css (Vite bundle). Keep
+           these token values in sync with public.css. */
+        :root {
+            --ffd-blue:   #0f2942;
+            --ffd-blue-light: #1a4971;
+            --ffd-accent: #00b4d8;
+            --ffd-green:  #10b981;
+            --ffd-gold:   #f59e0b;
+            /* Sticky-navbar height. Here as well as in public.css because a
+               page sized against it (the model viewer) styles itself from an
+               inline pushed-styles block, which the browser applies before the
+               Vite bundle has necessarily arrived.
+
+               (Do not write the push directive's name in this file, even inside
+               a CSS comment: Blade compiles directives wherever they appear, and
+               a bare one here compiles to a property read that 500s the whole
+               public layout at runtime — it costs nothing at compile time, so
+               view:cache does not catch it.) */
+            --ffd-nav-h:  51px;
+        }
+        body { font-family: 'Nunito', sans-serif; background: #f8f9fa; }
+    </style>
+
+    <style>
+    .maf-hero {
+        background: linear-gradient(135deg, #1a3a5c 0%, #1a73e8 100%);
+        color: #fff;
+        padding: 28px 0 22px;
+    }
+    .maf-hero h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 4px; }
+    .maf-hero p  { opacity: .85; font-size: .92rem; margin: 0; }
+
+    .maf-card {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,.07);
+        overflow: hidden;
+    }
+    .maf-card-header {
+        background: #f0f4fa;
+        border-bottom: 1px solid #dde5f0;
+        padding: 12px 20px;
+        font-weight: 700;
+        font-size: .85rem;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: #1a3a5c;
+    }
+    .maf-value-box {
+        border-radius: 8px;
+        text-align: center;
+        padding: 16px 12px;
+    }
+    .maf-value-box .dam-name {
+        font-size: .72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        color: #666;
+        margin-bottom: 4px;
+    }
+    .maf-value-box .maf-num {
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 2px;
+    }
+    .maf-value-box .maf-unit {
+        font-size: .75rem;
+        color: #888;
+    }
+    .maf-value-box .maf-normal {
+        font-size: .8rem;
+        color: #555;
+        margin-top: 6px;
+    }
+    .maf-box-tarbela { background: #eef4fc; border: 1px solid #c5daf5; }
+    .maf-box-tarbela .maf-num { color: #1a3a5c; }
+    .maf-box-mangla  { background: #eef6f0; border: 1px solid #b6dfc3; }
+    .maf-box-mangla  .maf-num { color: #1a5c30; }
+    .maf-box-total   { background: #fff8e6; border: 1px solid #f5d98b; }
+    .maf-box-total   .maf-num { color: #7d5a00; }
+</style>
+
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "GovernmentOrganization",
+        "name": "Flood Forecasting Division",
+        "alternateName": ["FFD", "FFD Lahore"],
+        "url": "https://ffd.pmd.gov.pk",
+        "logo": "https://ffd.pmd.gov.pk/images/ffd-logo.png",
+        "description": "Flood Forecasting Division (FFD) is a specialized unit of Pakistan Meteorological Department responsible for flood forecasting and early warning systems in Pakistan.",
+        "parentOrganization": {
+            "@type": "GovernmentOrganization",
+            "name": "Pakistan Meteorological Department",
+            "alternateName": "PMD",
+            "url": "https://www.pmd.gov.pk"
+        },
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Lahore",
+            "addressRegion": "Punjab",
+            "addressCountry": "PK"
+        }
+    }
+    </script>
+
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Flood Forecasting Division — Pakistan",
+        "alternateName": ["FFD", "FFD Lahore", "Flood Updates Pakistan"],
+        "url": "https://ffd.pmd.gov.pk",
+        "description": "Real-time flood forecasting, live river flows and discharge, dam levels, and flood bulletins for Pakistan's rivers — Indus, Chenab, Jhelum, Ravi, Sutlej and Kabul.",
+        "publisher": {
+            "@type": "GovernmentOrganization",
+            "name": "Flood Forecasting Division, Pakistan Meteorological Department"
+        },
+        "inLanguage": ["en", "ur"]
+    }
+    </script>
+    </head>
+<body>
+
+<!-- ── Topbar ───────────────────────────────────────────────────── -->
+<div class="site-topbar">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="topbar-left">
+                <span class="badge-live">Live</span>
+                <a href="/cdn-cgi/l/email-protection#ec8a8a88ac9b898d9884899ec28b839ac29c87">
+                    <i class="bi bi-envelope mr-1"></i><span class="__cf_email__" data-cfemail="fd9b9b99bd8a989c8995988fd39a928bd38d96">[email&#160;protected]</span>
+                </a>
+                <a href="https://whatsapp.com/channel/0029VahnO02DuMRigsxmJk0c" target="_blank" rel="noopener">
+                    <i class="bi bi-whatsapp mr-1"></i>WhatsApp Channel
+                </a>
+            </div>
+            <div class="topbar-right">
+                <a href="https://www.pmd.gov.pk" target="_blank" rel="noopener">
+                    <i class="bi bi-globe2 mr-1"></i>PMD Website
+                </a>
+                <a href="https://ffd.pmd.gov.pk/contact-us">
+                    <i class="bi bi-telephone mr-1"></i>Contact
+                </a>
+                <a href="https://ffd.pmd.gov.pk/address-book">
+                    <i class="bi bi-people mr-1"></i>Directory
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Main header (logo + name) ──────────────────────────────────── -->
+<header class="site-header">
+    <div class="container">
+        <div class="site-header-inner">
+
+            <a href="https://ffd.pmd.gov.pk" class="site-logo-block">
+                <img src="https://ffd.pmd.gov.pk/images/web-logo.png" alt="FFD Logo">
+                <div class="site-logo-text">
+                    <div class="org-name">Flood Forecasting Division, Lahore</div>
+                    <div class="org-parent">Pakistan Meteorological Department</div>
+                    <div class="org-ministry">Ministry of Defence, Government of Pakistan</div>
+                </div>
+            </a>
+
+            <div class="header-info-cards">
+                <a href="https://ffd.pmd.gov.pk/flood-dashboard" target="_blank" rel="noopener"
+                   class="header-card card-rain-watch">
+                    <div class="card-icon"><i class="bi bi-display"></i></div>
+                    <div>
+                        <div class="card-label">Flood Dashboard</div>
+                        <div class="card-value">Rivers · Radar · Forecasts · Alerts</div>
+                    </div>
+                    <i class="bi bi-arrow-right card-arrow"></i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<!-- ── Sticky navbar ──────────────────────────────────────────────── -->
+<div id="site-nav">
+    <div class="container">
+        <div class="site-nav-inner">
+
+            
+            <a href="https://ffd.pmd.gov.pk" class="site-nav-brand">FFD Lahore</a>
+
+            
+            <ul class="site-nav-links">
+                <li class="">
+                    <a href="https://ffd.pmd.gov.pk"><i class="bi bi-house-door"></i> Home</a>
+                </li>
+
+                <li class="has-drop ">
+                    <a href="https://ffd.pmd.gov.pk/bulletin"><i class="bi bi-journal-text"></i> Publications</a>
+                    <div class="site-nav-drop">
+                        <a href="https://ffd.pmd.gov.pk/bulletin"><i class="bi bi-grid"></i>All Publications</a>
+                        <div class="drop-divider"></div>
+                        <a href="https://ffd.pmd.gov.pk/bulletin/bulletin"><i class="bi bi-file-text"></i>Flood Bulletins</a>
+                        <a href="https://ffd.pmd.gov.pk/bulletin/advisory"><i class="bi bi-exclamation-triangle"></i>Advisories</a>
+                        <a href="https://ffd.pmd.gov.pk/flood-reports"><i class="bi bi-file-earmark-pdf"></i>Flood Reports</a>
+                        <a href="https://ffd.pmd.gov.pk/notifications"><i class="bi bi-megaphone"></i>Updates &amp; Notifications</a>
+                        <div class="drop-divider"></div>
+                        <div class="drop-header">System Info</div>
+                        <a href="https://ffd.pmd.gov.pk/flood-ews"><i class="bi bi-shield-check"></i>Early Warning System</a>
+                    </div>
+                </li>
+
+                
+                <li class="">
+                    <a href="https://ffd.pmd.gov.pk/flood-limits"><i class="bi bi-bar-chart-line"></i> Flood Limits</a>
+                </li>
+
+                <li class="has-drop ">
+                    <a href="https://ffd.pmd.gov.pk/weather-model"><i class="bi bi-cloud-sun"></i> Forecasts<span class="nav-new" aria-hidden="true">New</span></a>
+                    <div class="site-nav-drop">
+                        <a href="https://ffd.pmd.gov.pk/weather-model"><i class="bi bi-globe-asia-australia"></i>Weather Model Viewer</a>
+                        <a href="https://ffd.pmd.gov.pk/meteograms"><i class="bi bi-graph-up"></i>Station Meteograms</a>
+                        <a href="https://ffd.pmd.gov.pk/radar"><i class="bi bi-broadcast-pin"></i>Weather Radar</a>
+                    </div>
+                </li>
+
+                <li class="">
+                    <a href="https://ffd.pmd.gov.pk/about"><i class="bi bi-info-circle"></i> About</a>
+                </li>
+
+                <li class="">
+                    <a href="https://ffd.pmd.gov.pk/internships"><i class="bi bi-mortarboard"></i> Internships</a>
+                </li>
+
+                
+                            </ul>
+
+            
+            <div class="site-nav-right">
+                                    <a href="https://ffd.pmd.gov.pk/login" class="snr-btn snr-btn-login">
+                        <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    </a>
+                            </div>
+
+            
+            <button class="site-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">
+                <i class="bi bi-list"></i>
+            </button>
+
+        </div>
+    </div>
+
+    
+    <div id="mobile-nav">
+        <a href="https://ffd.pmd.gov.pk"><i class="bi bi-house-door"></i> Home</a>
+        <a href="https://ffd.pmd.gov.pk/bulletin"><i class="bi bi-journal-text"></i> Publications</a>
+        <div class="mob-indent">
+            <a href="https://ffd.pmd.gov.pk/bulletin/bulletin">Flood Bulletins</a>
+            <a href="https://ffd.pmd.gov.pk/bulletin/advisory">Advisories</a>
+            <a href="https://ffd.pmd.gov.pk/flood-reports">Flood Reports</a>
+            <a href="https://ffd.pmd.gov.pk/notifications">Updates &amp; Notifications</a>
+            <a href="https://ffd.pmd.gov.pk/flood-ews" class="mob-indent"><i class="bi bi-shield-check"></i> Early Warning System</a>
+        </div>
+        <a href="https://ffd.pmd.gov.pk/flood-dashboard" target="_blank" rel="noopener"><i class="bi bi-display"></i> Flood Dashboard</a>
+        <a href="https://ffd.pmd.gov.pk/flood-limits"><i class="bi bi-bar-chart-line"></i> Flood Limits</a>
+        <a href="https://ffd.pmd.gov.pk/weather-model"><i class="bi bi-cloud-sun"></i> Forecasts<span class="nav-new" aria-hidden="true">New</span></a>
+        <div class="mob-indent">
+            <a href="https://ffd.pmd.gov.pk/weather-model">Weather Model Viewer</a>
+            <a href="https://ffd.pmd.gov.pk/meteograms">Station Meteograms</a>
+            <a href="https://ffd.pmd.gov.pk/radar">Weather Radar</a>
+        </div>
+        <a href="https://ffd.pmd.gov.pk/about"><i class="bi bi-info-circle"></i> About</a>
+        <a href="https://ffd.pmd.gov.pk/internships"><i class="bi bi-mortarboard"></i> Internships</a>
+        <a href="https://ffd.pmd.gov.pk/contact-us"><i class="bi bi-chat-dots"></i> Contact</a>
+                <div class="mob-section">
+            <a href="https://ffd.pmd.gov.pk/login"><i class="bi bi-box-arrow-in-right"></i> Sign In</a>
+        </div>
+            </div>
+</div>
+
+<!-- ── Flash messages ─────────────────────────────────────────────── -->
+
+
+
+<div class="maf-hero">
+    <div class="container">
+        <h1><i class="bi bi-droplet-half mr-2"></i>MAF Forecast — Tarbela &amp; Mangla</h1>
+        <p>Seasonal water availability forecast (Million Acre Feet) for major reservoirs</p>
+    </div>
+</div>
+
+<div class="container mt-4 mb-5">
+
+    
+    
+    <div class="maf-card mb-4">
+        <div class="maf-card-header">
+            <i class="bi bi-calendar3 mr-1"></i>10 DAILY MAF FORCAST
+        </div>
+        <div class="p-4">
+
+            <p class="text-muted mb-3" style="font-size:.88rem;">
+                <i class="bi bi-calendar-range mr-1"></i>
+                Forecast period: <strong>01 Aug 2026</strong>
+                to <strong>10 Aug 2026</strong>
+            </p>
+
+            <div class="row">
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="maf-value-box maf-box-tarbela">
+                        <div class="dam-name">Tarbela</div>
+                        <div class="maf-num">5.0-5.5</div>
+                        <div class="maf-unit">MAF</div>
+                                                <div class="maf-normal">Normal: 5.13 MAF</div>
+                                            </div>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="maf-value-box maf-box-mangla">
+                        <div class="dam-name">Mangla</div>
+                        <div class="maf-num">1.0-1.2</div>
+                        <div class="maf-unit">MAF</div>
+                                                <div class="maf-normal">Normal: 0.79 MAF</div>
+                                            </div>
+                </div>
+                <div class="col-6 col-md-3 mb-3 d-flex align-items-center">
+                    <div style="font-size:.8rem; color:#555; line-height:1.6;">
+                        <strong>MAF</strong> = Million Acre Feet<br>
+                        <span class="text-muted">1 MAF ≈ 1.23 billion m³</span><br>
+                        <span class="text-muted">Updated: 03 Aug 2026</span>
+                    </div>
+                </div>
+            </div>
+
+                    </div>
+    </div>
+
+    
+    <p class="text-muted mt-4 mb-0" style="font-size:.8rem;">
+        <i class="bi bi-arrow-left mr-1"></i>
+        <a href="https://ffd.pmd.gov.pk" class="text-muted">Back to Home</a>
+    </p>
+</div>
+
+
+<!-- ── Footer ────────────────────────────────────────────────────── -->
+<footer id="footer">
+    <div class="container">
+        <div class="pub-footer-top">
+            <div class="pub-footer-org">
+                <strong>Flood Forecasting Division (FFD), Lahore</strong>
+                <span class="pub-footer-tag">Pakistan Meteorological Department — Government of Pakistan</span>
+            </div>
+            <nav class="pub-footer-links" aria-label="Footer">
+                <a href="https://ffd.pmd.gov.pk/about">About</a>
+                <a href="https://ffd.pmd.gov.pk/contact-us">Contact</a>
+                <a href="https://ffd.pmd.gov.pk/address-book">Address Book</a>
+                <a href="https://ffd.pmd.gov.pk/bulletin">Bulletins</a>
+            </nav>
+        </div>
+        <div class="pub-footer-bottom">
+            <span>&copy; 2026 Flood Forecasting Division. All rights reserved.</span>
+            <span class="pub-footer-credit">Developed by Usman Ali</span>
+        </div>
+    </div>
+</footer>
+
+
+<!-- ── Scripts ───────────────────────────────────────────────────── -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+
+<script>
+    // Auto-dismiss alerts after 7s
+    window.setTimeout(function () {
+        $(".alert").fadeTo(500, 0).slideUp(400, function () { $(this).remove(); });
+    }, 7000);
+
+    // Day-scoped dismissal flags (replaces the retired jquery-cookie plugin).
+    window.ffdDismissed = function (key) {
+        try {
+            var until = parseInt(localStorage.getItem(key), 10);
+            return until && Date.now() < until;
+        } catch (e) { return false; }
+    };
+    window.ffdDismiss = function (key) {
+        try { localStorage.setItem(key, String(Date.now() + 24 * 60 * 60 * 1000)); } catch (e) {}
+    };
+
+    
+    </script>
+
+<style>
+        /* Homepage opt-in popup — top-right slide-in card (no backdrop).
+           It used to sit bottom-right, where it landed squarely on the flood and
+           weather assistant launchers (right:22px at bottom:22px and bottom:84px)
+           and, at z-index 2147483000, buried both.
+           --ffd-nav-bottom is the sticky navbar's current bottom edge, measured
+           below: the nav rides under the header at rest and pins to the top once
+           scrolled, so no fixed offset clears it in both states. */
+        #ffd-push-popup {
+            position: fixed;
+            right: 18px;
+            top: calc(var(--ffd-nav-bottom, 58px) + 12px);
+            bottom: auto;
+            z-index: 2147483000;
+            width: 330px;
+            max-width: calc(100vw - 36px);
+            background: #fff;
+            color: #13243a;
+            border: 1px solid rgba(0, 0, 0, .06);
+            border-radius: 12px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .22);
+            padding: 16px 16px 14px;
+            font-family: inherit;
+            transform: translateY(-140%);
+            opacity: 0;
+            transition: transform .35s cubic-bezier(.2, .8, .2, 1), opacity .35s ease;
+        }
+        #ffd-push-popup.ffd-pp-in { transform: translateY(0); opacity: 1; }
+        #ffd-push-popup .ffd-pp-close {
+            position: absolute;
+            top: 7px;
+            right: 11px;
+            border: 0;
+            background: transparent;
+            font-size: 1.3rem;
+            line-height: 1;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+        #ffd-push-popup .ffd-pp-close:hover { color: #475569; }
+        #ffd-push-popup .ffd-pp-row { display: flex; gap: 12px; align-items: flex-start; }
+        #ffd-push-popup .ffd-pp-ico { font-size: 1.7rem; color: #0d9488; margin-top: 1px; flex-shrink: 0; }
+        #ffd-push-popup .ffd-pp-title { display: block; font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+        #ffd-push-popup .ffd-pp-text { margin: 0; font-size: .84rem; color: #475569; line-height: 1.4; }
+        #ffd-push-popup .ffd-pp-actions { display: flex; align-items: center; gap: 10px; margin-top: 13px; }
+        #ffd-push-popup .ffd-pp-enable {
+            background: linear-gradient(135deg, #0ea5a4, #0d9488);
+            color: #fff;
+            border: 0;
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-weight: 700;
+            font-size: .85rem;
+            cursor: pointer;
+        }
+        #ffd-push-popup .ffd-pp-enable:hover { filter: brightness(1.06); }
+        #ffd-push-popup .ffd-pp-never {
+            background: transparent;
+            border: 0;
+            color: #64748b;
+            font-size: .8rem;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        #ffd-push-popup .ffd-pp-never:hover { color: #334155; }
+        @media (max-width: 480px) {
+            #ffd-push-popup {
+                right: 10px; left: 10px; width: auto; bottom: auto;
+                top: calc(var(--ffd-nav-bottom, 52px) + 10px);
+            }
+        }
+    </style>
+    <script>
+        /* Keeps --ffd-nav-bottom on the sticky navbar's live bottom edge, so the
+           popup clears it whether the page is at rest (nav sitting under the
+           header) or scrolled (nav pinned to the top). Reading it off the element
+           also means a nav that changes height — breakpoints, the signed-in
+           state, a wrapped row — needs no second set of numbers here.
+           rAF-throttled, since scroll fires far faster than paint. */
+        (function () {
+            // Only the nav is required. The opt-in card is homepage-only, but the
+            // incoming-message toast can surface on any page and is anchored to
+            // the same edge, so the variable has to exist wherever the nav does.
+            var nav = document.getElementById('site-nav');
+
+            if (!nav) { return; }
+
+            var queued = false;
+
+            function place() {
+                queued = false;
+                var edge = Math.max(0, nav.getBoundingClientRect().bottom);
+                document.documentElement.style.setProperty('--ffd-nav-bottom', Math.round(edge) + 'px');
+            }
+            function schedule() {
+                if (queued) { return; }
+                queued = true;
+                window.requestAnimationFrame(place);
+            }
+
+            place();
+            window.addEventListener('scroll', schedule, { passive: true });
+            window.addEventListener('resize', schedule);
+        })();
+
+        window.FFD_FCM = {
+            config: {
+                apiKey: "AIzaSyBj33YvE6uwKRGvDApkUZAYQgJKSrib0Ug",
+                authDomain: "ffd-web-app.firebaseapp.com",
+                projectId: "ffd-web-app",
+                messagingSenderId: "292615105742",
+                appId: "1:292615105742:web:23acac94e2a7a0c0d2749f"            },
+            vapidKey: "BP9uZIBUHIr5h79aCa-eXnApzzrjlHv7bX_VIv-wzcSRatRz-usb1LoMUAviJ8Jo0N_M_KrAMQwQuy-gnEGgF2Q",
+            
+            swPath: "\/firebase-messaging-sw.js",
+            endpoints: {
+                register: "\/api\/app\/v1\/devices",
+                heartbeat: "\/api\/app\/v1\/devices\/heartbeat",
+                unregister: "\/api\/app\/v1\/devices"            }
+        };
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+    <script src="https://ffd.pmd.gov.pk/js/web-push.js?v=1785387363" defer></script>
+
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VX3MXJBGL0"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VX3MXJBGL0');
+</script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a265a145be48f9e5',t:'MTc4NTkzMTEwNg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

@@ -1,0 +1,36 @@
+/* ── Weather Cards ── */
+.weather-top-strip {
+.weather-city-card {
+.weather-city-card:hover { background:var(--bg-card-hover); border-color:var(--border-mid); }
+.weather-city-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--wc-color,var(--pk-green)); }
+.weather-detail-grid {
+  <div class="f-nav-item" data-target="panel-weather"><span class="f-nav-icon">🌤️</span> WEATHER</div>
+<div id="panel-weather" class="f-screen-panel">
+  <div id="f-weather-body"></div>
+    const w = document.getElementById('pane-weather');
+    if (w) document.getElementById('f-weather-body').innerHTML = w.innerHTML;
+      <label><input type="checkbox" id="lyr-weather"> Weather Layer</label>
+    <div class="dtab" data-pane="pane-weather"><span class="dtab-icon">🌤️</span><span class="dtab-lbl">Weather</span></div>
+    <!-- WEATHER PANE -->
+    <div id="pane-weather" class="pane">
+      <div class="sec-head">Live Weather — Major Pakistani Cities</div>
+      <div class="weather-top-strip" id="weather-cards">
+          🔄 Loading live weather data...
+      <div class="weather-detail-grid">
+// OpenWeatherMap precipitation & cloud tiles
+// Weather layer toggle
+let weatherLayerOn = false;
+document.getElementById('lyr-weather').addEventListener('change', e => {
+  weatherLayerOn = e.target.checked;
+  if(weatherLayerOn){ _cloudTile.addTo(map); }
+   WEATHER — Live from Open-Meteo
+const weatherCities = [
+async function loadWeather(){
+    const results = await Promise.all(weatherCities.map(c =>
+      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weathercode,precipitation&timezone=auto`)
+    document.getElementById('weather-cards').innerHTML = results.map(r=>{
+      const {icon, desc} = wmoIcon(r.weathercode||0);
+      return `<div class="weather-city-card" style="--wc-color:${tc}">
+    document.getElementById('weather-cards').innerHTML =
+      '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-faint);font-size:0.8rem;">⚠️ Live weather unavailable. Check internet connection.</div>';
+loadWeather();

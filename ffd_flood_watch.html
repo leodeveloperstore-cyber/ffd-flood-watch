@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="csrf-token" content="xCwkJ4vFfJXRWobNkwlidTFcKvXlIeiTeAk6qJYP">
+    <title>Flood Watch — Rainfall &amp; River Gauges — FFD Lahore</title>
+    <link rel="icon" href="https://ffd.pmd.gov.pk/favicon.svg" type="image/svg+xml">
+
+    
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('fw-theme');
+                if (!t) { t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+                document.documentElement.setAttribute('data-theme', t);
+            } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+        })();
+    </script>
+
+    <link id="arcgis-theme" rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/light/main.css">
+    <script src="https://ffd.pmd.gov.pk/js/kmz_values.js"></script>
+
+    
+    <style>
+        /* ─────────────────────────────────────────────────────────────
+           Design tokens — a single digital theme with light + dark modes.
+           Every colour below flows from these; nothing is hard-coded twice.
+           ───────────────────────────────────────────────────────────── */
+        :root {
+            --topbar-h: 54px;
+
+            --bg:            #e9eef4;
+            --panel:         rgba(255,255,255,.86);
+            --panel-solid:   #ffffff;
+            --panel-2:       rgba(248,250,252,.9);
+            --text:          #0f172a;
+            --text-dim:      #5b6b82;
+            --border:        rgba(15,23,42,.10);
+            --border-strong: rgba(15,23,42,.18);
+            --accent:        #0891b2;
+            --accent-2:      #06b6d4;
+            --accent-ink:    #0e7490;
+            --accent-glow:   rgba(8,145,178,.28);
+            --amber:         #b45309;
+            --danger:        #dc2626;
+            --shadow:        0 10px 34px rgba(15,23,42,.16);
+            --shadow-sm:     0 3px 12px rgba(15,23,42,.12);
+            --veil-css:      rgba(226,232,240,.66);
+            --grid:          rgba(15,23,42,.09);
+            --chip-bg:       rgba(255,255,255,.96);
+            --track:         rgba(15,23,42,.10);
+            --mono:          'SFMono-Regular', ui-monospace, 'JetBrains Mono', Menlo, Consolas, monospace;
+            --sans:          'Open Sans', 'Segoe UI', system-ui, Arial, sans-serif;
+        }
+        :root[data-theme="dark"] {
+            --bg:            #070c16;
+            --panel:         rgba(15,23,38,.74);
+            --panel-solid:   #0f172a;
+            --panel-2:       rgba(30,41,59,.6);
+            --text:          #e6eef8;
+            --text-dim:      #93a6c2;
+            --border:        rgba(148,163,184,.18);
+            --border-strong: rgba(148,163,184,.30);
+            --accent:        #22d3ee;
+            --accent-2:      #38bdf8;
+            --accent-ink:    #67e8f9;
+            --accent-glow:   rgba(34,211,238,.40);
+            --amber:         #fbbf24;
+            --danger:        #f87171;
+            --shadow:        0 12px 40px rgba(0,0,0,.60);
+            --shadow-sm:     0 4px 16px rgba(0,0,0,.5);
+            --veil-css:      rgba(2,6,16,.62);
+            --grid:          rgba(148,163,184,.16);
+            --chip-bg:       rgba(15,23,42,.94);
+            --track:         rgba(148,163,184,.20);
+        }
+
+        * { box-sizing: border-box; }
+        html, body { padding: 0; margin: 0; height: 100%; width: 100%; }
+        body {
+            min-width: 320px; font-family: var(--sans);
+            background: var(--bg); color: var(--text);
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        /* ── Top app-bar ────────────────────────────────────────────── */
+        #topbar {
+            flex: 0 0 var(--topbar-h); height: var(--topbar-h); z-index: 60;
+            display: flex; align-items: center; gap: 12px; padding: 0 14px;
+            background: linear-gradient(180deg, var(--panel-solid), var(--panel-2));
+            border-bottom: 1px solid var(--border-strong);
+            box-shadow: var(--shadow-sm); backdrop-filter: blur(10px);
+        }
+        .tb-brand { display: flex; align-items: center; gap: 9px; min-width: 0; }
+        .tb-dot {
+            width: 11px; height: 11px; border-radius: 50%; background: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-glow); flex: 0 0 auto;
+            animation: tb-pulse 2.6s ease-in-out infinite;
+        }
+        @keyframes tb-pulse { 0%,100% { box-shadow: 0 0 0 3px var(--accent-glow); } 50% { box-shadow: 0 0 0 7px transparent; } }
+        .tb-title { font-weight: 800; font-size: 15px; letter-spacing: .04em; white-space: nowrap; text-transform: uppercase; }
+        .tb-title small { display: block; font-size: 9.5px; font-weight: 600; letter-spacing: .12em; color: var(--text-dim); text-transform: uppercase; }
+
+        .tb-datasets { display: flex; gap: 4px; background: var(--track); padding: 3px; border-radius: 10px; }
+        .tb-ds {
+            font-size: 12px; font-weight: 700; padding: 6px 14px; border: none; cursor: pointer;
+            border-radius: 8px; background: transparent; color: var(--text-dim); transition: all .18s ease;
+            display: flex; align-items: center; gap: 6px; white-space: nowrap;
+        }
+        .tb-ds.active { background: var(--accent); color: #fff; box-shadow: 0 2px 10px var(--accent-glow); }
+        :root[data-theme="dark"] .tb-ds.active { color: #041016; }
+
+        .tb-spacer { flex: 1 1 auto; }
+        .tb-updated { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+        .tb-updated b { color: var(--text); font-variant-numeric: tabular-nums; }
+        .tb-beta {
+            font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+            color: #fff; background: var(--amber); padding: 3px 8px; border-radius: 20px; white-space: nowrap;
+        }
+        :root[data-theme="dark"] .tb-beta { color: #241a02; }
+        .tb-ctl {
+            font: inherit; font-size: 12px; color: var(--text); background: var(--panel-2);
+            border: 1px solid var(--border-strong); border-radius: 9px; padding: 6px 9px; cursor: pointer;
+            transition: border-color .18s ease, box-shadow .18s ease;
+        }
+        .tb-ctl:hover { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        .tb-icon { width: 38px; height: 34px; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; padding: 0; }
+
+        /* ── Map viewport ───────────────────────────────────────────── */
+        #viewDiv { position: relative; flex: 1 1 auto; width: 100%; min-height: 0; background: var(--bg); }
+
+        /* Shared glass-card treatment for every floating overlay. */
+        .glass {
+            background: var(--panel); border: 1px solid var(--border-strong);
+            border-radius: 14px; box-shadow: var(--shadow); backdrop-filter: blur(13px);
+            color: var(--text);
+        }
+
+        /* ── Top-left controls (search + station count) ─────────────── */
+        #controls { position: absolute; left: 16px; top: 16px; z-index: 31; padding: 10px; width: 246px; }
+        .ctl-search { position: relative; }
+        #rw-search {
+            width: 100%; box-sizing: border-box; font-size: 13px; padding: 9px 11px 9px 32px;
+            border: 1px solid var(--border-strong); border-radius: 10px; background: var(--panel-2); color: var(--text);
+        }
+        #rw-search::placeholder { color: var(--text-dim); }
+        #rw-search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        .ctl-search::before { content: "⌕"; position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 16px; pointer-events: none; }
+        #rw-results {
+            position: absolute; left: 0; right: 0; top: 100%; margin-top: 6px;
+            background: var(--panel-solid); border: 1px solid var(--border-strong); border-radius: 10px;
+            box-shadow: var(--shadow); max-height: 250px; overflow-y: auto; z-index: 40; display: none;
+        }
+        #rw-results.open { display: block; }
+        #rw-results .res {
+            padding: 8px 11px; font-size: 12.5px; cursor: pointer; display: flex;
+            justify-content: space-between; gap: 8px; border-bottom: 1px solid var(--border);
+        }
+        #rw-results .res:hover { background: var(--accent-glow); }
+        #rw-results .res .src { color: var(--text-dim); font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
+        #rw-results .none { padding: 9px 11px; font-size: 12.5px; color: var(--text-dim); }
+        .ctl-count { font-size: 11px; color: var(--text-dim); margin-top: 8px; padding: 0 2px; }
+        .ctl-count b { color: var(--text); font-variant-numeric: tabular-nums; }
+
+        /* ── Legend ─────────────────────────────────────────────────── */
+        #legend { position: absolute; left: 16px; bottom: 16px; z-index: 30; padding: 11px 13px; font-size: 12px; max-width: 232px; }
+        #legend h4 { margin: 0 0 6px; font-size: 11px; color: var(--accent-ink); font-weight: 800; letter-spacing: .04em; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .legend-caret { display: none; color: var(--text-dim); font-size: 14px; transition: transform .2s ease; }
+        #legend.collapsed .legend-caret { transform: rotate(-90deg); }
+        .src-count { margin-left: auto; min-width: 22px; text-align: right; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--text); }
+        #legend .grp { margin-top: 9px; }
+        #legend .grp-title { font-size: 9.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin-bottom: 4px; }
+        #legend .row { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
+        .swatch { width: 13px; height: 13px; display: inline-block; flex: 0 0 auto; box-shadow: 0 0 0 1px var(--border); }
+        .swatch.circle { border-radius: 50%; }
+        .swatch.diamond { transform: rotate(45deg); }
+        .swatch.triangle { clip-path: polygon(50% 0%, 100% 100%, 0% 100%); border: none !important; box-shadow: none; }
+        .swatch.outline { background: var(--text-dim); }
+        #legend label.row { cursor: pointer; user-select: none; }
+        #legend label.row input { margin: 0 2px 0 0; accent-color: var(--accent); }
+
+        /* ── Hover tooltip (digital chip) ───────────────────────────── */
+        #map-tip {
+            position: absolute; z-index: 55; pointer-events: none; display: none;
+            background: var(--chip-bg); border: 1px solid var(--accent);
+            border-radius: 10px; padding: 8px 11px; box-shadow: var(--shadow), 0 0 0 4px var(--accent-glow);
+            font-size: 12px; max-width: 240px; backdrop-filter: blur(6px);
+        }
+        #map-tip .mt-name { font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 7px; }
+        #map-tip .mt-swatch { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; box-shadow: 0 0 6px currentColor; }
+        #map-tip .mt-val { margin-top: 3px; font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--accent-ink); }
+        #map-tip .mt-val .u { font-size: 10px; color: var(--text-dim); font-family: var(--sans); }
+        #map-tip .mt-sub { margin-top: 2px; font-size: 10.5px; color: var(--text-dim); }
+
+        /* ── Click-to-read coordinates (top-right) ──────────────────── */
+        #coord-readout {
+            position: absolute; top: 16px; right: 16px; z-index: 33; display: none;
+            align-items: center; gap: 6px; padding: 8px 8px 8px 11px;
+            background: var(--panel); border: 1px solid var(--border-strong);
+            border-radius: 12px; box-shadow: var(--shadow); backdrop-filter: blur(13px);
+        }
+        #coord-readout .cr-body { display: flex; flex-direction: column; line-height: 1.2; margin-right: 2px; }
+        #coord-readout .cr-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-dim); }
+        #coord-readout .cr-val { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--accent-ink); font-variant-numeric: tabular-nums; margin-top: 1px; }
+        #coord-readout .cr-btn { border: 1px solid var(--border-strong); background: var(--panel-2); color: var(--text); border-radius: 8px; width: 30px; height: 30px; font-size: 15px; line-height: 1; cursor: pointer; transition: all .15s ease; }
+        #coord-readout .cr-btn:hover { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        #coord-readout .cr-x { font-size: 18px; }
+        @media (max-width: 768px) { #coord-readout { top: auto; bottom: 150px; right: 8px; } }
+
+        /* ── Detail panel ───────────────────────────────────────────── */
+        /* Anchored to #viewDiv (the map area below the top bar), so top:0 = just
+           under the toolbar and height:100% = the visible map height. */
+        #rw-panel {
+            position: absolute; top: 0; right: 0; height: 100%; width: 430px; max-width: 94vw;
+            background: var(--panel-solid); box-shadow: -6px 0 34px rgba(0,0,0,.28); z-index: 50;
+            transform: translateX(102%); transition: transform .32s cubic-bezier(.22,.61,.36,1);
+            display: flex; flex-direction: column; border-left: 1px solid var(--border-strong);
+        }
+        #rw-panel.open { transform: translateX(0); }
+        .rw-head { position: relative; background: linear-gradient(135deg, var(--accent-ink), var(--accent)); color: #fff; padding: 16px 18px 15px; }
+        .rw-head::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent); }
+        .rw-head h2 { margin: 0; font-size: 19px; font-weight: 800; letter-spacing: .01em; }
+        .rw-head .sub { font-size: 12px; opacity: .94; margin-top: 4px; }
+        .rw-badge { display: inline-block; background: rgba(255,255,255,.22); border-radius: 20px; padding: 2px 10px; font-size: 11px; font-weight: 700; letter-spacing: .02em; }
+        .rw-close { position: absolute; top: 12px; right: 14px; background: rgba(255,255,255,.16); border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; font-size: 20px; line-height: 1; cursor: pointer; transition: background .18s ease; }
+        .rw-close:hover { background: rgba(255,255,255,.32); }
+        /* min-height:0 lets the body shrink below its content in the flex column so it
+           scrolls (rather than overflowing) when the window is short. */
+        .rw-body { padding: 16px 18px 26px; overflow-y: auto; flex: 1 1 auto; min-height: 0; scroll-behavior: smooth; }
+
+        .rw-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+        .rw-cards.rw-short { grid-template-columns: 1fr 1fr 1fr; }
+        .rw-card { border: 1px solid var(--border); border-radius: 11px; padding: 10px 12px; background: var(--panel-2); transition: transform .15s ease, border-color .15s ease; }
+        .rw-card:hover { transform: translateY(-1px); border-color: var(--accent); }
+        .rw-card .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-dim); font-weight: 700; }
+        .rw-card .val { font-size: 21px; font-weight: 800; color: var(--text); margin-top: 3px; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+        .rw-card .unit { font-size: 11px; font-weight: 500; color: var(--text-dim); font-family: var(--sans); }
+        .rw-card.season { background: color-mix(in srgb, var(--accent) 12%, var(--panel-2)); border-color: var(--accent); }
+        .rw-short .rw-card { background: color-mix(in srgb, #7c3aed 10%, var(--panel-2)); border-color: color-mix(in srgb, #7c3aed 35%, transparent); }
+        .rw-short .rw-card .val { font-size: 17px; }
+        .rw-status-card { border-radius: 12px; padding: 12px; margin-bottom: 13px; color: #fff; font-weight: 800; font-size: 15px; text-align: center; background: #038105; letter-spacing: .02em; box-shadow: inset 0 0 40px rgba(255,255,255,.12); text-shadow: 0 1px 2px rgba(0,0,0,.25); }
+
+        .rw-section-title { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); margin: 6px 0 8px; display: flex; align-items: center; gap: 8px; }
+        .rw-section-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+        /* Value at the selected timeline step */
+        #rw-step, #rw-today-sofar { border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--panel-2)); border-radius: 12px; padding: 11px 13px; margin-bottom: 14px; }
+        #rw-step .rw-step-lbl, #rw-today-sofar .rw-step-lbl { font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--accent-ink); font-weight: 800; }
+        #rw-step .rw-step-val, #rw-today-sofar .rw-step-val { font-size: 27px; font-weight: 800; color: var(--text); margin-top: 3px; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+        #rw-step .rw-step-val .unit, #rw-today-sofar .rw-step-val .unit { font-size: 12px; font-weight: 500; color: var(--text-dim); font-family: var(--sans); }
+        #rw-today-sofar { border-color: #16a34a; background: color-mix(in srgb, #16a34a 11%, var(--panel-2)); }
+        #rw-today-sofar .rw-step-lbl { color: #15803d; }
+        :root[data-theme="dark"] #rw-today-sofar .rw-step-lbl { color: #4ade80; }
+
+        /* Always-on SVG sparkline */
+        #rw-spark-wrap { margin-bottom: 14px; }
+        #rw-spark { width: 100%; height: 62px; }
+
+        /* Hydro threshold gauge (only-hit limits) */
+        #rw-gauge-wrap { margin-bottom: 14px; }
+        #rw-gauge { width: 100%; height: 58px; }
+
+        .rw-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 9px; margin-bottom: 12px; }
+        .rw-controls label { font-size: 10px; color: var(--text-dim); display: block; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 3px; }
+        .rw-controls input[type=date] { font-size: 12px; padding: 6px 8px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--panel-2); color: var(--text); }
+        .rw-btn { font-size: 12px; font-weight: 700; padding: 7px 13px; border-radius: 9px; border: none; cursor: pointer; text-decoration: none; display: inline-block; transition: filter .15s ease, transform .1s ease; }
+        .rw-btn:hover { filter: brightness(1.08); }
+        .rw-btn:active { transform: translateY(1px); }
+        .rw-btn.apply { background: var(--accent); color: #fff; }
+        :root[data-theme="dark"] .rw-btn.apply { color: #041016; }
+        .rw-btn.csv { background: #065f46; color: #fff; }
+        #rw-chart { width: 100%; height: 300px; }
+        #rw-empty { display: none; color: var(--text-dim); font-size: 13px; text-align: center; padding: 40px 0; }
+
+        /* Range presets for the staff time-series */
+        .rw-ranges { display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap; }
+        .rw-range { font-size: 11px; font-weight: 700; padding: 5px 11px; border: 1px solid var(--border-strong); background: var(--panel-2); color: var(--text-dim); border-radius: 8px; cursor: pointer; transition: all .15s ease; }
+        .rw-range:hover { border-color: var(--accent); color: var(--text); }
+        .rw-range.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        :root[data-theme="dark"] .rw-range.active { color: #041016; }
+
+        /* Live 10-minute detail (AWS only) */
+        .rw-intraday { margin-top: 18px; border-top: 1px solid var(--border); padding-top: 14px; }
+        .rw-intraday-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 9px; }
+        .rw-intraday-title { font-size: 12px; font-weight: 800; color: #7c3aed; }
+        :root[data-theme="dark"] .rw-intraday-title { color: #c4b5fd; }
+        .rw-btn.tenmin { background: #7c3aed; color: #fff; }
+        .rw-btn.tenmin:disabled { background: #a78bda; cursor: default; }
+        .rw-intraday-status { font-size: 11.5px; color: var(--text-dim); margin-bottom: 9px; min-height: 14px; }
+        #rw-intraday-chart { width: 100%; height: 230px; display: none; }
+        #rw-intraday-table-wrap { display: none; max-height: 220px; overflow-y: auto; margin-top: 9px; border: 1px solid var(--border); border-radius: 10px; }
+        .rw-intraday-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .rw-intraday-table th { position: sticky; top: 0; background: var(--panel-2); color: #7c3aed; text-align: left; padding: 6px 11px; font-weight: 700; }
+        :root[data-theme="dark"] .rw-intraday-table th { color: #c4b5fd; }
+        .rw-intraday-table td { padding: 5px 11px; border-top: 1px solid var(--border); color: var(--text); }
+        .rw-intraday-table td:last-child { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+
+        /* ── Timeline scrubber (bottom-centre) ──────────────────────── */
+        #timeline { position: absolute; left: 50%; transform: translateX(-50%); bottom: 16px; z-index: 32; padding: 10px 14px; width: min(640px, calc(100% - 320px)); }
+        .tl-modes { display: flex; gap: 5px; justify-content: center; margin-bottom: 8px; }
+        .tl-mode { font-size: 11px; font-weight: 700; padding: 5px 13px; border: 1px solid var(--border-strong); background: var(--panel-2); color: var(--text-dim); border-radius: 8px; cursor: pointer; transition: all .15s ease; }
+        .tl-mode:hover { border-color: var(--accent); color: var(--text); }
+        .tl-mode.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 2px 10px var(--accent-glow); }
+        :root[data-theme="dark"] .tl-mode.active { color: #041016; }
+        .tl-track { display: flex; align-items: center; gap: 8px; }
+        .tl-btn { font-size: 13px; line-height: 1; padding: 6px 11px; border: 1px solid var(--border-strong); background: var(--panel-2); color: var(--text); border-radius: 8px; cursor: pointer; transition: all .15s ease; }
+        .tl-btn:hover { border-color: var(--accent); background: var(--accent-glow); }
+        #tl-range { flex: 1; min-width: 200px; cursor: pointer; accent-color: var(--accent); }
+        .tl-label { text-align: center; font-size: 12.5px; font-weight: 800; color: var(--text); margin-top: 7px; font-variant-numeric: tabular-nums; }
+        .tl-summary { text-align: center; font-size: 11.5px; color: var(--text-dim); margin-top: 3px; min-height: 14px; }
+        .tl-summary b { color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+        #timeline.tl-live #tl-range { accent-color: var(--amber); }
+        #timeline.tl-live .tl-label { color: var(--amber); }
+
+        /* ── Shared SVG-chart styling (theme-aware via tokens) ───────── */
+        .svgc { display: block; width: 100%; overflow: visible; }
+        .svgc-grid { stroke: var(--grid); stroke-width: 1; }
+        .svgc-axis { fill: var(--text-dim); font-size: 9.5px; font-family: var(--sans); }
+        .svgc-bar { fill: var(--accent); }
+        .svgc-bar.v { fill: #7c3aed; }
+        .svgc-line { fill: none; stroke: var(--danger); stroke-width: 2; }
+        .svgc-line.flow { stroke: var(--accent); }
+        .svgc-line.flow2 { stroke: var(--accent-2); stroke-dasharray: 4 3; stroke-width: 1.5; }
+        .svgc-area { fill: var(--accent-glow); }
+        .svgc-cross { stroke: var(--text-dim); stroke-width: 1; stroke-dasharray: 3 3; }
+        .svgc-hit { pointer-events: all; fill: transparent; }
+        .svgc-tip {
+            position: absolute; pointer-events: none; z-index: 5; display: none;
+            background: var(--chip-bg); border: 1px solid var(--accent); border-radius: 8px;
+            padding: 6px 9px; font-size: 11px; box-shadow: var(--shadow-sm); white-space: nowrap;
+        }
+        .svgc-tip b { font-family: var(--mono); }
+        .svgc-thr-label { font-family: var(--mono); font-size: 9px; font-weight: 700; }
+
+        /* ── Mobile (≤768px) ────────────────────────────────────────── */
+        @media (max-width: 768px) {
+            :root { --topbar-h: auto; }
+            #topbar { flex-wrap: wrap; padding: 8px 10px; gap: 8px; height: auto; }
+            .tb-title small { display: none; }
+            .tb-updated { display: none; }
+
+            #controls { left: 8px; right: 8px; top: 8px; width: auto; }
+            #legend { left: 8px; right: 8px; top: 82px; bottom: auto; max-width: none; }
+            #legend h4 { cursor: pointer; }
+            .legend-caret { display: inline-block; }
+            #legend.collapsed #legend-body { display: none; }
+            #legend-body { max-height: 46vh; overflow-y: auto; }
+
+            #timeline { left: 8px; right: 8px; bottom: 8px; width: auto; transform: none; }
+            .tl-btn { padding: 8px 13px; font-size: 15px; }
+            #tl-range { min-width: 0; }
+
+            #rw-panel { width: 100%; max-width: 100%; }
+            .esri-ui-bottom-right { bottom: 140px !important; }
+        }
+        @media (max-width: 480px) {
+            #rw-chart { height: 240px; }
+            .rw-head h2 { font-size: 17px; }
+            #rw-step .rw-step-val { font-size: 23px; }
+            .tl-mode { padding: 5px 9px; font-size: 10.5px; }
+        }
+    </style>
+</head>
+<body>
+
+
+<header id="topbar">
+    <div class="tb-brand">
+        <span class="tb-dot"></span>
+        <span class="tb-title">Flood Watch<small>PMD · Flood Forecasting Division</small></span>
+    </div>
+    <div class="tb-datasets" role="tablist" aria-label="Dataset">
+        <button id="tl-ds-rain" class="tb-ds active" onclick="window.RainTimeline && RainTimeline.setDataset('rain')">🌧 Rainfall</button>
+        <button id="tl-ds-hydro" class="tb-ds" onclick="window.RainTimeline && RainTimeline.setDataset('hydro')">🌊 Hydro Gauges</button>
+    </div>
+    <div class="tb-spacer"></div>
+    <span class="tb-beta" title="Flood Watch is experimental; data may be incomplete or may change.">Beta</span>
+    <span class="tb-updated">Updated <b>05-Aug-2026 16:55 PKT</b></span>
+    <select id="basemap-select" class="tb-ctl" title="Basemap" onchange="window.RainMap && RainMap.setBasemap(this.value)">
+        <option value="__theme">Auto (theme)</option>
+        <option value="topo-vector">Topographic</option>
+        <option value="gray-vector">Light grey</option>
+        <option value="dark-gray-vector">Dark grey</option>
+        <option value="streets-navigation-vector">Streets</option>
+        <option value="hybrid">Satellite (labels)</option>
+        <option value="satellite">Satellite</option>
+    </select>
+    <button id="theme-btn" class="tb-ctl tb-icon" title="Toggle light / dark" onclick="window.FloodWatch && FloodWatch.toggleTheme()">🌙</button>
+</header>
+
+<div id="viewDiv">
+    <div id="controls" class="glass">
+        <div class="ctl-search">
+            <input id="rw-search" type="text" placeholder="Search station…" autocomplete="off"
+                   oninput="window.RainMap && RainMap.setSearch(this.value)"
+                   onfocus="window.RainMap && RainMap.renderResults()">
+            <div id="rw-results"></div>
+        </div>
+        <div class="ctl-count"><b id="rw-count">—</b> of <b id="rw-total">228</b> stations shown</div>
+    </div>
+
+    <div id="legend" class="glass">
+        <h4 onclick="window.RainMap && RainMap.toggleLegend()">
+            <span>Legend</span>
+            <span class="legend-caret" aria-hidden="true">▾</span>
+        </h4>
+        <div id="legend-body">
+            
+            <div id="legend-rain">
+                <div class="grp">
+                    <div class="grp-title">Source — click to toggle</div>
+                                        <label class="row">
+                        <input type="checkbox" checked onchange="window.RainMap && RainMap.toggleSource('synoptic', this.checked)">
+                        <span class="swatch outline circle" style="box-shadow:0 0 0 2px #9ca3af;"></span>
+                        <span>Synoptic (PMD)</span>
+                        <span class="src-count" id="legend-count-synoptic">—</span>
+                    </label>
+                                        <label class="row">
+                        <input type="checkbox" checked onchange="window.RainMap && RainMap.toggleSource('telemetric', this.checked)">
+                        <span class="swatch outline diamond" style="box-shadow:0 0 0 2px #1f2937;"></span>
+                        <span>Telemetric (WAPDA)</span>
+                        <span class="src-count" id="legend-count-telemetric">—</span>
+                    </label>
+                                        <label class="row">
+                        <input type="checkbox" checked onchange="window.RainMap && RainMap.toggleSource('aws', this.checked)">
+                        <span class="swatch outline triangle" style="box-shadow:0 0 0 2px #7c3aed;"></span>
+                        <span>FAWS (PMD)</span>
+                        <span class="src-count" id="legend-count-aws">—</span>
+                    </label>
+                                    </div>
+                <div class="grp">
+                    <label class="row" style="cursor:pointer;">
+                        <input type="checkbox" checked onchange="window.RainTimeline && RainTimeline.toggleOnlyRain(this.checked)">
+                        <span>Only stations with rain</span>
+                    </label>
+                </div>
+                <div class="grp">
+                    <div class="grp-title">Rainfall (selected step)</div>
+                                        <div class="row">
+                        <span class="swatch circle" style="background:#9ca3af;"></span>
+                        <span>No rain</span>
+                    </div>
+                                        <div class="row">
+                        <span class="swatch circle" style="background:#7ec8e3;"></span>
+                        <span>Trace – 10 mm</span>
+                    </div>
+                                        <div class="row">
+                        <span class="swatch circle" style="background:#2b6cb0;"></span>
+                        <span>10 – 25 mm</span>
+                    </div>
+                                        <div class="row">
+                        <span class="swatch circle" style="background:#dd6b20;"></span>
+                        <span>25 – 50 mm</span>
+                    </div>
+                                        <div class="row">
+                        <span class="swatch circle" style="background:#c81e1e;"></span>
+                        <span>≥ 50 mm</span>
+                    </div>
+                                    </div>
+            </div>
+
+            
+            <div id="legend-hydro" style="display:none;">
+                <div class="grp">
+                    <div class="grp-title">Flood status (selected step)</div>
+                                        <div class="row">
+                        <span class="swatch circle" style="background:#038105;"></span>
+                        <span>Normal</span>
+                    </div>
+                                        <div class="row">
+                        <span class="swatch circle" style="background:#0057b4;"></span>
+                        <span>Low</span>
+                    </div>
+                                        <div class="row">
+                        <span class="swatch circle" style="background:#ffc107;"></span>
+                        <span>Medium</span>
+                    </div>
+                                        <div class="row">
+                        <span class="swatch circle" style="background:#fd7e14;"></span>
+                        <span>High</span>
+                    </div>
+                                        <div class="row">
+                        <span class="swatch circle" style="background:#fc192c;"></span>
+                        <span>Very High</span>
+                    </div>
+                                        <div class="row">
+                        <span class="swatch circle" style="background:#a10211;"></span>
+                        <span>Exceptionally High</span>
+                    </div>
+                                    </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div id="timeline" class="glass">
+        <div class="tl-modes">
+            <button id="tl-mode-3h" class="tl-mode" onclick="window.RainTimeline && RainTimeline.setMode('3hourly')">3-hourly (SYNOP)</button>
+            <button id="tl-mode-d" class="tl-mode active" onclick="window.RainTimeline && RainTimeline.setMode('daily')">Daily</button>
+        </div>
+        <div class="tl-track">
+            <button class="tl-btn" title="Previous step" onclick="window.RainTimeline && RainTimeline.step(-1)">&#10094;</button>
+            <button class="tl-btn" id="tl-play" title="Play" onclick="window.RainTimeline && RainTimeline.togglePlay()">&#9654;</button>
+            <button class="tl-btn" title="Next step" onclick="window.RainTimeline && RainTimeline.step(1)">&#10095;</button>
+            <input id="tl-range" type="range" min="0" max="0" value="0" step="1"
+                   oninput="window.RainTimeline && RainTimeline.setIndex(this.value)">
+        </div>
+        <div class="tl-label" id="tl-label">Loading timeline…</div>
+        <div class="tl-summary" id="tl-summary"></div>
+    </div>
+
+    
+    <div id="map-tip"></div>
+
+    
+    <div id="coord-readout">
+        <div class="cr-body">
+            <span class="cr-label">Clicked location · lat, lon</span>
+            <span class="cr-val" id="coord-val">—</span>
+        </div>
+        <button class="cr-btn" id="coord-copy" title="Copy" onclick="window.rwCopyCoords && rwCopyCoords()">⧉</button>
+        <button class="cr-btn cr-x" title="Dismiss" onclick="window.rwHideCoords && rwHideCoords()">&times;</button>
+    </div>
+
+
+<div id="rw-panel">
+    <div class="rw-head">
+        <button class="rw-close" onclick="RainWatch.close()" aria-label="Close">&times;</button>
+        <h2 id="rw-name">—</h2>
+        <div class="sub">
+            <span class="rw-badge" id="rw-source">—</span>
+            &nbsp;<span id="rw-area">—</span>
+        </div>
+        <div class="sub">Last observation: <span id="rw-lastobs">—</span></div>
+    </div>
+    <div class="rw-body">
+        <div id="rw-step" style="display:none;">
+            <div class="rw-step-lbl">At selected step — <span id="rw-step-label">—</span></div>
+            <div class="rw-step-val"><span id="rw-step-value">—</span><span class="unit" id="rw-step-unit"> mm</span></div>
+        </div>
+        <div id="rw-today-sofar" style="display:none;">
+            <div class="rw-step-lbl">Today so far — from 0600 UTC</div>
+            <div class="rw-step-val"><span id="rw-today-sofar-value">—</span><span class="unit"> mm</span></div>
+        </div>
+
+        
+        <div id="rw-spark-wrap" style="display:none;">
+            <div class="rw-section-title"><span id="rw-spark-title">Recent trend</span></div>
+            <div id="rw-spark" style="position:relative;"></div>
+        </div>
+
+        
+        <div id="rw-cards-rain">
+            <div class="rw-cards rw-short" id="rw-short" style="display:none;">
+                <div class="rw-card"><div class="lbl">Last 3h</div><div class="val"><span id="card-h3">—</span><span class="unit"> mm</span></div></div>
+                <div class="rw-card"><div class="lbl">Last 6h</div><div class="val"><span id="card-h6">—</span><span class="unit"> mm</span></div></div>
+                <div class="rw-card"><div class="lbl">Last 12h</div><div class="val"><span id="card-h12">—</span><span class="unit"> mm</span></div></div>
+            </div>
+            <div class="rw-cards">
+                <div class="rw-card"><div class="lbl">Daily</div><div class="val"><span id="card-daily">—</span><span class="unit"> mm</span></div></div>
+                <div class="rw-card"><div class="lbl">This Month</div><div class="val"><span id="card-monthly">—</span><span class="unit"> mm</span></div></div>
+                <div class="rw-card season"><div class="lbl">Season (15 Jun→)</div><div class="val"><span id="card-seasonal">—</span><span class="unit"> mm</span></div></div>
+                <div class="rw-card"><div class="lbl">This Year</div><div class="val"><span id="card-yearly">—</span><span class="unit"> mm</span></div></div>
+            </div>
+        </div>
+
+        
+        <div id="rw-cards-hydro" style="display:none;">
+            <div id="rw-hydro-status" class="rw-status-card">—</div>
+            <div id="rw-gauge-wrap" style="display:none;">
+                <div class="rw-section-title"><span>Flood thresholds — limits reached</span></div>
+                <div id="rw-gauge" style="position:relative;"></div>
+            </div>
+            <div class="rw-cards">
+                <div class="rw-card"><div class="lbl">Inflow</div><div class="val"><span id="hcard-inflow">—</span><span class="unit"> cusecs</span></div></div>
+                <div class="rw-card"><div class="lbl">Outflow</div><div class="val"><span id="hcard-outflow">—</span><span class="unit"> cusecs</span></div></div>
+                <div class="rw-card"><div class="lbl">Level</div><div class="val"><span id="hcard-level">—</span><span class="unit"> m</span></div></div>
+                <div class="rw-card"><div class="lbl">Trend</div><div class="val"><span id="hcard-trend">—</span></div></div>
+            </div>
+        </div>
+
+        
+            </div>
+</div>
+</div>
+
+<script>
+    // Marker sets are NOT embedded in the HTML — they're fetched over the token-gated
+    // `markers` endpoint on load (anti-scraping). Start empty; rwIngestMarkers() fills them.
+    let STATIONS = [];
+    let HYDRO_STATIONS = [];
+    // Flood-status colours indexed by status_id (0=Normal … 5=Exceptionally High).
+    const HYDRO_COLORS = ['#038105', '#0057b4', '#ffc107', '#fd7e14', '#fc192c', '#a10211'];
+    const HYDRO_LABELS = ['Normal', 'Low', 'Medium', 'High', 'Very High', 'Exceptionally High'];
+    const IS_STAFF = false;
+    const RW_BASE = "https://ffd.pmd.gov.pk/data/flood-watch";
+    // Session-bound anti-scraping token; sent on every data fetch (see VerifyFloodWatchToken).
+    const RW_TOKEN = "1785974538.444b2ae4641336c756db1a760904f7ba8d8c27e7eaab98f299baa0f9e9b5a286";
+    const RW_XHR = { headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-FW-Token': RW_TOKEN } };
+    const RW_LABELS = { synoptic: 'Synoptic (PMD)', telemetric: 'Telemetric (WAPDA)', aws: 'FAWS (PMD)', india_synop: 'India (Synoptic)', hydro: 'Hydro Gauge' };
+    // One lookup for both datasets (hydro markers are keyed 'hydro:<id>').
+    const RW_LOOKUP = {};
+    // Populate the datasets + lookup from the token-gated markers payload.
+    function rwIngestMarkers(d) {
+        STATIONS = (d && d.rainfall) || [];
+        HYDRO_STATIONS = (d && d.hydro) || [];
+        for (const k in RW_LOOKUP) { delete RW_LOOKUP[k]; }
+        STATIONS.forEach(function (s) { RW_LOOKUP[s.source + ':' + s.source_station_id] = s; });
+        HYDRO_STATIONS.forEach(function (s) { RW_LOOKUP[s.source + ':' + s.source_station_id] = s; });
+    }
+    window.rwIngestMarkers = rwIngestMarkers;
+
+    function fmtMm(v) { return (v === null || v === undefined) ? '0.0' : Number(v).toFixed(1); }
+    function fmtFlow(v) { return (v === null || v === undefined) ? '—' : Number(v).toLocaleString('en-US', { maximumFractionDigits: 0 }); }
+    function escHtml(t) { return (t || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       SvgChart — lightweight, theme-aware inline-SVG charts (no chart lib).
+       Colours come from CSS classes bound to the design tokens, so a theme
+       switch restyles every chart with no redraw needed. Each chart adds an
+       invisible hit-rect that drives a crosshair + a floating HTML readout.
+       ═══════════════════════════════════════════════════════════════════ */
+    const SvgChart = (function () {
+        const NS = 'http://www.w3.org/2000/svg';
+        function el(name, attrs) { const e = document.createElementNS(NS, name); for (const k in attrs) { e.setAttribute(k, attrs[k]); } return e; }
+        function niceMax(v) {
+            if (!isFinite(v) || v <= 0) { return 1; }
+            const p = Math.pow(10, Math.floor(Math.log10(v)));
+            const f = v / p; const n = f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10;
+            return n * p;
+        }
+        function dims(host, h) { const w = Math.max(120, host.clientWidth || 300); return { w: w, h: h }; }
+        function tipEl(host) {
+            let t = host.querySelector('.svgc-tip');
+            if (!t) { t = document.createElement('div'); t.className = 'svgc-tip'; host.appendChild(t); }
+            return t;
+        }
+        function attachHover(host, svg, geom) {
+            // geom: { xs:[px], left, right, top, bottom, format:(i)=>html }
+            const tip = tipEl(host);
+            const cross = el('line', { class: 'svgc-cross', x1: 0, y1: geom.top, x2: 0, y2: geom.bottom, style: 'display:none' });
+            svg.appendChild(cross);
+            const hit = el('rect', { class: 'svgc-hit', x: geom.left, y: geom.top, width: Math.max(1, geom.right - geom.left), height: Math.max(1, geom.bottom - geom.top) });
+            svg.appendChild(hit);
+            function nearest(mx) { let best = 0, bd = Infinity; for (let i = 0; i < geom.xs.length; i++) { const d = Math.abs(geom.xs[i] - mx); if (d < bd) { bd = d; best = i; } } return best; }
+            hit.addEventListener('mousemove', function (ev) {
+                const r = svg.getBoundingClientRect();
+                const mx = (ev.clientX - r.left) * (geom.w / r.width);
+                const i = nearest(mx);
+                const px = geom.xs[i];
+                cross.setAttribute('x1', px); cross.setAttribute('x2', px); cross.style.display = '';
+                tip.innerHTML = geom.format(i); tip.style.display = 'block';
+                const hostR = host.getBoundingClientRect();
+                let left = (px / geom.w) * hostR.width + 10;
+                if (left > hostR.width - tip.offsetWidth - 6) { left = left - tip.offsetWidth - 20; }
+                tip.style.left = Math.max(2, left) + 'px';
+                tip.style.top = '2px';
+            });
+            hit.addEventListener('mouseleave', function () { cross.style.display = 'none'; tip.style.display = 'none'; });
+        }
+
+        return {
+            clear: function (host) { const tip = host.querySelector('.svgc-tip'); host.innerHTML = ''; if (tip) { host.appendChild(tip); tip.style.display = 'none'; } },
+
+            /** Compact area+line sparkline. pts: [{label, v}]. highlight: index or -1. */
+            sparkline: function (host, pts, opts) {
+                opts = opts || {};
+                this.clear(host);
+                const d = dims(host, host.clientHeight || 62);
+                const pad = { l: 4, r: 4, t: 8, b: 14 };
+                const svg = el('svg', { class: 'svgc', viewBox: '0 0 ' + d.w + ' ' + d.h, width: d.w, height: d.h });
+                const vals = pts.map(function (p) { return p.v || 0; });
+                const max = niceMax(Math.max.apply(null, vals.concat([0.0001])));
+                const n = pts.length;
+                const iw = d.w - pad.l - pad.r, ih = d.h - pad.t - pad.b;
+                const xs = pts.map(function (_, i) { return pad.l + (n <= 1 ? iw / 2 : (i / (n - 1)) * iw); });
+                const yFor = function (v) { return pad.t + ih - (Math.max(0, v) / max) * ih; };
+                let line = '', area = '';
+                pts.forEach(function (p, i) { const x = xs[i], y = yFor(p.v || 0); line += (i ? 'L' : 'M') + x + ' ' + y; });
+                area = line + 'L' + xs[n - 1] + ' ' + (pad.t + ih) + 'L' + xs[0] + ' ' + (pad.t + ih) + 'Z';
+                svg.appendChild(el('path', { class: 'svgc-area', d: area }));
+                svg.appendChild(el('path', { class: 'svgc-line flow', d: line }));
+                if (opts.highlight != null && opts.highlight >= 0 && opts.highlight < n) {
+                    const hx = xs[opts.highlight], hy = yFor(pts[opts.highlight].v || 0);
+                    svg.appendChild(el('line', { class: 'svgc-cross', x1: hx, y1: pad.t, x2: hx, y2: pad.t + ih }));
+                    svg.appendChild(el('circle', { cx: hx, cy: hy, r: 3.5, fill: 'var(--accent)', stroke: 'var(--panel-solid)', 'stroke-width': 1.5 }));
+                }
+                // sparse x labels (first + last)
+                if (n) {
+                    svg.appendChild(el('text', { class: 'svgc-axis', x: xs[0], y: d.h - 3, 'text-anchor': 'start' })).textContent = pts[0].label;
+                    if (n > 1) { svg.appendChild(el('text', { class: 'svgc-axis', x: xs[n - 1], y: d.h - 3, 'text-anchor': 'end' })).textContent = pts[n - 1].label; }
+                }
+                host.appendChild(svg);
+                const unit = opts.unit || '';
+                attachHover(host, svg, {
+                    xs: xs, left: pad.l, right: d.w - pad.r, top: pad.t, bottom: pad.t + ih, w: d.w,
+                    format: function (i) { return escHtml(pts[i].label) + ' · <b>' + (opts.fmt ? opts.fmt(pts[i].v) : (pts[i].v || 0)) + '</b> ' + unit; }
+                });
+            },
+
+            /** Bars (daily) + overlaid cumulative line on a secondary scale. */
+            barsCumulative: function (host, dates, daily, cumulative, opts) {
+                opts = opts || {};
+                this.clear(host);
+                const d = dims(host, host.clientHeight || 300);
+                const pad = { l: 44, r: 46, t: 12, b: 44 };
+                const svg = el('svg', { class: 'svgc', viewBox: '0 0 ' + d.w + ' ' + d.h, width: d.w, height: d.h });
+                const n = dates.length;
+                const iw = d.w - pad.l - pad.r, ih = d.h - pad.t - pad.b;
+                const maxB = niceMax(Math.max.apply(null, daily.concat([0.0001])));
+                const maxC = niceMax(Math.max.apply(null, cumulative.concat([0.0001])));
+                const step = iw / Math.max(1, n);
+                const bw = Math.max(1, Math.min(step * 0.72, 22));
+                const xC = function (i) { return pad.l + step * i + step / 2; };
+                // gridlines + left axis (mm daily)
+                for (let g = 0; g <= 4; g++) {
+                    const y = pad.t + ih - (g / 4) * ih;
+                    svg.appendChild(el('line', { class: 'svgc-grid', x1: pad.l, y1: y, x2: pad.l + iw, y2: y }));
+                    svg.appendChild(el('text', { class: 'svgc-axis', x: pad.l - 6, y: y + 3, 'text-anchor': 'end' })).textContent = Math.round(maxB * g / 4);
+                    svg.appendChild(el('text', { class: 'svgc-axis', x: pad.l + iw + 6, y: y + 3, 'text-anchor': 'start' })).textContent = Math.round(maxC * g / 4);
+                }
+                daily.forEach(function (v, i) {
+                    const h = (Math.max(0, v) / maxB) * ih;
+                    svg.appendChild(el('rect', { class: 'svgc-bar', x: xC(i) - bw / 2, y: pad.t + ih - h, width: bw, height: Math.max(0, h), rx: 2 }));
+                });
+                let line = '';
+                cumulative.forEach(function (v, i) { const x = xC(i), y = pad.t + ih - (Math.max(0, v) / maxC) * ih; line += (i ? 'L' : 'M') + x + ' ' + y; });
+                svg.appendChild(el('path', { class: 'svgc-line', d: line }));
+                // sparse date labels
+                const stepLbl = Math.ceil(n / 6);
+                dates.forEach(function (dt, i) { if (i % stepLbl === 0 || i === n - 1) { svg.appendChild(el('text', { class: 'svgc-axis', x: xC(i), y: d.h - 26, 'text-anchor': 'middle' })).textContent = dt.slice(5); } });
+                svg.appendChild(el('text', { class: 'svgc-axis', x: pad.l, y: d.h - 8, 'text-anchor': 'start', style: 'font-weight:700' })).textContent = 'Daily mm';
+                svg.appendChild(el('text', { class: 'svgc-axis', x: pad.l + iw, y: d.h - 8, 'text-anchor': 'end', style: 'font-weight:700; fill:var(--danger)' })).textContent = 'Cumulative mm';
+                host.appendChild(svg);
+                attachHover(host, svg, {
+                    xs: dates.map(function (_, i) { return xC(i); }), left: pad.l, right: pad.l + iw, top: pad.t, bottom: pad.t + ih, w: d.w,
+                    format: function (i) { return escHtml(dates[i]) + '<br>Daily <b>' + fmtMm(daily[i]) + '</b> mm<br>Cumul. <b>' + fmtMm(cumulative[i]) + '</b> mm'; }
+                });
+            },
+
+            /** Discharge line(s) with only-hit flood-status threshold lines. */
+            hydrograph: function (host, times, outflow, inflow, thresholds, opts) {
+                opts = opts || {};
+                this.clear(host);
+                const d = dims(host, host.clientHeight || 300);
+                const pad = { l: 52, r: 12, t: 12, b: 44 };
+                const svg = el('svg', { class: 'svgc', viewBox: '0 0 ' + d.w + ' ' + d.h, width: d.w, height: d.h });
+                const n = times.length;
+                const iw = d.w - pad.l - pad.r, ih = d.h - pad.t - pad.b;
+                const allV = outflow.concat(inflow || []).filter(function (v) { return v != null; });
+                const thrMax = thresholds.length ? Math.max.apply(null, thresholds.map(function (t) { return t.min_discharge; })) : 0;
+                const max = niceMax(Math.max(Math.max.apply(null, allV.concat([0.0001])), thrMax * 1.05));
+                const xC = function (i) { return pad.l + (n <= 1 ? iw / 2 : (i / (n - 1)) * iw); };
+                const yFor = function (v) { return pad.t + ih - (Math.max(0, v) / max) * ih; };
+                for (let g = 0; g <= 4; g++) {
+                    const y = pad.t + ih - (g / 4) * ih;
+                    svg.appendChild(el('line', { class: 'svgc-grid', x1: pad.l, y1: y, x2: pad.l + iw, y2: y }));
+                    svg.appendChild(el('text', { class: 'svgc-axis', x: pad.l - 6, y: y + 3, 'text-anchor': 'end' })).textContent = Math.round(max * g / 4).toLocaleString();
+                }
+                // threshold lines (already filtered to hit + next target by caller)
+                thresholds.forEach(function (t) {
+                    const y = yFor(t.min_discharge);
+                    svg.appendChild(el('line', { x1: pad.l, y1: y, x2: pad.l + iw, y2: y, stroke: HYDRO_COLORS[t.status_id] || '#999', 'stroke-width': t.target ? 1 : 1.4, 'stroke-dasharray': t.target ? '2 4' : '5 4', opacity: t.target ? 0.7 : 0.9 }));
+                    svg.appendChild(el('text', { class: 'svgc-thr-label', x: pad.l + 4, y: y - 3, fill: HYDRO_COLORS[t.status_id] || '#999' })).textContent = (HYDRO_LABELS[t.status_id] || '') + (t.target ? ' (next)' : '');
+                });
+                function drawLine(vals, cls) {
+                    let line = '', started = false;
+                    vals.forEach(function (v, i) { if (v == null) { return; } const x = xC(i), y = yFor(v); line += (started ? 'L' : 'M') + x + ' ' + y; started = true; });
+                    if (line) { svg.appendChild(el('path', { class: cls, d: line })); }
+                }
+                if (inflow) { drawLine(inflow, 'svgc-line flow2'); }
+                drawLine(outflow, 'svgc-line flow');
+                const stepLbl = Math.ceil(n / 6);
+                times.forEach(function (t, i) { if (i % stepLbl === 0 || i === n - 1) { svg.appendChild(el('text', { class: 'svgc-axis', x: xC(i), y: d.h - 12, 'text-anchor': 'middle' })).textContent = String(t).slice(5, 16); } });
+                host.appendChild(svg);
+                attachHover(host, svg, {
+                    xs: times.map(function (_, i) { return xC(i); }), left: pad.l, right: pad.l + iw, top: pad.t, bottom: pad.t + ih, w: d.w,
+                    format: function (i) { let h = escHtml(String(times[i]).slice(0, 16)) + '<br>Outflow <b>' + fmtFlow(outflow[i]) + '</b>'; if (inflow && inflow[i] != null) { h += '<br>Inflow <b>' + fmtFlow(inflow[i]) + '</b>'; } return h; }
+                });
+            },
+
+            /** Simple bars (AWS 10-minute). pts: [{t, mm}]. */
+            bars: function (host, pts, opts) {
+                opts = opts || {};
+                this.clear(host);
+                const d = dims(host, host.clientHeight || 230);
+                const pad = { l: 40, r: 12, t: 12, b: 40 };
+                const svg = el('svg', { class: 'svgc', viewBox: '0 0 ' + d.w + ' ' + d.h, width: d.w, height: d.h });
+                const n = pts.length;
+                const iw = d.w - pad.l - pad.r, ih = d.h - pad.t - pad.b;
+                const max = niceMax(Math.max.apply(null, pts.map(function (p) { return p.mm || 0; }).concat([0.0001])));
+                const step = iw / Math.max(1, n);
+                const bw = Math.max(1, Math.min(step * 0.8, 10));
+                const xC = function (i) { return pad.l + step * i + step / 2; };
+                for (let g = 0; g <= 4; g++) {
+                    const y = pad.t + ih - (g / 4) * ih;
+                    svg.appendChild(el('line', { class: 'svgc-grid', x1: pad.l, y1: y, x2: pad.l + iw, y2: y }));
+                    svg.appendChild(el('text', { class: 'svgc-axis', x: pad.l - 6, y: y + 3, 'text-anchor': 'end' })).textContent = (max * g / 4).toFixed(1);
+                }
+                pts.forEach(function (p, i) { const h = (Math.max(0, p.mm || 0) / max) * ih; svg.appendChild(el('rect', { class: 'svgc-bar v', x: xC(i) - bw / 2, y: pad.t + ih - h, width: bw, height: Math.max(0, h), rx: 1.5 })); });
+                const stepLbl = Math.ceil(n / 6);
+                pts.forEach(function (p, i) { if (i % stepLbl === 0 || i === n - 1) { svg.appendChild(el('text', { class: 'svgc-axis', x: xC(i), y: d.h - 12, 'text-anchor': 'middle' })).textContent = String(p.t).slice(11, 16); } });
+                host.appendChild(svg);
+                attachHover(host, svg, {
+                    xs: pts.map(function (_, i) { return xC(i); }), left: pad.l, right: pad.l + iw, top: pad.t, bottom: pad.t + ih, w: d.w,
+                    format: function (i) { return escHtml(String(pts[i].t).slice(0, 16)) + '<br><b>' + fmtMm(pts[i].mm) + '</b> mm'; }
+                });
+            },
+
+            /** Horizontal flood-status gauge showing only crossed limits + next target. */
+            gauge: function (host, discharge, statusId, thresholds) {
+                this.clear(host);
+                const d = dims(host, host.clientHeight || 58);
+                const pad = { l: 6, r: 6, t: 6, b: 22 };
+                const svg = el('svg', { class: 'svgc', viewBox: '0 0 ' + d.w + ' ' + d.h, width: d.w, height: d.h });
+                const iw = d.w - pad.l - pad.r, barY = pad.t, barH = 14;
+                const hit = thresholds.filter(function (t) { return discharge >= t.min_discharge; });
+                const next = thresholds.filter(function (t) { return discharge < t.min_discharge; }).sort(function (a, b) { return a.min_discharge - b.min_discharge; })[0];
+                const scaleMax = Math.max(discharge * 1.1, next ? next.min_discharge * 1.08 : (hit.length ? hit[hit.length - 1].min_discharge * 1.25 : 1), 1);
+                const xFor = function (v) { return pad.l + Math.min(1, v / scaleMax) * iw; };
+                svg.appendChild(el('rect', { x: pad.l, y: barY, width: iw, height: barH, rx: 7, fill: 'var(--track)' }));
+                svg.appendChild(el('rect', { x: pad.l, y: barY, width: Math.max(2, xFor(discharge) - pad.l), height: barH, rx: 7, fill: HYDRO_COLORS[statusId] || HYDRO_COLORS[0] }));
+                // current-value knob
+                svg.appendChild(el('circle', { cx: xFor(discharge), cy: barY + barH / 2, r: 8, fill: 'var(--panel-solid)', stroke: HYDRO_COLORS[statusId] || HYDRO_COLORS[0], 'stroke-width': 3 }));
+                function tick(t, dim) {
+                    const x = xFor(t.min_discharge);
+                    svg.appendChild(el('line', { x1: x, y1: barY - 3, x2: x, y2: barY + barH + 3, stroke: HYDRO_COLORS[t.status_id] || '#999', 'stroke-width': dim ? 1 : 1.6, 'stroke-dasharray': dim ? '2 2' : '' }));
+                    svg.appendChild(el('text', { class: 'svgc-thr-label', x: x, y: d.h - 8, 'text-anchor': 'middle', fill: HYDRO_COLORS[t.status_id] || '#999', opacity: dim ? 0.75 : 1 })).textContent = (HYDRO_LABELS[t.status_id] || '');
+                }
+                hit.forEach(function (t) { tick(t, false); });
+                if (next) { tick(next, true); }
+                if (!hit.length && !next) {
+                    svg.appendChild(el('text', { class: 'svgc-axis', x: d.w / 2, y: d.h - 8, 'text-anchor': 'middle' })).textContent = 'No thresholds defined';
+                }
+                host.appendChild(svg);
+            }
+        };
+    })();
+
+    const RainWatch = {
+        cur: null,
+        rangeDays: 30,
+        _redraw: null,
+
+        open: function (source, id) {
+            const s = RW_LOOKUP[source + ':' + id];
+            if (!s) { return; }
+            this.cur = s;
+            const isHydro = source === 'hydro';
+            document.getElementById('rw-name').textContent = s.name;
+            document.getElementById('rw-source').textContent = RW_LABELS[source] || source;
+            document.getElementById('rw-area').textContent = s.area || '—';
+            document.getElementById('rw-lastobs').textContent = s.last_obs_at || '—';
+            document.getElementById('rw-cards-rain').style.display = isHydro ? 'none' : '';
+            document.getElementById('rw-cards-hydro').style.display = isHydro ? '' : 'none';
+            const ctrls = document.querySelector('.rw-controls');   // rain-only date/CSV (staff)
+            if (ctrls) { ctrls.style.display = isHydro ? 'none' : 'flex'; }
+            const ranges = document.getElementById('rw-ranges');
+            if (ranges) { ranges.style.display = isHydro ? 'none' : 'flex'; }
+
+            if (isHydro) {
+                this.renderHydro(s);
+                const intraday = document.getElementById('rw-intraday');
+                if (intraday) { intraday.style.display = 'none'; }
+            } else {
+                this.renderCards(s.accum);
+                this.renderShort(s.short);
+                this.reset10min(source === 'aws');
+            }
+
+            if (window.rwRenderStep) { window.rwRenderStep(); }
+            const panel = document.getElementById('rw-panel');
+            panel.classList.add('open');
+            const body = panel.querySelector('.rw-body');
+            if (body) { body.scrollTo({ top: 0, behavior: 'smooth' }); }
+            // Charts are staff-only; non-staff keep the cards + sparkline rendered above.
+            if (IS_STAFF) { isHydro ? this.loadHydroChart() : this.loadChart(); }
+            if (window.FloodWatch) { FloodWatch.syncHash(); }
+        },
+
+        renderHydro: function (s) {
+            const sc = document.getElementById('rw-hydro-status');
+            const STATUS_TEXT = { NORMAL: 'Normal Flow', LOW: 'Low Flood', MEDIUM: 'Medium Flood', HIGH: 'High Flood', VERY_HIGH: 'Very High Flood', EX_HIGH: 'Exceptionally High Flood' };
+            sc.textContent = STATUS_TEXT[s.status] || s.status || '—';
+            sc.style.background = HYDRO_COLORS[s.status_id || 0];
+            document.getElementById('hcard-inflow').textContent = fmtFlow(s.inflow);
+            document.getElementById('hcard-outflow').textContent = fmtFlow(s.outflow);
+            document.getElementById('hcard-level').textContent = (s.level === null || s.level === undefined) ? '—' : Number(s.level).toFixed(2);
+            const tr = { up: '▲ Rising', down: '▼ Falling', right: '▬ Steady' };
+            document.getElementById('hcard-trend').textContent = tr[s.trend] || '—';
+
+            // Threshold gauge — only-hit limits + next target.
+            const gw = document.getElementById('rw-gauge-wrap');
+            const g = document.getElementById('rw-gauge');
+            const thr = (s.thresholds || []).slice().sort(function (a, b) { return a.min_discharge - b.min_discharge; });
+            if (gw && g) {
+                gw.style.display = thr.length ? '' : 'none';
+                if (thr.length) { SvgChart.gauge(g, s.discharge || 0, s.status_id || 0, thr); }
+            }
+        },
+
+        loadHydroChart: function () {
+            const s = this.cur;
+            const chartEl = document.getElementById('rw-chart');
+            const emptyEl = document.getElementById('rw-empty');
+            if (!s || !chartEl) { return; }
+            const self = this;
+            fetch(RW_BASE + '/hydro/' + s.source_station_id + '/series' + this.dateQuery(), RW_XHR)
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    if (!d || !d.ok) { return; }
+                    const empty = !d.meta || d.meta.record_count === 0;
+                    if (emptyEl) { emptyEl.textContent = 'No discharge recorded for this gauge in the selected range.'; emptyEl.style.display = empty ? 'block' : 'none'; }
+                    chartEl.style.display = empty ? 'none' : 'block';
+                    if (empty) { SvgChart.clear(chartEl); self._redraw = null; return; }
+                    const t = d.traces || [];
+                    const times = (t[0] && t[0].x) || [];
+                    const outflow = (t[0] && t[0].y) || [];
+                    const inflow = (t[1] && t[1].y) || null;
+                    const seriesMax = Math.max.apply(null, outflow.concat(inflow || []).filter(function (v) { return v != null; }).concat([0]));
+                    // Only-hit thresholds (+ next up as a dashed target).
+                    const all = (s.thresholds || []).slice().sort(function (a, b) { return a.min_discharge - b.min_discharge; });
+                    const hit = all.filter(function (x) { return seriesMax >= x.min_discharge; });
+                    const next = all.filter(function (x) { return seriesMax < x.min_discharge; })[0];
+                    const thr = hit.slice();
+                    if (next) { thr.push(Object.assign({ target: true }, next)); }
+                    self._redraw = function () { SvgChart.hydrograph(chartEl, times, outflow, inflow, thr); };
+                    self._redraw();
+                })
+                .catch(function () { });
+        },
+
+        reset10min: function (isAws) {
+            const box = document.getElementById('rw-intraday');
+            if (!box) { return; }   // intraday UI is staff-only / absent for non-staff
+            box.style.display = isAws ? 'block' : 'none';
+            document.getElementById('rw-10min-status').textContent = '';
+            const chartEl = document.getElementById('rw-intraday-chart');
+            chartEl.style.display = 'none';
+            SvgChart.clear(chartEl);
+            document.getElementById('rw-intraday-table-wrap').style.display = 'none';
+            document.getElementById('rw-10min-btn').disabled = false;
+        },
+
+        load10min: function () {
+            const s = this.cur;
+            if (!s || s.source !== 'aws') { return; }
+            const btn = document.getElementById('rw-10min-btn');
+            const status = document.getElementById('rw-10min-status');
+            const tableWrap = document.getElementById('rw-intraday-table-wrap');
+            const chartEl = document.getElementById('rw-intraday-chart');
+            btn.disabled = true;
+            status.textContent = 'Loading live 10-minute data… (may take up to a minute)';
+            chartEl.style.display = 'none';
+            tableWrap.style.display = 'none';
+
+            const self = this;
+            fetch(RW_BASE + '/aws/' + s.source_station_id + '/intraday', RW_XHR)
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    btn.disabled = false;
+                    if (!d || !d.ok) { status.textContent = 'Could not load 10-minute data. Please try again.'; return; }
+                    if (!d.points || d.points.length === 0) { status.textContent = 'No 10-minute data reported in the last 24 hours.'; return; }
+                    status.textContent = 'Last 24h total: ' + fmtMm(d.total_mm) + ' mm across ' + d.count + ' readings.';
+                    chartEl.style.display = 'block';
+                    self._redraw = function () { SvgChart.bars(chartEl, d.points); };
+                    self._redraw();
+                    const tbody = document.querySelector('#rw-intraday-table tbody');
+                    tbody.innerHTML = '';
+                    d.points.forEach(function (p) {
+                        const tr = document.createElement('tr');
+                        const tdT = document.createElement('td'); tdT.textContent = p.t;
+                        const tdV = document.createElement('td'); tdV.textContent = fmtMm(p.mm);
+                        tr.appendChild(tdT); tr.appendChild(tdV); tbody.appendChild(tr);
+                    });
+                    tableWrap.style.display = 'block';
+                })
+                .catch(function () { btn.disabled = false; status.textContent = 'Could not load 10-minute data. Please try again.'; });
+        },
+
+        renderShort: function (sh) {
+            const has = sh && (sh.h3 !== null || sh.h6 !== null || sh.h12 !== null);
+            document.getElementById('rw-short').style.display = has ? 'grid' : 'none';
+            if (has) {
+                document.getElementById('card-h3').textContent = fmtMm(sh.h3);
+                document.getElementById('card-h6').textContent = fmtMm(sh.h6);
+                document.getElementById('card-h12').textContent = fmtMm(sh.h12);
+            }
+        },
+
+        renderCards: function (a) {
+            a = a || {};
+            document.getElementById('card-daily').textContent = fmtMm(a.daily);
+            document.getElementById('card-monthly').textContent = fmtMm(a.monthly);
+            document.getElementById('card-seasonal').textContent = fmtMm(a.seasonal);
+            document.getElementById('card-yearly').textContent = fmtMm(a.yearly);
+        },
+
+        setRange: function (val, btn) {
+            const today = new Date();
+            const to = today.toISOString().slice(0, 10);
+            let from;
+            if (val === 'season') {
+                const y = today.getMonth() < 5 ? today.getFullYear() - 1 : today.getFullYear();
+                from = y + '-06-15';
+            } else if (val === 'year') {
+                from = today.getFullYear() + '-01-01';
+            } else {
+                const dt = new Date(today.getTime() - (val - 1) * 86400000);
+                from = dt.toISOString().slice(0, 10);
+            }
+            const fEl = document.getElementById('rw-from'), tEl = document.getElementById('rw-to');
+            if (fEl) { fEl.value = from; } if (tEl) { tEl.value = to; }
+            document.querySelectorAll('#rw-ranges .rw-range').forEach(function (b) { b.classList.remove('active'); });
+            if (btn) { btn.classList.add('active'); }
+            this.loadChart();
+        },
+
+        dateQuery: function () {
+            const f = (document.getElementById('rw-from') || {}).value;
+            const t = (document.getElementById('rw-to') || {}).value;
+            const p = [];
+            if (f) { p.push('date_from=' + f); }
+            if (t) { p.push('date_to=' + t); }
+            return p.length ? '?' + p.join('&') : '';
+        },
+
+        loadChart: function () {
+            const s = this.cur;
+            if (!s || s.source === 'hydro') { return; }
+            const qs = this.dateQuery();
+            const path = '/' + s.source + '/' + s.source_station_id;
+            const csv = document.getElementById('rw-csv');
+            if (csv) { csv.href = RW_BASE + path + '/export' + qs; }
+            const chartEl = document.getElementById('rw-chart');
+            const self = this;
+
+            fetch(RW_BASE + path + '/series' + qs, RW_XHR)
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    if (!d || !d.ok) { return; }
+                    if (d.meta && d.meta.accum) { RainWatch.renderCards(d.meta.accum); }
+                    if (d.meta && d.meta.short) { RainWatch.renderShort(d.meta.short); }
+                    const empty = !d.meta || d.meta.record_count === 0;
+                    document.getElementById('rw-empty').style.display = empty ? 'block' : 'none';
+                    chartEl.style.display = empty ? 'none' : 'block';
+                    if (empty) { SvgChart.clear(chartEl); self._redraw = null; return; }
+                    const t = d.traces || [];
+                    const dates = (t[0] && t[0].x) || [];
+                    const daily = (t[0] && t[0].y) || [];
+                    const cumulative = (t[1] && t[1].y) || [];
+                    self._redraw = function () { SvgChart.barsCumulative(chartEl, dates, daily, cumulative); };
+                    self._redraw();
+                })
+                .catch(function () { });
+        },
+
+        redraw: function () { if (this._redraw) { try { this._redraw(); } catch (e) { } } },
+
+        close: function () {
+            document.getElementById('rw-panel').classList.remove('open');
+            this.cur = null; this._redraw = null;
+            document.getElementById('rw-step').style.display = 'none';
+            document.getElementById('rw-today-sofar').style.display = 'none';
+            const sw = document.getElementById('rw-spark-wrap'); if (sw) { sw.style.display = 'none'; }
+            if (window.FloodWatch) { FloodWatch.syncHash(); }
+        }
+    };
+    window.RainWatch = RainWatch;
+</script>
+
+<script src="https://js.arcgis.com/4.22/"></script>
+<script>
+    require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/layers/KMLLayer",
+        "esri/layers/GraphicsLayer",
+        "esri/Graphic",
+        "esri/geometry/Point",
+        "esri/geometry/Polygon",
+        "esri/geometry/Extent",
+        "esri/geometry/geometryEngine",
+        "esri/symbols/SimpleMarkerSymbol",
+        "esri/symbols/SimpleFillSymbol",
+    ], function (Map, MapView, KMLLayer, GraphicsLayer, Graphic, Point, Polygon, Extent, geometryEngine, SimpleMarkerSymbol, SimpleFillSymbol) {
+
+        // ── Theme colours the ArcGIS layer needs in raw RGBA (CSS vars can't reach here) ──
+        var THEME = {
+            light: { veil: [226, 232, 240, 0.66], border: [71, 85, 105, 0.9], label: '#1f2937', halo: 'rgba(255,255,255,0.85)' },
+            dark:  { veil: [2, 6, 16, 0.62],       border: [148, 163, 184, 0.85], label: '#cbd5e1', halo: 'rgba(2,6,23,0.85)' }
+        };
+        function themeName() { return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; }
+        function tc() { return THEME[themeName()]; }
+        function defaultBasemap() { return themeName() === 'dark' ? 'dark-gray-vector' : 'topo-vector'; }
+
+        var rivers = null;
+        try { rivers = new KMLLayer({ url: "https://ffd.pmd.gov.pk/kmz/rivers.kmz" }); } catch (e) { }
+
+        var map = new Map({ basemap: defaultBasemap(), layers: rivers ? [rivers] : [] });
+        var staticLayer = new GraphicsLayer();   // mask + national border (survives step re-renders)
+        var markerLayer = new GraphicsLayer();   // dynamic markers, labels, catchment fills
+        map.addMany([staticLayer, markerLayer]);
+
+        var view = new MapView({
+            container: "viewDiv",
+            map: map,
+            center: [71, 30.6],
+            zoom: 7,
+            popup: { dockEnabled: false, dockOptions: { buttonEnabled: false } }
+        });
+
+        // ── Pakistan mask (veil) + national border + navigation lock ──
+        var pakPoly = null;
+        try {
+            if (typeof kmz_pakistan !== 'undefined') {
+                pakPoly = geometryEngine.simplify(new Polygon({ rings: kmz_pakistan, spatialReference: { wkid: 4326 } }));
+            }
+        } catch (e) { pakPoly = null; }
+
+        function buildStatic() {
+            staticLayer.removeAll();
+            if (!pakPoly) { return; }
+            var region = new Polygon({ rings: [[[45, 3], [102, 3], [102, 44], [45, 44], [45, 3]]], spatialReference: { wkid: 4326 } });
+            var veil;
+            try { veil = geometryEngine.difference(region, pakPoly); } catch (e) { veil = null; }
+            if (veil) {
+                staticLayer.add(new Graphic({ geometry: veil, symbol: new SimpleFillSymbol({ color: tc().veil, style: 'solid', outline: { width: 0 } }) }));
+            }
+            staticLayer.add(new Graphic({ geometry: pakPoly, symbol: new SimpleFillSymbol({ color: [0, 0, 0, 0], style: 'solid', outline: { color: tc().border, width: 1.4 } }) }));
+        }
+
+        // ── Source filter + search state ──────────────────────────────
+        var enabledSources = { synoptic: true, telemetric: true, aws: true, india_synop: true };
+        var searchQuery = '';
+        var SHAPE = { synoptic: 'circle', telemetric: 'diamond', aws: 'triangle', india_synop: 'square', hydro: 'circle' };
+        var OUTLINE = { synoptic: [255, 255, 255], telemetric: [31, 41, 55], aws: [124, 58, 237], india_synop: [234, 88, 12], hydro: [15, 23, 42] };
+
+        // ── Dataset + timeline scrubber state ─────────────────────────
+        var BANDS = {"zero":"#9ca3af","bands":[[10,"#7ec8e3"],[25,"#2b6cb0"],[50,"#dd6b20"],[null,"#c81e1e"]]};
+        var MODE = 'rain';
+        var FRAMES_RAIN = null;
+        var FRAMES_HYDRO = null;
+        var FRAMES = null;
+        var tlMode = 'daily';
+        var tlIndex = 0;
+        var tlPlaying = false;
+        var tlTimer = 0;
+        var onlyRain = true;
+
+        var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        function intensityColor(mm) {
+            if (mm === null || mm === undefined || mm <= 0) { return BANDS.zero; }
+            for (var i = 0; i < BANDS.bands.length; i++) {
+                var upper = BANDS.bands[i][0], color = BANDS.bands[i][1];
+                if (upper === null || mm < upper) { return color; }
+            }
+            return BANDS.zero;
+        }
+
+        function activeStations() { return MODE === 'hydro' ? HYDRO_STATIONS : STATIONS; }
+
+        function hydroStatusId(s, q) {
+            var th = s.thresholds || [], id = 0;
+            for (var i = 0; i < th.length; i++) { if (q >= th[i].min_discharge) { id = th[i].status_id; } }
+            return id;
+        }
+
+        function colorFor(s, v) { return MODE === 'hydro' ? HYDRO_COLORS[hydroStatusId(s, v)] : intensityColor(v); }
+        function fmtStepVal(v) { return MODE === 'hydro' ? fmtFlow(v) : fmtMm(v); }
+
+        /** True when a marker is high-severity → gets an alert glow halo. */
+        function isAlert(s, v) { return MODE === 'hydro' ? hydroStatusId(s, v) >= 3 : v >= 50; }
+
+        function tlAxis() { return !FRAMES ? [] : (tlMode === '3hourly' ? FRAMES.cycles : FRAMES.days); }
+        function tlAxisLen() { return tlAxis().length; }
+
+        function defaultIndex() {
+            if (!FRAMES) { return 0; }
+            if (tlMode === '3hourly') {
+                return (typeof FRAMES.latest_cycle_index === 'number') ? FRAMES.latest_cycle_index : Math.max(0, FRAMES.cycles.length - 1);
+            }
+            if (MODE !== 'hydro' && FRAMES.today) {
+                var idx = FRAMES.days.indexOf(FRAMES.today);
+                if (idx !== -1) { return idx; }
+            }
+            return Math.max(0, FRAMES.days.length - 1);
+        }
+
+        function activeValue(s) {
+            if (!FRAMES) { return (s.daily_mm === null || s.daily_mm === undefined) ? 0 : Number(s.daily_mm); }
+            var key = s.source + ':' + s.source_station_id;
+            if (tlMode === '3hourly') {
+                var cycle = FRAMES.cycles[tlIndex];
+                if (!cycle) { return 0; }
+                var hourly = FRAMES.hourly[key];
+                if (hourly) { return hourly[cycle] !== undefined ? hourly[cycle] : 0; }
+                var dgridH = FRAMES.daily[key];
+                var dKey = cycle.slice(0, 10);
+                return (dgridH && dgridH[dKey] !== undefined) ? dgridH[dKey] : 0;
+            }
+            var day = FRAMES.days[tlIndex];
+            if (!day) { return 0; }
+            var dgrid = FRAMES.daily[key];
+            return (dgrid && dgrid[day] !== undefined) ? dgrid[day] : 0;
+        }
+
+        function todayTotalSoFar(s) {
+            if (!FRAMES || MODE === 'hydro') { return null; }
+            var hgrid = FRAMES.hourly[s.source + ':' + s.source_station_id];
+            if (!hgrid) { return null; }
+            var sum = 0, any = false;
+            for (var ck in hgrid) {
+                if (ck.slice(0, 10) === FRAMES.today && ck.slice(11, 13) >= '06') { sum += hgrid[ck]; any = true; }
+            }
+            return any ? Math.round(sum * 10) / 10 : 0;
+        }
+
+        function currentStepDate() {
+            if (!FRAMES) { return null; }
+            return tlMode === '3hourly' ? (FRAMES.cycles[tlIndex] || '').slice(0, 10) : (FRAMES.days[tlIndex] || null);
+        }
+
+        function fmtDatePart(ymd) { var p = ymd.split('-'); return parseInt(p[2], 10) + ' ' + MONTHS[parseInt(p[1], 10) - 1]; }
+
+        function formatStep() {
+            if (!FRAMES) { return 'Loading timeline…'; }
+            if (tlMode === '3hourly') {
+                var c = FRAMES.cycles[tlIndex];
+                if (!c) { return '—'; }
+                if (MODE === 'hydro') { return fmtDatePart(c.slice(0, 10)) + ' ' + c.slice(11, 16) + ' PKT'; }
+                return fmtDatePart(c.slice(0, 10)) + ' ' + c.slice(11, 16).replace(':', '') + ' UTC';
+            }
+            var d = FRAMES.days[tlIndex];
+            if (!d) { return '—'; }
+            if (MODE === 'hydro') { return fmtDatePart(d) + ' ' + d.slice(0, 4) + ' — daily peak'; }
+            if (FRAMES.live_day && d === FRAMES.live_day) { return fmtDatePart(d) + ' — so far (from 0600 UTC)'; }
+            if (d === FRAMES.today) { return fmtDatePart(d) + ' — 24h to 0300z'; }
+            return fmtDatePart(d) + ' ' + d.slice(0, 4);
+        }
+
+        /** Daily series for the open station over the whole window → the panel sparkline. */
+        function buildDailySeries(s) {
+            if (!FRAMES) { return []; }
+            var grid = FRAMES.daily[s.source + ':' + s.source_station_id] || {};
+            return FRAMES.days.map(function (day) { return { label: fmtDatePart(day), day: day, v: grid[day] !== undefined ? grid[day] : 0 }; });
+        }
+
+        function renderPanelStep() {
+            var box = document.getElementById('rw-step');
+            var soFarBox = document.getElementById('rw-today-sofar');
+            var sparkWrap = document.getElementById('rw-spark-wrap');
+            if (!box) { return; }
+            var cur = window.RainWatch && RainWatch.cur;
+            if (!cur || !FRAMES) {
+                box.style.display = 'none';
+                if (soFarBox) { soFarBox.style.display = 'none'; }
+                if (sparkWrap) { sparkWrap.style.display = 'none'; }
+                return;
+            }
+            document.getElementById('rw-step-label').textContent = formatStep();
+            document.getElementById('rw-step-value').textContent = fmtStepVal(activeValue(cur));
+            var unitEl = document.getElementById('rw-step-unit');
+            if (unitEl) { unitEl.textContent = MODE === 'hydro' ? ' cusecs' : ' mm'; }
+            box.style.display = 'block';
+
+            var soFar = todayTotalSoFar(cur);
+            if (soFarBox) {
+                if (soFar !== null && currentStepDate() === FRAMES.today) {
+                    document.getElementById('rw-today-sofar-value').textContent = fmtMm(soFar);
+                    soFarBox.style.display = 'block';
+                } else { soFarBox.style.display = 'none'; }
+            }
+
+            // Always-on sparkline (everyone). Highlights the step only in daily mode.
+            if (sparkWrap) {
+                var series = buildDailySeries(cur);
+                var host = document.getElementById('rw-spark');
+                var title = document.getElementById('rw-spark-title');
+                if (series.length && host) {
+                    sparkWrap.style.display = '';
+                    if (title) { title.textContent = MODE === 'hydro' ? 'Daily peak discharge — window' : 'Daily rainfall — window'; }
+                    var hi = -1;
+                    if (tlMode === 'daily') { hi = FRAMES.days.indexOf(FRAMES.days[tlIndex]); }
+                    SvgChart.sparkline(host, series, {
+                        highlight: hi,
+                        unit: MODE === 'hydro' ? 'cusecs' : 'mm',
+                        fmt: MODE === 'hydro' ? fmtFlow : fmtMm
+                    });
+                    RainWatch._spark = function () { SvgChart.sparkline(host, series, { highlight: hi, unit: MODE === 'hydro' ? 'cusecs' : 'mm', fmt: MODE === 'hydro' ? fmtFlow : fmtMm }); };
+                } else { sparkWrap.style.display = 'none'; }
+            }
+        }
+        window.rwRenderStep = renderPanelStep;
+
+        function visibleStations() {
+            var q = searchQuery.trim().toLowerCase();
+            return activeStations().filter(function (s) {
+                if (MODE !== 'hydro' && !enabledSources[s.source]) { return false; }
+                if (q && (s.name || '').toLowerCase().indexOf(q) === -1) { return false; }
+                if (MODE !== 'hydro' && onlyRain && activeValue(s) <= 0) { return false; }
+                return true;
+            });
+        }
+
+        function hexToRgba(hex, a) {
+            var h = (hex || '#999999').replace('#', '');
+            return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16), a];
+        }
+
+        function drawShape(rings, hex) {
+            markerLayer.add(new Graphic({
+                geometry: new Polygon({ rings: rings }),
+                symbol: new SimpleFillSymbol({ color: hexToRgba(hex, 0.45), style: 'solid', outline: { color: hexToRgba(hex, 0.9), width: 1 } })
+            }));
+        }
+
+        var KOT_MITHON = [[70.6618471, 29.13008927], [70.5674074, 29.06314633], [70.49415617, 29.00491483],
+            [70.47676812, 28.95596259], [70.43124868, 28.91515787], [70.36673827, 28.87128139],
+            [70.27886259, 28.85037568], [70.20383469, 28.81566626], [70.15636264, 28.76251284],
+            [70.09788003, 28.71760662], [70.07003542, 28.66832114], [70.01092722, 28.62228135],
+            [69.96172177, 28.56822386], [69.8090134, 28.53217335], [69.73253116, 28.47226826],
+            [69.70282965, 28.42616955], [69.73173375, 28.40734728], [69.7537013, 28.42891826],
+            [69.77977677, 28.44162729], [69.82149182, 28.47870145], [69.84131373, 28.49885687],
+            [69.87590901, 28.49724314], [69.94866955, 28.51230452], [70.01692665, 28.5582164],
+            [70.0756109, 28.6104055], [70.14431929, 28.63473537], [70.16623032, 28.67845943],
+            [70.2020704, 28.70320368], [70.23555306, 28.77304343], [70.28973421, 28.76624021],
+            [70.32662241, 28.7949499], [70.38446986, 28.81455594], [70.44190373, 28.82684441],
+            [70.4705352, 28.87035153], [70.55855025, 28.93605553], [70.61081385, 29.01883546],
+            [70.67684597, 29.04533689], [70.7347615, 29.0846386], [70.73537167, 29.08783857],
+            [70.7400595, 29.14373407], [70.73408015, 29.1895912]];
+
+        function kotMithonStatusId() {
+            var ids = [0];
+            ['Panjnad', 'Taunsa'].forEach(function (name) {
+                var s = HYDRO_STATIONS.find(function (x) { return x.name === name; });
+                if (s) { ids.push(hydroStatusId(s, activeValue(s))); }
+            });
+            return Math.max.apply(null, ids);
+        }
+
+        function renderStations(zoom) {
+            markerLayer.removeAll();
+
+            if (MODE === 'hydro') { drawShape(KOT_MITHON, HYDRO_COLORS[kotMithonStatusId()]); }
+
+            var list = visibleStations();
+            var counts = { synoptic: 0, telemetric: 0, aws: 0, india_synop: 0 };
+            var reporting = 0, wettest = null;
+            var theme = tc();
+
+            list.forEach(function (s) {
+                var v = activeValue(s);
+                counts[s.source] = (counts[s.source] || 0) + 1;
+                if (v > 0) { reporting++; if (!wettest || v > wettest.v) { wettest = { name: s.name, v: v }; } }
+
+                if (MODE === 'hydro' && s.shape) { drawShape(s.shape, colorFor(s, v)); }
+
+                var point = new Point({ longitude: s.lng, latitude: s.lat });
+                var fill = colorFor(s, v);
+
+                // Alert glow — a soft translucent halo behind critical markers.
+                if (isAlert(s, v)) {
+                    markerLayer.add(new Graphic({
+                        geometry: point,
+                        symbol: new SimpleMarkerSymbol({ style: 'circle', color: hexToRgba(fill, 0.28), size: zoom * 3.4 + 8, outline: { width: 0 } })
+                    }));
+                }
+
+                markerLayer.add(new Graphic({
+                    geometry: point,
+                    attributes: { source: s.source, sid: s.source_station_id },
+                    symbol: new SimpleMarkerSymbol({
+                        style: SHAPE[s.source] || 'circle', color: fill, size: zoom * 1.7 + 2,
+                        outline: { color: OUTLINE[s.source] || [255, 255, 255], width: 1.3 }
+                    })
+                }));
+
+                if (zoom > 7) {
+                    var vLabel = MODE === 'hydro' ? fmtFlow(v) : (Math.round(v * 10) / 10);
+                    var lbl = s.name + (v > 0 ? '  ' + vLabel : '');
+                    markerLayer.add(new Graphic({
+                        geometry: point,
+                        symbol: { type: "text", color: theme.label, text: lbl, yoffset: zoom * -1.6, font: { size: 7, family: "Arial" }, haloColor: theme.halo, haloSize: "1px" }
+                    }));
+                }
+            });
+
+            var countEl = document.getElementById('rw-count');
+            if (countEl) { countEl.textContent = list.length; }
+            var totalEl = document.getElementById('rw-total');
+            if (totalEl) { totalEl.textContent = activeStations().length; }
+
+            Object.keys(counts).forEach(function (src) {
+                var el = document.getElementById('legend-count-' + src);
+                if (el) { el.textContent = counts[src]; }
+            });
+
+            var sumEl = document.getElementById('tl-summary');
+            if (sumEl) {
+                if (MODE === 'hydro') {
+                    sumEl.innerHTML = reporting
+                        ? '<b>' + reporting + '</b> gauge' + (reporting === 1 ? '' : 's') + ' flowing · highest: ' + escHtml(wettest.name) + ' <b>' + fmtFlow(wettest.v) + '</b> cusecs'
+                        : (list.length ? 'No flow at this step' : '');
+                } else if (reporting === 0) {
+                    sumEl.textContent = list.length ? 'No rain at this step' : '';
+                } else {
+                    sumEl.innerHTML = '<b>' + reporting + '</b> station' + (reporting === 1 ? '' : 's') + ' reporting · wettest: ' + escHtml(wettest.name) + ' <b>' + (Math.round(wettest.v * 10) / 10) + '</b> mm';
+                }
+            }
+        }
+
+        // ── Hover tooltip chip ────────────────────────────────────────
+        var tipEl = document.getElementById('map-tip');
+        function showTip(screenPt, attrs) {
+            var s = RW_LOOKUP[attrs.source + ':' + attrs.sid];
+            if (!s || !tipEl) { return; }
+            var v = activeValue(s);
+            var color = colorFor(s, v);
+            var sub;
+            if (MODE === 'hydro') { sub = HYDRO_LABELS[hydroStatusId(s, v)] + ' · ' + (s.area || '—'); }
+            else { sub = (RW_LABELS[s.source] || s.source) + ' · ' + (s.area || '—'); }
+            tipEl.innerHTML =
+                '<div class="mt-name"><span class="mt-swatch" style="background:' + color + ';color:' + color + '"></span>' + escHtml(s.name) + '</div>' +
+                '<div class="mt-val">' + fmtStepVal(v) + ' <span class="u">' + (MODE === 'hydro' ? 'cusecs' : 'mm') + '</span></div>' +
+                '<div class="mt-sub">' + escHtml(sub) + '</div>';
+            tipEl.style.display = 'block';
+            var vw = view.width, tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
+            var left = screenPt.x + 16, top = screenPt.y + 16;
+            if (left + tw > vw - 8) { left = screenPt.x - tw - 16; }
+            if (top + th > view.height - 8) { top = screenPt.y - th - 16; }
+            tipEl.style.left = Math.max(4, left) + 'px';
+            tipEl.style.top = Math.max(4, top) + 'px';
+        }
+        function hideTip() { if (tipEl) { tipEl.style.display = 'none'; } }
+
+        function throttle(fn, ms) {
+            var last = 0, pend = null;
+            return function (a) {
+                var now = Date.now();
+                if (now - last >= ms) { last = now; fn(a); }
+                else { clearTimeout(pend); pend = setTimeout(function () { last = Date.now(); fn(a); }, ms); }
+            };
+        }
+
+        view.on("pointer-move", throttle(function (event) {
+            view.hitTest(event, { include: [markerLayer] }).then(function (response) {
+                var hit = response.results.find(function (r) { return r.graphic && r.graphic.attributes && r.graphic.attributes.sid; });
+                if (hit) { view.container.style.cursor = 'pointer'; showTip({ x: event.x, y: event.y }, hit.graphic.attributes); }
+                else { view.container.style.cursor = 'default'; hideTip(); }
+            });
+        }, 55));
+
+        view.on("click", function (event) {
+            hideTip();
+            var rb = document.getElementById('rw-results');
+            if (rb) { rb.classList.remove('open'); }
+            view.hitTest(event, { include: [markerLayer] }).then(function (response) {
+                var hit = response.results.find(function (r) { return r.graphic && r.graphic.attributes && r.graphic.attributes.sid; });
+                if (hit) {
+                    var a = hit.graphic.attributes;
+                    var s = RW_LOOKUP[a.source + ':' + a.sid];
+                    if (s) { view.goTo({ center: [s.lng, s.lat], zoom: Math.max(view.zoom, 9) }, { duration: 650, easing: 'ease-in-out' }); }
+                    RainWatch.open(a.source, a.sid);
+                } else if (event.mapPoint) {
+                    // Clicked empty map → read out the coordinates (to eyeball/fix station locations).
+                    showClickCoords(event.mapPoint);
+                }
+            });
+        });
+
+        // ── Click-to-read coordinates (top-right) ─────────────────────
+        var coordBox = document.getElementById('coord-readout');
+        var lastCoordText = '';
+        function showClickCoords(mapPoint) {
+            if (!coordBox) { return; }
+            var lat = mapPoint.latitude, lng = mapPoint.longitude;
+            if (lat === null || lat === undefined || lng === null || lng === undefined) { return; }
+            lastCoordText = lat.toFixed(5) + ', ' + lng.toFixed(5);
+            document.getElementById('coord-val').textContent = lastCoordText;
+            coordBox.style.display = 'flex';
+        }
+        window.rwCopyCoords = function () {
+            if (!lastCoordText) { return; }
+            var done = function () {
+                var b = document.getElementById('coord-copy');
+                if (b) { var t = b.textContent; b.textContent = '✓'; setTimeout(function () { b.textContent = t; }, 1200); }
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(lastCoordText).then(done, done); }
+            else { done(); }
+        };
+        window.rwHideCoords = function () { if (coordBox) { coordBox.style.display = 'none'; } };
+
+        window.RainMap = {
+            toggleSource: function (source, on) { enabledSources[source] = !!on; renderStations(view.zoom); this.renderResults(); },
+            setSearch: function (q) { searchQuery = q || ''; renderStations(view.zoom); this.renderResults(); },
+            setBasemap: function (v) { map.basemap = (v === '__theme') ? defaultBasemap() : v; },
+            renderResults: function () {
+                var box = document.getElementById('rw-results');
+                if (!box) { return; }
+                if (searchQuery.trim() === '') { box.classList.remove('open'); box.innerHTML = ''; return; }
+                var matches = visibleStations().slice(0, 12);
+                if (matches.length === 0) { box.innerHTML = '<div class="none">No stations match.</div>'; }
+                else {
+                    box.innerHTML = matches.map(function (s) {
+                        return '<div class="res" onclick="RainMap.goTo(\'' + s.source + '\',' + s.source_station_id + ')">' +
+                            '<span>' + escHtml(s.name) + '</span><span class="src">' + s.source + '</span></div>';
+                    }).join('');
+                }
+                box.classList.add('open');
+            },
+            goTo: function (source, id) {
+                var s = activeStations().find(function (x) { return x.source === source && x.source_station_id === id; });
+                if (!s) { return; }
+                view.goTo({ center: [s.lng, s.lat], zoom: Math.max(view.zoom, 10) }, { duration: 700, easing: 'ease-in-out' });
+                var box = document.getElementById('rw-results');
+                if (box) { box.classList.remove('open'); }
+                RainWatch.open(source, id);
+            },
+            toggleLegend: function () { var el = document.getElementById('legend'); if (el) { el.classList.toggle('collapsed'); } }
+        };
+
+        window.RainTimeline = {
+            setMode: function (mode) {
+                if (!FRAMES || mode === tlMode) { return; }
+                this.pause(); tlMode = mode; tlIndex = defaultIndex();
+                this.syncUI(); renderStations(view.zoom); if (window.FloodWatch) { FloodWatch.syncHash(); }
+            },
+            setIndex: function (i) {
+                tlIndex = Math.max(0, Math.min(parseInt(i, 10) || 0, Math.max(0, tlAxisLen() - 1)));
+                this.syncUI(); renderStations(view.zoom); if (window.FloodWatch) { FloodWatch.syncHash(); }
+            },
+            step: function (delta) { this.pause(); this.setIndex(tlIndex + delta); },
+            togglePlay: function () { tlPlaying ? this.pause() : this.play(); },
+            play: function () {
+                if (!FRAMES || tlAxisLen() === 0) { return; }
+                tlPlaying = true;
+                if (tlIndex >= tlAxisLen() - 1) { tlIndex = 0; }
+                this.syncPlayBtn();
+                var self = this;
+                tlTimer = setInterval(function () {
+                    if (tlIndex >= tlAxisLen() - 1) { self.pause(); self.syncUI(); renderStations(view.zoom); return; }
+                    tlIndex++; self.syncUI(); renderStations(view.zoom);
+                }, 700);
+            },
+            pause: function () { tlPlaying = false; if (tlTimer) { clearInterval(tlTimer); tlTimer = 0; } this.syncPlayBtn(); },
+            toggleOnlyRain: function (on) { onlyRain = !!on; renderStations(view.zoom); RainMap.renderResults(); },
+            setDataset: function (mode) {
+                if (mode === MODE) { return; }
+                this.pause(); MODE = mode;
+                if (window.RainWatch) { RainWatch.close(); }
+                document.getElementById('legend-rain').style.display = mode === 'hydro' ? 'none' : '';
+                document.getElementById('legend-hydro').style.display = mode === 'hydro' ? '' : 'none';
+                document.getElementById('tl-ds-rain').classList.toggle('active', mode === 'rain');
+                document.getElementById('tl-ds-hydro').classList.toggle('active', mode === 'hydro');
+                document.getElementById('tl-mode-3h').textContent = mode === 'hydro' ? 'By Hour' : '3-hourly (SYNOP)';
+                document.getElementById('tl-mode-d').textContent = mode === 'hydro' ? 'Daily (peak)' : 'Daily';
+
+                var self = this;
+                var apply = function () {
+                    FRAMES = (mode === 'hydro') ? FRAMES_HYDRO : FRAMES_RAIN;
+                    tlMode = (mode === 'hydro') ? '3hourly' : 'daily';
+                    tlIndex = defaultIndex();
+                    self.syncUI(); renderStations(view.zoom);
+                    if (window.FloodWatch) { FloodWatch.syncHash(); }
+                };
+                if (mode === 'hydro' && !FRAMES_HYDRO) {
+                    fetch(RW_BASE + '/hydro-frames', RW_XHR)
+                        .then(function (r) { return r.json(); })
+                        .then(function (d) { FRAMES_HYDRO = d; apply(); })
+                        .catch(function () { apply(); });
+                } else { apply(); }
+            },
+            syncUI: function () {
+                var r = document.getElementById('tl-range');
+                if (r) { r.max = Math.max(0, tlAxisLen() - 1); r.value = tlIndex; }
+                var lbl = document.getElementById('tl-label');
+                if (lbl) { lbl.textContent = formatStep(); }
+                var b3 = document.getElementById('tl-mode-3h'), bd = document.getElementById('tl-mode-d');
+                if (b3) { b3.classList.toggle('active', tlMode === '3hourly'); }
+                if (bd) { bd.classList.toggle('active', tlMode === 'daily'); }
+                var tl = document.getElementById('timeline');
+                if (tl) {
+                    var isLive = tlMode === 'daily' && FRAMES && FRAMES.live_day && FRAMES.days[tlIndex] === FRAMES.live_day;
+                    tl.classList.toggle('tl-live', !!isLive);
+                }
+                this.syncPlayBtn(); renderPanelStep();
+            },
+            syncPlayBtn: function () {
+                var b = document.getElementById('tl-play');
+                if (b) { b.innerHTML = tlPlaying ? '&#9208;' : '&#9654;'; b.title = tlPlaying ? 'Pause' : 'Play'; }
+            },
+            load: function (data) {
+                FRAMES_RAIN = data;
+                if (MODE !== 'rain') { return; }
+                FRAMES = data; tlMode = 'daily'; tlIndex = defaultIndex();
+                this.syncUI(); renderStations(view.zoom);
+                if (window.FloodWatch) { FloodWatch.restoreHash(); }
+            },
+            // ── Accessors for URL-state restore ──
+            _state: function () {
+                return { ds: MODE, mode: tlMode, step: currentStepDate() ? (tlMode === '3hourly' ? (FRAMES && FRAMES.cycles[tlIndex]) : (FRAMES && FRAMES.days[tlIndex])) : null };
+            },
+            _restore: function (st) {
+                if (!FRAMES) { return; }
+                if (st.mode && st.mode !== tlMode && (st.mode === 'daily' || st.mode === '3hourly')) { tlMode = st.mode; }
+                if (st.step) {
+                    var axis = tlAxis();
+                    var idx = axis.indexOf(st.step);
+                    if (idx !== -1) { tlIndex = idx; }
+                }
+                this.syncUI(); renderStations(view.zoom);
+            }
+        };
+
+        // ── Theme + URL-state controller ──────────────────────────────
+        window.FloodWatch = {
+            _hashTimer: 0,
+            applyTheme: function (t) {
+                document.documentElement.setAttribute('data-theme', t);
+                try { localStorage.setItem('fw-theme', t); } catch (e) { }
+                var link = document.getElementById('arcgis-theme');
+                if (link) { link.href = 'https://js.arcgis.com/4.22/esri/themes/' + (t === 'dark' ? 'dark' : 'light') + '/main.css'; }
+                var btn = document.getElementById('theme-btn');
+                if (btn) { btn.textContent = t === 'dark' ? '☀️' : '🌙'; }
+                var sel = document.getElementById('basemap-select');
+                if (map && (!sel || sel.value === '__theme')) { map.basemap = defaultBasemap(); }
+                buildStatic(); renderStations(view.zoom);
+                if (RainWatch._redraw) { RainWatch.redraw(); }
+                if (RainWatch._spark) { try { RainWatch._spark(); } catch (e) { } }
+                this.syncHash();
+            },
+            toggleTheme: function () { this.applyTheme(themeName() === 'dark' ? 'light' : 'dark'); },
+            syncHash: function () {
+                var self = this;
+                clearTimeout(this._hashTimer);
+                this._hashTimer = setTimeout(function () {
+                    var st = RainTimeline._state();
+                    var parts = ['ds=' + st.ds, 'mode=' + st.mode, 'theme=' + themeName()];
+                    if (st.step) { parts.push('step=' + st.step); }
+                    if (RainWatch.cur) { parts.push('st=' + RainWatch.cur.source + ':' + RainWatch.cur.source_station_id); }
+                    try { history.replaceState(null, '', '#' + parts.join('&')); } catch (e) { }
+                }, 250);
+            },
+            parseHash: function () {
+                var h = (location.hash || '').replace(/^#/, ''); if (!h) { return {}; }
+                var o = {}; h.split('&').forEach(function (kv) { var p = kv.split('='); if (p[0]) { o[p[0]] = decodeURIComponent(p[1] || ''); } });
+                return o;
+            },
+            restoreHash: function () {
+                var o = this.parseHash();
+                // A shared link reproduces the sender's theme (localStorage still updates).
+                if ((o.theme === 'dark' || o.theme === 'light') && o.theme !== themeName()) { this.applyTheme(o.theme); }
+                var doRestore = function () {
+                    RainTimeline._restore({ mode: o.mode, step: o.step });
+                    if (o.st) { var p = o.st.split(':'); if (p.length === 2) { RainWatch.open(p[0], parseInt(p[1], 10)); } }
+                };
+                if (o.ds === 'hydro' && MODE !== 'hydro') {
+                    RainTimeline.setDataset('hydro');
+                    // hydro frames may load async; retry the step/station restore shortly.
+                    setTimeout(doRestore, 400);
+                } else { doRestore(); }
+            }
+        };
+
+        var zoomTimeout = 0;
+        view.watch("resolution", function () {
+            clearTimeout(zoomTimeout);
+            zoomTimeout = setTimeout(function () { renderStations(view.zoom); }, 600);
+        });
+
+        // Redraw the open SVG chart on container resize (panel + charts are fluid).
+        var resizeT = 0;
+        window.addEventListener('resize', function () {
+            clearTimeout(resizeT);
+            resizeT = setTimeout(function () { if (RainWatch.redraw) { RainWatch.redraw(); } if (RainWatch._spark) { try { RainWatch._spark(); } catch (e) { } } }, 200);
+        });
+
+        view.when(function () {
+            view.ui.move("zoom", "bottom-right");
+
+            // Lock navigation to Pakistan (+ margin); no rotation, sensible min zoom.
+            if (pakPoly && pakPoly.extent) {
+                var ext = pakPoly.extent.clone().expand(1.18);
+                view.constraints = { geometry: ext, minZoom: 5, rotationEnabled: false };
+            } else {
+                view.constraints = { geometry: new Extent({ xmin: 60, ymin: 22.5, xmax: 78, ymax: 37.5, spatialReference: { wkid: 4326 } }), minZoom: 5, rotationEnabled: false };
+            }
+
+            buildStatic();
+
+            // Theme button glyph reflects the already-applied theme.
+            var tb = document.getElementById('theme-btn');
+            if (tb) { tb.textContent = themeName() === 'dark' ? '☀️' : '🌙'; }
+
+            if (window.matchMedia('(max-width: 768px)').matches) {
+                var lg = document.getElementById('legend');
+                if (lg) { lg.classList.add('collapsed'); }
+            }
+            renderStations(7);   // initial paint: mask + border, markers arrive next
+
+            // Markers + timeline are pulled over the token-gated endpoints (not in the
+            // HTML). Fetch markers first, then the rainfall frames; retry once on a
+            // transient failure so a network blip doesn't leave the map empty.
+            function loadMarkers(attempt) {
+                fetch(RW_BASE + '/markers', RW_XHR)
+                    .then(function (r) { if (!r.ok) { throw new Error('markers ' + r.status); } return r.json(); })
+                    .then(function (d) {
+                        rwIngestMarkers(d);
+                        var totalEl = document.getElementById('rw-total');
+                        if (totalEl) { totalEl.textContent = STATIONS.length; }
+                        renderStations(view.zoom);
+                        fetch(RW_BASE + '/frames', RW_XHR)
+                            .then(function (r) { return r.json(); })
+                            .then(function (fd) { if (fd && fd.days) { RainTimeline.load(fd); } })
+                            .catch(function () { });
+                    })
+                    .catch(function () { if ((attempt || 0) < 2) { setTimeout(function () { loadMarkers((attempt || 0) + 1); }, 1500); } });
+            }
+            loadMarkers(0);
+        });
+    });
+</script>
+
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a265a6f39af1f9fe',t:'MTc4NTkzMTMzOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
