@@ -1,6 +1,6 @@
 {
   "source": "PMD FFD Telemetry Scraper",
-  "last_updated": "05-Aug-2026 09:40 PKT",
+  "last_updated": "05-Aug-2026 14:32 PKT",
   "total_stations": 14,
   "stations": [
     {
@@ -13,7 +13,8 @@
       "inflow": 285000,
       "outflow": 240000,
       "sk": "normal",
-      "height": "1538.5 ft"
+      "height": "1538.5 ft",
+      "mode": "auto"
     },
     {
       "id": "marala",
@@ -25,7 +26,8 @@
       "inflow": 128500,
       "outflow": 112000,
       "sk": "low",
-      "height": "Norm"
+      "height": "Norm",
+      "mode": "auto"
     },
     {
       "id": "khanki",
@@ -37,7 +39,8 @@
       "inflow": 115000,
       "outflow": 108000,
       "sk": "low",
-      "height": "Norm"
+      "height": "Norm",
+      "mode": "auto"
     },
     {
       "id": "qadirabad",
@@ -49,7 +52,8 @@
       "inflow": 98000,
       "outflow": 89000,
       "sk": "normal",
-      "height": "Norm"
+      "height": "Norm",
+      "mode": "auto"
     },
     {
       "id": "mangla",
@@ -61,7 +65,8 @@
       "inflow": 65000,
       "outflow": 42000,
       "sk": "normal",
-      "height": "1222.1 ft"
+      "height": "1222.1 ft",
+      "mode": "auto"
     },
     {
       "id": "kalabagh",
@@ -73,7 +78,8 @@
       "inflow": 260000,
       "outflow": 252000,
       "sk": "low",
-      "height": "Norm"
+      "height": "Norm",
+      "mode": "auto"
     },
     {
       "id": "chashma",
@@ -85,7 +91,8 @@
       "inflow": 275000,
       "outflow": 265000,
       "sk": "low",
-      "height": "Norm"
+      "height": "Norm",
+      "mode": "auto"
     },
     {
       "id": "taunsa",
@@ -97,7 +104,8 @@
       "inflow": 241686,
       "outflow": 230000,
       "sk": "low",
-      "height": "Norm"
+      "height": "Norm",
+      "mode": "auto"
     },
     {
       "id": "guddu",
@@ -109,7 +117,8 @@
       "inflow": 310000,
       "outflow": 298000,
       "sk": "low",
-      "height": "Norm"
+      "height": "Norm",
+      "mode": "auto"
     },
     {
       "id": "sukkur",
@@ -121,7 +130,8 @@
       "inflow": 280000,
       "outflow": 265000,
       "sk": "low",
-      "height": "Norm"
+      "height": "Norm",
+      "mode": "auto"
     },
     {
       "id": "kotri",
@@ -133,7 +143,8 @@
       "inflow": 145000,
       "outflow": 132000,
       "sk": "normal",
-      "height": "Norm"
+      "height": "Norm",
+      "mode": "auto"
     },
     {
       "id": "balloki",
@@ -145,7 +156,9 @@
       "inflow": 42000,
       "outflow": 28000,
       "sk": "normal",
-      "height": "Norm"
+      "height": "Norm",
+      "mode": "auto",
+      "trend": "steady"
     },
     {
       "id": "sulemanki",
@@ -157,7 +170,8 @@
       "inflow": 38000,
       "outflow": 25000,
       "sk": "normal",
-      "height": "Norm"
+      "height": "Norm",
+      "mode": "auto"
     },
     {
       "id": "nowshera",
@@ -169,7 +183,8 @@
       "inflow": 58000,
       "outflow": 58000,
       "sk": "normal",
-      "height": "Norm"
+      "height": "Norm",
+      "mode": "auto"
     }
   ]
 }

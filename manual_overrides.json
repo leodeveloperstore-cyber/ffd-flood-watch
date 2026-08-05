@@ -1,0 +1,34 @@
+{
+  "stations": {
+    "baglihar": {
+      "inflow": 0,
+      "outflow": 0,
+      "sk": "normal"
+    },
+    "salal": {
+      "inflow": 0,
+      "outflow": 0,
+      "sk": "normal"
+    },
+    "kishanganga": {
+      "inflow": 0,
+      "outflow": 0,
+      "sk": "normal"
+    },
+    "bhakra": {
+      "inflow": 0,
+      "outflow": 0,
+      "sk": "normal"
+    },
+    "pong": {
+      "inflow": 0,
+      "outflow": 0,
+      "sk": "normal"
+    },
+    "thein": {
+      "inflow": 0,
+      "outflow": 0,
+      "sk": "normal"
+    }
+  }
+}

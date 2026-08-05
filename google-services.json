@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "601596576763",
+    "project_id": "pakflood-watch",
+    "storage_bucket": "pakflood-watch.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:601596576763:android:e140b9f77a73c35158415e",
+        "android_client_info": {
+          "package_name": "com.pakflood.watch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBp4-vWDy4Y6BeljT4SDoM4oSiTKFH29Lg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

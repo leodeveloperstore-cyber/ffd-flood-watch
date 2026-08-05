@@ -876,6 +876,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+  <script src="pakistan-boundary.js"></script>
 </head>
 <body>
 
@@ -890,7 +891,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="brand">
       <div class="brand-logo">🌊</div>
       <div class="brand-texts">
-        <h1>PakFlood Watch <span class="brand-ur">· پاک فلڈ واچ</span></h1>
+        <h1>PakFlood Watch</h1>
         <p>PMD Flood Forecasting Division · GloFAS Satellite · WAPDA Telemetry</p>
       </div>
     </div>
@@ -899,9 +900,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="sp-dot"></span>
         <span id="status-txt">Normal Flow</span>
       </div>
-      <button onclick="installApp()" id="btn-pwa-install" class="icon-btn" style="width:auto;padding:0 10px;gap:5px;font-size:0.7rem;font-weight:600;color:var(--pk-green-lt);border-color:rgba(2,122,58,0.3);background:rgba(2,122,58,0.1);" title="Install Mobile App">
-        📲 <span>Install App</span>
-      </button>
+
       <!-- Dark/Light Toggle -->
       <div class="theme-toggle" id="theme-toggle" title="Toggle Dark / Light Mode">
         <div class="theme-toggle-thumb" id="toggle-thumb">🌙</div>
@@ -1171,6 +1170,12 @@ const stations = [
   {id:'guddu',        en:'Guddu',            ur:'گڈو بیراج',      river:'INDUS',  riverUr:'سندھ', inflow:227051, outflow:220000, sk:'low',    trend:'rising',  lat:28.4200, lon:69.7000, height:'105 m'},
   {id:'sukkur',       en:'Sukkur',           ur:'سکھر بیراج',     river:'INDUS',  riverUr:'سندھ', inflow:210000, outflow:200000, sk:'low',    trend:'steady',  lat:27.5298, lon:68.8471, height:'90 m'},
   {id:'kotri',        en:'Kotri',            ur:'کوٹری بیراج',    river:'INDUS',  riverUr:'سندھ', inflow:113050, outflow:83315,  sk:'normal', trend:'rising',  lat:25.3670, lon:68.3516, height:'15 m'},
+  {id:'baglihar',     en:'Baglihar Dam (India)',     ur:'بگلیہار ڈیم (بھارت)',    river:'CHENAB', riverUr:'چناب', inflow:0,  outflow:0,  sk:'normal', trend:'steady',  lat:33.1500, lon:75.3100, height:'840 m'},
+  {id:'salal',        en:'Salal Dam (India)',        ur:'سلال ڈیم (بھارت)',       river:'CHENAB', riverUr:'چناب', inflow:0,  outflow:0,  sk:'normal', trend:'steady',  lat:33.0800, lon:74.8200, height:'487 m'},
+  {id:'kishanganga',  en:'Kishanganga Dam (India)',  ur:'کشن گنگا ڈیم (بھارت)',   river:'NEELUM', riverUr:'نیلم', inflow:0,  outflow:0,  sk:'normal', trend:'steady',  lat:34.6400, lon:74.7500, height:'2400 m'},
+  {id:'bhakra',       en:'Bhakra Dam (India)',       ur:'بھاکڑا ڈیم (بھارت)',      river:'SUTLEJ', riverUr:'ستلج', inflow:0,  outflow:0,  sk:'normal', trend:'steady',  lat:31.4100, lon:76.4300, height:'518 m'},
+  {id:'pong',         en:'Pong Dam (India)',         ur:'پونگ ڈیم (بھارت)',        river:'BEAS',   riverUr:'بیاس', inflow:0,  outflow:0,  sk:'normal', trend:'steady',  lat:31.9600, lon:75.9400, height:'435 m'},
+  {id:'thein',        en:'Thein Dam (India)',        ur:'تھین ڈیم (بھارت)',        river:'RAVI',   riverUr:'راوی', inflow:0,  outflow:0,  sk:'normal', trend:'steady',  lat:32.4400, lon:75.7300, height:'506 m'}
 ];
 
 const skColor = { normal:'#15803d', low:'#0284c7', medium:'#eab308', high:'#ef4444', critical:'#dc2626' };
@@ -2732,7 +2737,8 @@ realRiverPaths.forEach(r => {
 /* Clean FFD Markers (Minimal text & square dot icon, matching bottom reference image) */
 const markerLayers = [];
 stations.forEach(st => {
-  const col = skColor[st.sk] || '#15803d';
+  const isIndian = st.en.includes('(India)');
+  const col = (isIndian && st.sk === 'normal') ? '#ea580c' : (skColor[st.sk] || '#15803d');
 
   // Premium FFD Gauge Marker: Full discharge number (with commas e.g. 216,900) above, square status badge in middle, station name below
   const ffdGaugeIcon = L.divIcon({
@@ -2742,8 +2748,18 @@ stations.forEach(st => {
       <span style="font-family:'Poppins',sans-serif;font-size:8.5px;font-weight:700;color:${col};white-space:nowrap;background:rgba(255,255,255,0.92);padding:1px 4px;border-radius:3px;border:1px solid ${col}44;box-shadow:0 1px 4px rgba(0,0,0,0.2);margin-bottom:2px;">
         ${st.inflow ? st.inflow.toLocaleString() : '0'}
       </span>
-      <div style="width:20px;height:20px;background:#ffffff;border:3px solid ${col};border-radius:4px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.35);">
-        <div style="width:9px;height:9px;border-radius:50%;background:${col};"></div>
+      <div style="position:relative; width:34px; height:34px; display:flex; align-items:center; justify-content:center; margin-bottom:2px;">
+        <!-- Outer Glow -->
+        <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:${col}; opacity:0.35; filter:blur(4px);"></div>
+        <!-- Pin Background -->
+        <div style="position:absolute; width:28px; height:28px; background:linear-gradient(135deg, ${col}ee, ${col}); border:2px solid #ffffff; border-radius:50%; box-shadow:0 3px 6px rgba(0,0,0,0.5);"></div>
+        <!-- Pro Dam SVG Icon -->
+        <svg style="z-index:2; filter:drop-shadow(0 1px 1px rgba(0,0,0,0.4));" width="15" height="15" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 3C4.5 3 4.1 3.3 4 3.8L2.2 13H21.8L20 3.8C19.9 3.3 19.5 3 19 3H5Z" opacity="0.95"/>
+          <path d="M10 13V20H14V13H10Z" fill="#bae6fd"/>
+          <path d="M2 13H22V15H2Z" opacity="0.9"/>
+          <path d="M2 19C3.5 19 4.5 18 6 18C7.5 18 8.5 19 10 19C11.5 19 12.5 18 14 18C15.5 18 16.5 19 18 19C19.5 19 20.5 18 22 18V22H2V19Z" fill="#7dd3fc"/>
+        </svg>
       </div>
       <span style="font-family:'Poppins',sans-serif;font-size:8.5px;font-weight:700;color:#0f172a;white-space:nowrap;margin-top:2px;text-shadow:0 1px 2px rgba(255,255,255,0.9);">
         ${st.en}
@@ -2774,7 +2790,8 @@ stations.forEach(st => {
 /* ── 3D Flow Columns Layer (PMD 3D Mode Recreated) ── */
 const columnLayers = [];
 stations.forEach(st => {
-  const col = skColor[st.sk] || '#15803d';
+  const isIndian = st.en.includes('(India)');
+  const col = (isIndian && st.sk === 'normal') ? '#ea580c' : (skColor[st.sk] || '#15803d');
   const colHeight = Math.min(85, Math.max(22, Math.round((st.inflow || 10000) / 3500)));
 
   const flowColumnIcon = L.divIcon({
@@ -2921,16 +2938,15 @@ function updatePakBoundaryStyle() {
 }
 
 const loadPakBoundary = () => {
-  fetch('pakistan-boundary.json?v=' + Date.now())
-    .then(r => r.json())
-    .then(geojson => {
+  if (typeof PAKISTAN_GEOJSON_DATA !== 'undefined') {
       if (pakFillLayer) map.removeLayer(pakFillLayer);
-      pakFillLayer = L.geoJSON(geojson, {
+      pakFillLayer = L.geoJSON(PAKISTAN_GEOJSON_DATA, {
         style: getBoundaryStyle
       }).addTo(map);
       try { pakFillLayer.bringToBack(); } catch(e){}
-    })
-    .catch(e => console.log('Pak boundary load error:', e));
+  } else {
+      console.log('Pak boundary load error: PAKISTAN_GEOJSON_DATA not defined');
+  }
 };
 loadPakBoundary();
 
@@ -2979,8 +2995,10 @@ document.querySelectorAll('.dtab').forEach(btn=>{
    RIVER CARDS
 ============================================================ */
 document.getElementById('river-grid').innerHTML = stations.map(st=>{
-  const col   = skColor[st.sk]||'#16a34a';
-  const badge = skBadge[st.sk]||skBadge.normal;
+  const isIndian = st.en.includes('(India)');
+  const col   = (isIndian && st.sk === 'normal') ? '#ea580c' : (skColor[st.sk]||'#16a34a');
+  let badge = skBadge[st.sk]||skBadge.normal;
+  if(isIndian && st.sk === 'normal') { badge = 'background:#ea580c;color:#fff;'; }
   const tIcon = st.trend==='rising'?'↗':st.trend==='falling'?'↘':'→';
   const tCls  = st.trend==='rising'?'tr-up':st.trend==='falling'?'tr-dn':'tr-flat';
   const tUrdu = st.trend==='rising'?'بڑھتا ہوا':st.trend==='falling'?'گھٹتا ہوا':'مستحکم';
@@ -3161,5 +3179,49 @@ window.installApp = function() {
   }
 };
 </script>
+
+<!-- FIX FOR MOBILE DRAWER CLONED ELEMENTS -->
+<script>
+document.addEventListener('click', function(e) {
+  const btn3d = e.target.closest('#btn-3d');
+  const btn2d = e.target.closest('#btn-2d');
+  
+  if (btn3d && e.target.closest('#app-drawer')) {
+    if (is3D) return;
+    document.querySelector('#left-panel #btn-3d').click();
+    document.querySelectorAll('#btn-3d').forEach(el => el.classList.add('active'));
+    document.querySelectorAll('#btn-2d').forEach(el => el.classList.remove('active'));
+  }
+  
+  if (btn2d && e.target.closest('#app-drawer')) {
+    if (!is3D) return;
+    document.querySelector('#left-panel #btn-2d').click();
+    document.querySelectorAll('#btn-2d').forEach(el => el.classList.add('active'));
+    document.querySelectorAll('#btn-3d').forEach(el => el.classList.remove('active'));
+  }
+});
+
+document.addEventListener('change', function(e) {
+  if (e.target.closest('#app-drawer')) {
+    const id = e.target.id;
+    if (id && id.startsWith('lyr-')) {
+      const isChecked = e.target.checked;
+      document.querySelectorAll('#' + id).forEach(el => el.checked = isChecked);
+      const original = document.querySelector('#left-panel #' + id);
+      if (original) {
+        original.checked = isChecked;
+        original.dispatchEvent(new Event('change'));
+      }
+    }
+  } else if (e.target.closest('#left-panel')) {
+    const id = e.target.id;
+    if (id && id.startsWith('lyr-')) {
+      const isChecked = e.target.checked;
+      document.querySelectorAll('#' + id).forEach(el => el.checked = isChecked);
+    }
+  }
+});
+</script>
 </body>
+
 </html>

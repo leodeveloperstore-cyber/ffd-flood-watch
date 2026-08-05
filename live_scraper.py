@@ -42,6 +42,35 @@ def scrape_ffd_data():
         "stations": stations
     }
 
+    # --- PRESERVE MANUAL OVERRIDES ---
+    if os.path.exists(OUTPUT_FILE_1):
+        try:
+            with open(OUTPUT_FILE_1, "r", encoding="utf-8") as f:
+                old_data = json.load(f)
+                old_stations = { s['id']: s for s in old_data.get('stations', []) }
+            
+            # For each scraped station, if it was manually set in old_data, keep the manual values
+            for st in payload['stations']:
+                old_st = old_stations.get(st['id'])
+                if old_st and old_st.get('mode') == 'manual':
+                    st['inflow'] = old_st.get('inflow', st['inflow'])
+                    st['outflow'] = old_st.get('outflow', st['outflow'])
+                    st['sk'] = old_st.get('sk', st['sk'])
+                    st['trend'] = old_st.get('trend', st['trend'])
+                    st['mode'] = 'manual'
+                else:
+                    st['mode'] = 'auto'
+            
+            # Also append any completely manual custom stations (like Indian dams) that aren't in the scraper at all
+            scraped_ids = {s['id'] for s in payload['stations']}
+            for old_id, old_st in old_stations.items():
+                if old_id not in scraped_ids and old_st.get('mode') == 'manual':
+                    payload['stations'].append(old_st)
+
+        except Exception as e:
+            print(f"[WARN] Failed to read old live_stations.json: {e}")
+    # ---------------------------------
+
     # Save to live_stations.json
     with open(OUTPUT_FILE_1, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, ensure_ascii=False)

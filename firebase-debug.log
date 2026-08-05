@@ -1,0 +1,32 @@
+[debug] [2026-08-04T19:37:24.036Z] ----------------------------------------------------------------------
+[debug] [2026-08-04T19:37:24.038Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Allah Hoo\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting
+[debug] [2026-08-04T19:37:24.038Z] CLI Version:   15.25.1
+[debug] [2026-08-04T19:37:24.038Z] Platform:      win32
+[debug] [2026-08-04T19:37:24.038Z] Node Version:  v24.13.0
+[debug] [2026-08-04T19:37:24.039Z] Detected Agent: antigravity
+[debug] [2026-08-04T19:37:24.039Z] Time:          Wed Aug 05 2026 00:37:24 GMT+0500 (Pakistan Standard Time)
+[debug] [2026-08-04T19:37:24.039Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-08-04T19:37:25.551Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-08-04T19:37:25.551Z] > authorizing via signed-in user (leodeveloperstore@gmail.com)
+[debug] [2026-08-04T19:37:25.551Z] [iam] checking project default for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-08-04T19:37:25.560Z] Checked if tokens are valid: true, expires at: 1785873517383
+[debug] [2026-08-04T19:37:25.561Z] Checked if tokens are valid: true, expires at: 1785873517383
+[debug] [2026-08-04T19:37:25.561Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/default:testIamPermissions [none]
+[debug] [2026-08-04T19:37:25.561Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/default:testIamPermissions  x-goog-user-project=default
+[debug] [2026-08-04T19:37:25.561Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/default:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-08-04T19:37:27.325Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/default:testIamPermissions 400
+[debug] [2026-08-04T19:37:27.325Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/default:testIamPermissions {"error":{"code":400,"message":"Project 'projects/default' not found or deleted.","status":"INVALID_ARGUMENT","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"USER_PROJECT_DENIED","domain":"googleapis.com","metadata":{"consumer":"projects/default","service":"cloudresourcemanager.googleapis.com","containerInfo":"projects/default"}}]}}
+[debug] [2026-08-04T19:37:27.326Z] [iam] error while checking permissions, command may fail: Request to https://cloudresourcemanager.googleapis.com/v1/projects/default:testIamPermissions had HTTP Error: 400, Project 'projects/default' not found or deleted.
+[debug] [2026-08-04T19:37:27.327Z] Checked if tokens are valid: true, expires at: 1785873517383
+[debug] [2026-08-04T19:37:27.327Z] Checked if tokens are valid: true, expires at: 1785873517383
+[debug] [2026-08-04T19:37:27.327Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/default [none]
+[debug] [2026-08-04T19:37:28.128Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/default 403
+[debug] [2026-08-04T19:37:28.128Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/default {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2026-08-04T19:37:28.128Z] Request to https://firebase.googleapis.com/v1beta1/projects/default had HTTP Error: 403, The caller does not have permission
+[debug] [2026-08-04T19:37:28.553Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects/default had HTTP Error: 403, The caller does not have permission
+    at responseToError (C:\Users\Allah Hoo\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:53:12)
+    at RetryOperation._fn (C:\Users\Allah Hoo\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:415:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+[error] 
+[error] Error: Failed to get Firebase project default. Please make sure the project exists and your account has permission to access it.
