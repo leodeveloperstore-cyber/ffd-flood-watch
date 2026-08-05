@@ -1,7 +1,7 @@
 {
-  "source": "PMD FFD Telemetry Scraper",
-  "last_updated": "05-Aug-2026 14:32 PKT",
-  "total_stations": 14,
+  "source": "PakFlood Auto-Scraper (GitHub Actions)",
+  "last_updated": "05-Aug-2026 10:48 PKT",
+  "total_stations": 20,
   "stations": [
     {
       "id": "tarbela",
@@ -12,9 +12,8 @@
       "lon": 72.7,
       "inflow": 285000,
       "outflow": 240000,
-      "sk": "normal",
-      "height": "1538.5 ft",
-      "mode": "auto"
+      "mode": "auto",
+      "sk": "normal"
     },
     {
       "id": "marala",
@@ -25,9 +24,8 @@
       "lon": 74.46,
       "inflow": 128500,
       "outflow": 112000,
-      "sk": "low",
-      "height": "Norm",
-      "mode": "auto"
+      "mode": "auto",
+      "sk": "low"
     },
     {
       "id": "khanki",
@@ -38,9 +36,8 @@
       "lon": 73.96,
       "inflow": 115000,
       "outflow": 108000,
-      "sk": "low",
-      "height": "Norm",
-      "mode": "auto"
+      "mode": "auto",
+      "sk": "low"
     },
     {
       "id": "qadirabad",
@@ -51,9 +48,8 @@
       "lon": 73.69,
       "inflow": 98000,
       "outflow": 89000,
-      "sk": "normal",
-      "height": "Norm",
-      "mode": "auto"
+      "mode": "auto",
+      "sk": "normal"
     },
     {
       "id": "mangla",
@@ -64,9 +60,8 @@
       "lon": 73.64,
       "inflow": 65000,
       "outflow": 42000,
-      "sk": "normal",
-      "height": "1222.1 ft",
-      "mode": "auto"
+      "mode": "auto",
+      "sk": "normal"
     },
     {
       "id": "kalabagh",
@@ -77,9 +72,8 @@
       "lon": 71.55,
       "inflow": 260000,
       "outflow": 252000,
-      "sk": "low",
-      "height": "Norm",
-      "mode": "auto"
+      "mode": "auto",
+      "sk": "low"
     },
     {
       "id": "chashma",
@@ -90,9 +84,8 @@
       "lon": 71.37,
       "inflow": 275000,
       "outflow": 265000,
-      "sk": "low",
-      "height": "Norm",
-      "mode": "auto"
+      "mode": "auto",
+      "sk": "low"
     },
     {
       "id": "taunsa",
@@ -103,9 +96,8 @@
       "lon": 70.84,
       "inflow": 241686,
       "outflow": 230000,
-      "sk": "low",
-      "height": "Norm",
-      "mode": "auto"
+      "mode": "auto",
+      "sk": "low"
     },
     {
       "id": "guddu",
@@ -116,9 +108,8 @@
       "lon": 69.7,
       "inflow": 310000,
       "outflow": 298000,
-      "sk": "low",
-      "height": "Norm",
-      "mode": "auto"
+      "mode": "auto",
+      "sk": "low"
     },
     {
       "id": "sukkur",
@@ -129,9 +120,8 @@
       "lon": 68.85,
       "inflow": 280000,
       "outflow": 265000,
-      "sk": "low",
-      "height": "Norm",
-      "mode": "auto"
+      "mode": "auto",
+      "sk": "low"
     },
     {
       "id": "kotri",
@@ -142,9 +132,8 @@
       "lon": 68.31,
       "inflow": 145000,
       "outflow": 132000,
-      "sk": "normal",
-      "height": "Norm",
-      "mode": "auto"
+      "mode": "auto",
+      "sk": "normal"
     },
     {
       "id": "balloki",
@@ -155,10 +144,8 @@
       "lon": 73.86,
       "inflow": 42000,
       "outflow": 28000,
-      "sk": "normal",
-      "height": "Norm",
       "mode": "auto",
-      "trend": "steady"
+      "sk": "normal"
     },
     {
       "id": "sulemanki",
@@ -169,9 +156,8 @@
       "lon": 73.86,
       "inflow": 38000,
       "outflow": 25000,
-      "sk": "normal",
-      "height": "Norm",
-      "mode": "auto"
+      "mode": "auto",
+      "sk": "normal"
     },
     {
       "id": "nowshera",
@@ -182,9 +168,80 @@
       "lon": 71.97,
       "inflow": 58000,
       "outflow": 58000,
-      "sk": "normal",
-      "height": "Norm",
-      "mode": "auto"
+      "mode": "auto",
+      "sk": "normal"
+    },
+    {
+      "id": "baglihar",
+      "en": "Baglihar Dam",
+      "ur": "بگلیہار ڈیم",
+      "river": "Chenab (India)",
+      "lat": 33.15,
+      "lon": 75.31,
+      "inflow": 0,
+      "outflow": 0,
+      "mode": "auto",
+      "sk": "normal"
+    },
+    {
+      "id": "salal",
+      "en": "Salal Dam",
+      "ur": "سلال ڈیم",
+      "river": "Chenab (India)",
+      "lat": 33.08,
+      "lon": 74.82,
+      "inflow": 0,
+      "outflow": 0,
+      "mode": "auto",
+      "sk": "normal"
+    },
+    {
+      "id": "kishanganga",
+      "en": "Kishanganga",
+      "ur": "کشن گنگا",
+      "river": "Neelum (India)",
+      "lat": 34.64,
+      "lon": 74.75,
+      "inflow": 0,
+      "outflow": 0,
+      "mode": "auto",
+      "sk": "normal"
+    },
+    {
+      "id": "bhakra",
+      "en": "Bhakra Dam",
+      "ur": "بھاکڑا ڈیم",
+      "river": "Sutlej (India)",
+      "lat": 31.41,
+      "lon": 76.43,
+      "inflow": 0,
+      "outflow": 0,
+      "mode": "auto",
+      "sk": "normal"
+    },
+    {
+      "id": "pong",
+      "en": "Pong Dam",
+      "ur": "پونگ ڈیم",
+      "river": "Beas (India)",
+      "lat": 31.96,
+      "lon": 75.94,
+      "inflow": 0,
+      "outflow": 0,
+      "mode": "auto",
+      "sk": "normal"
+    },
+    {
+      "id": "thein",
+      "en": "Thein Dam",
+      "ur": "تھین ڈیم",
+      "river": "Ravi (India)",
+      "lat": 32.44,
+      "lon": 75.73,
+      "inflow": 0,
+      "outflow": 0,
+      "mode": "auto",
+      "sk": "normal"
     }
   ]
 }
