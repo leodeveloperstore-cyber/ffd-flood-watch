@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Map Editor - PakFlood Watch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+    body, html { margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-serif; background: #0f172a; color: #fff; }
+    #map { height: 100vh; width: 100vw; z-index: 1; }
+    
+    /* Top Bar */
+    .top-bar {
+      position: absolute; top: 0; left: 0; right: 0; padding: 15px 20px;
+      background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px);
+      z-index: 1000; display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #1e293b;
+    }
+    
+    .top-bar h1 { margin: 0; font-size: 1.2rem; color: #38bdf8; }
+    .btn-back { background: #334155; color: #fff; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 0.9rem; }
+    
+    /* Editor Modal */
+    #editor-modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); z-index: 2000; display: none;
+      align-items: center; justify-content: center; backdrop-filter: blur(4px);
+    }
+    
+    .modal-content {
+      background: #1e293b; padding: 25px; border-radius: 12px; width: 320px;
+      border: 1px solid #334155; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    
+    .modal-content h2 { margin-top: 0; color: #38bdf8; font-size: 1.2rem; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+    
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-size: 0.85rem; color: #94a3b8; margin-bottom: 5px; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 10px; border-radius: 6px; background: #0f172a; border: 1px solid #334155;
+      color: #fff; font-family: 'Poppins', sans-serif; box-sizing: border-box;
+    }
+    
+    .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-save { flex: 1; background: #0ea5e9; color: #fff; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .btn-cancel { flex: 1; background: #334155; color: #fff; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <h1>🌍 Map Editor (Admin)</h1>
+    <a href="index.html" class="btn-back">← Back to Dashboard</a>
+  </div>
+
+  <div id="map"></div>
+
+  <div id="editor-modal">
+    <div class="modal-content">
+      <h2 id="modal-title">Edit Station</h2>
+      <input type="hidden" id="edit-id" />
+      
+      <div class="form-group">
+        <label>Data Mode</label>
+        <select id="edit-mode">
+          <option value="auto">🤖 Auto (Scraper)</option>
+          <option value="manual">✋ Manual (Override)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Inflow (Cusecs)</label>
+        <input type="number" id="edit-inflow" />
+      </div>
+
+      <div class="form-group">
+        <label>Outflow (Cusecs)</label>
+        <input type="number" id="edit-outflow" />
+      </div>
+
+      <div class="form-group">
+        <label>Flood Status</label>
+        <select id="edit-sk">
+          <option value="normal">Normal (Green)</option>
+          <option value="low">Low Flood (Blue)</option>
+          <option value="medium">Medium Flood (Yellow)</option>
+          <option value="high">High Flood (Orange)</option>
+          <option value="critical">Critical Flood (Red)</option>
+        </select>
+      </div>
+      
+      <div class="btn-group">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" onclick="saveStation()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const map = L.map('map', { zoomControl: false }).setView([30.37, 72.86], 6);
+    
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri'
+    }).addTo(map);
+
+    let allStations = [];
+    const markers = [];
+    const skColor = { normal:'#15803d', low:'#0284c7', medium:'#eab308', high:'#f97316', critical:'#dc2626' };
+
+    // Base Stations Definition (same as main app, to get lat/lon for manual Indian dams)
+    const baseStations = [
+      {id:'tarbela', en:'Tarbela', lat:34.08, lon:72.70},
+      {id:'marala', en:'Head Marala', lat:32.67, lon:74.46},
+      {id:'khanki', en:'Head Khanki', lat:32.40, lon:73.96},
+      {id:'qadirabad', en:'Head Qadirabad', lat:32.32, lon:73.69},
+      {id:'mangla', en:'Mangla Dam', lat:33.14, lon:73.64},
+      {id:'kalabagh', en:'Kalabagh', lat:32.96, lon:71.55},
+      {id:'chashma', en:'Chashma', lat:32.44, lon:71.37},
+      {id:'taunsa', en:'Taunsa', lat:30.51, lon:70.84},
+      {id:'guddu', en:'Guddu', lat:28.42, lon:69.70},
+      {id:'sukkur', en:'Sukkur', lat:27.57, lon:68.85},
+      {id:'kotri', en:'Kotri', lat:25.37, lon:68.31},
+      {id:'balloki', en:'Balloki', lat:31.22, lon:73.86},
+      {id:'sulemanki', en:'Sulaimanki', lat:30.37, lon:73.86},
+      {id:'nowshera', en:'Nowshera', lat:34.01, lon:71.97},
+      
+      // Indian Dams
+      {id:'baglihar', en:'Baglihar Dam', lat:33.15, lon:75.31},
+      {id:'salal', en:'Salal Dam', lat:33.08, lon:74.82},
+      {id:'kishanganga', en:'Kishanganga', lat:34.64, lon:74.75},
+      {id:'bhakra', en:'Bhakra Dam', lat:31.41, lon:76.43},
+      {id:'pong', en:'Pong Dam', lat:31.96, lon:75.94},
+      {id:'thein', en:'Thein Dam', lat:32.44, lon:75.73}
+    ];
+
+    function loadData() {
+      fetch('../live_stations.json?v=' + Date.now())
+        .then(r => r.json())
+        .then(data => {
+          allStations = data.stations || [];
+          renderMap();
+        })
+        .catch(err => {
+          console.error("Failed to load live_stations", err);
+          allStations = [];
+          renderMap();
+        });
+    }
+
+    function renderMap() {
+      // Clear old markers
+      markers.forEach(m => map.removeLayer(m));
+      markers.length = 0;
+
+      baseStations.forEach(bs => {
+        // Find if it has live data
+        const live = allStations.find(s => s.id === bs.id) || { inflow:0, outflow:0, sk:'normal', mode:'auto' };
+        const col = skColor[live.sk] || skColor.normal;
+        
+        // Mode badge
+        const modeBadge = live.mode === 'manual' 
+          ? `<div style="background:#ef4444;color:#fff;font-size:7px;padding:2px 4px;border-radius:4px;position:absolute;top:-8px;right:-8px;">MANUAL</div>` 
+          : '';
+
+        const iconHtml = `<div style="position:relative; width:34px; height:34px; display:flex; align-items:center; justify-content:center;">
+          ${modeBadge}
+          <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:${col}; opacity:0.35; filter:blur(4px);"></div>
+          <div style="position:absolute; width:28px; height:28px; background:linear-gradient(135deg, ${col}ee, ${col}); border:2px solid #ffffff; border-radius:50%; box-shadow:0 3px 6px rgba(0,0,0,0.5);"></div>
+          <svg style="z-index:2; filter:drop-shadow(0 1px 1px rgba(0,0,0,0.4));" width="15" height="15" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 3C4.5 3 4.1 3.3 4 3.8L2.2 13H21.8L20 3.8C19.9 3.3 19.5 3 19 3H5Z" opacity="0.95"/>
+            <path d="M10 13V20H14V13H10Z" fill="#bae6fd"/>
+            <path d="M2 13H22V15H2Z" opacity="0.9"/>
+            <path d="M2 19C3.5 19 4.5 18 6 18C7.5 18 8.5 19 10 19C11.5 19 12.5 18 14 18C15.5 18 16.5 19 18 19C19.5 19 20.5 18 22 18V22H2V19Z" fill="#7dd3fc"/>
+          </svg>
+        </div>`;
+
+        const icon = L.divIcon({ className: 'custom-pin', html: iconHtml, iconSize: [34,34], iconAnchor:[17,17] });
+        
+        const marker = L.marker([bs.lat, bs.lon], { icon }).addTo(map);
+        
+        marker.on('click', () => {
+          openModal(bs, live);
+        });
+
+        markers.push(marker);
+      });
+    }
+
+    function openModal(bs, live) {
+      document.getElementById('modal-title').innerText = 'Edit ' + bs.en;
+      document.getElementById('edit-id').value = bs.id;
+      document.getElementById('edit-mode').value = live.mode || 'auto';
+      document.getElementById('edit-inflow').value = live.inflow;
+      document.getElementById('edit-outflow').value = live.outflow;
+      document.getElementById('edit-sk').value = live.sk;
+      
+      document.getElementById('editor-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('editor-modal').style.display = 'none';
+    }
+
+    async function saveStation() {
+      const payload = {
+        inflow: parseInt(document.getElementById('edit-inflow').value) || 0,
+        outflow: parseInt(document.getElementById('edit-outflow').value) || 0,
+        mode: document.getElementById('edit-mode').value,
+        sk: document.getElementById('edit-sk').value
+      };
+      const id = document.getElementById('edit-id').value;
+
+      const repo = localStorage.getItem('gh_repo');
+      const token = localStorage.getItem('gh_token');
+      if(!repo || !token) {
+        alert('⚠️ IMPORTANT: Please go to the Admin Dashboard -> "Cloud" tab and save your GitHub Repo Name and Token first!');
+        return;
+      }
+      
+      const url = `https://api.github.com/repos/${repo}/contents/manual_overrides.json`;
+      try {
+        let sha = '';
+        let currentContent = { stations: {} };
+        const getRes = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
+        if(getRes.ok) {
+          const data = await getRes.json();
+          sha = data.sha;
+          const decoded = decodeURIComponent(escape(atob(data.content)));
+          currentContent = JSON.parse(decoded);
+        }
+        
+        if(!currentContent.stations) currentContent.stations = {};
+        currentContent.stations[id] = payload;
+        
+        const newJson = JSON.stringify(currentContent, null, 2);
+        const encoded = btoa(unescape(encodeURIComponent(newJson)));
+        
+        const putRes = await fetch(url, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: `Admin Panel Map Editor: Update ${id}`,
+            content: encoded,
+            sha: sha || undefined
+          })
+        });
+        
+        if(putRes.ok) {
+          alert(id + ' updated successfully on GitHub!');
+          closeModal();
+          // We don't call loadData here immediately because GitHub takes time to run the action
+        } else {
+          const err = await putRes.json();
+          alert('GitHub Error: ' + err.message);
+        }
+      } catch(e) {
+        alert('Error connecting to GitHub: ' + e);
+      }
+    }
+
+    // Init
+    loadData();
+    setInterval(loadData, 30000);
+  </script>
+</body>
+</html>
