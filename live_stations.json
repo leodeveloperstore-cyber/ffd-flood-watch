@@ -1,6 +1,6 @@
 {
   "source": "PakFlood Auto-Scraper (GitHub Actions)",
-  "last_updated": "Dated: 5th August-2026 06:00 PKT",
+  "last_updated": "05-Aug-2026 15:23 PKT",
   "total_stations": 20,
   "stations": [
     {
@@ -13,8 +13,7 @@
       "inflow": 276000,
       "outflow": 248700,
       "mode": "auto",
-      "sk": "low",
-      "storage": 94.86
+      "sk": "low"
     },
     {
       "id": "marala",
@@ -62,8 +61,7 @@
       "inflow": 58000,
       "outflow": 7000,
       "mode": "auto",
-      "sk": "normal",
-      "storage": 94.86
+      "sk": "normal"
     },
     {
       "id": "kalabagh",
