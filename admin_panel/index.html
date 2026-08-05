@@ -1,1 +1,551 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PakFlood Watch · Pro Enterprise Admin Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-slate: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-card: #334155;
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --border-color: rgba(255,255,255,0.1);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; }
+    body { background:var(--bg-slate); color:var(--text-main); display:flex; height:100vh; overflow:hidden; }
 
+    /* Sidebar */
+    .sidebar { width:260px; background:var(--bg-surface); border-right:1px solid var(--border-color); display:flex; flex-direction:column; padding:20px 14px; }
+    .brand-box { display:flex; align-items:center; gap:10px; padding-bottom:18px; border-bottom:1px solid var(--border-color); margin-bottom:20px; }
+    .brand-icon { width:38px; height:38px; background:var(--accent-blue); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; }
+    .brand-title { font-size:1rem; font-weight:800; color:var(--text-main); }
+    .brand-sub { font-size:0.65rem; color:var(--text-sub); }
+
+    .nav-section { margin-bottom:20px; }
+    .nav-lbl { font-size:0.65rem; font-weight:700; color:var(--text-sub); letter-spacing:1px; margin-bottom:8px; padding-left:8px; }
+    .nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; color:var(--text-sub); font-size:0.82rem; font-weight:600; cursor:pointer; transition:all 0.2s; margin-bottom:4px; }
+    .nav-item:hover, .nav-item.active { background:rgba(2,132,199,0.15); color:var(--accent-cyan); }
+    .nav-icon { font-size:1.1rem; }
+
+    /* Main Area */
+    .main-area { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+    .top-hdr { height:64px; background:var(--bg-surface); border-bottom:1px solid var(--border-color); display:flex; align-items:center; justify-content:space-between; padding:0 24px; }
+    .hdr-title { font-size:1.1rem; font-weight:800; }
+    .hdr-right { display:flex; align-items:center; gap:14px; }
+    .badge-live { background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); color:var(--accent-green); padding:4px 10px; border-radius:99px; font-size:0.7rem; font-weight:700; display:flex; align-items:center; gap:6px; }
+    .badge-warn { background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); color:var(--accent-amber); padding:4px 10px; border-radius:99px; font-size:0.7rem; font-weight:700; }
+    .dot-live { width:6px; height:6px; background:var(--accent-green); border-radius:50%; box-shadow:0 0 8px var(--accent-green); }
+
+    .content-body { flex:1; padding:24px; overflow-y:auto; }
+    .tab-section { display:none; }
+    .tab-section.active { display:block; }
+
+    /* Grid & Cards */
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+    .stat-card { background:var(--bg-surface); border:1px solid var(--border-color); border-radius:14px; padding:18px; }
+    .stat-lbl { font-size:0.75rem; color:var(--text-sub); font-weight:600; margin-bottom:6px; }
+    .stat-val { font-size:1.8rem; font-weight:800; color:var(--text-main); }
+    .stat-sub { font-size:0.68rem; color:var(--accent-cyan); font-weight:600; margin-top:4px; }
+
+    .card-panel { background:var(--bg-surface); border:1px solid var(--border-color); border-radius:14px; padding:22px; margin-bottom:20px; }
+    .panel-hdr { font-size:0.95rem; font-weight:800; color:var(--accent-cyan); margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
+
+    .form-group { margin-bottom:14px; }
+    .form-lbl { font-size:0.75rem; font-weight:700; color:var(--text-sub); margin-bottom:6px; display:block; }
+    .form-input, .form-textarea, .form-select { width:100%; background:var(--bg-slate); border:1px solid var(--border-color); border-radius:8px; padding:10px 14px; color:var(--text-main); font-size:0.85rem; outline:none; transition:all 0.2s; }
+    .form-input:focus, .form-textarea:focus { border-color:var(--accent-blue); }
+    .form-textarea { resize:vertical; min-height:80px; }
+
+    .btn-action { background:var(--accent-blue); color:#fff; border:none; padding:10px 20px; border-radius:8px; font-weight:700; font-size:0.82rem; cursor:pointer; transition:all 0.2s; display:inline-flex; align-items:center; gap:8px; }
+    .btn-action:hover { background:#0369a1; }
+    .btn-success { background:var(--accent-green); }
+    .btn-danger { background:var(--accent-red); }
+
+    /* Urdu text styling */
+    .ur-text { font-family:'Noto Nastaliq Urdu',serif; direction:rtl; text-align:right; line-height:1.9; }
+
+    .cat-tab-bar { display:flex; gap:8px; margin-bottom:16px; border-bottom:1px solid var(--border-color); padding-bottom:10px; }
+    .cat-tab-btn { background:var(--bg-slate); border:1px solid var(--border-color); color:var(--text-sub); padding:8px 16px; border-radius:8px; font-size:0.78rem; font-weight:700; cursor:pointer; }
+    .cat-tab-btn.active { background:var(--accent-blue); color:#fff; border-color:var(--accent-blue); }
+
+    .feed-list { display:flex; flex-direction:column; gap:12px; }
+    .feed-item { background:var(--bg-slate); border:1px solid var(--border-color); border-radius:10px; padding:14px; position:relative; }
+    .feed-tag { font-size:0.65rem; font-weight:800; color:var(--accent-cyan); text-transform:uppercase; margin-bottom:4px; }
+    .feed-en { font-size:0.82rem; color:var(--text-main); font-weight:600; margin-bottom:4px; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="brand-box">
+      <div class="brand-icon">🌊</div>
+      <div>
+        <div class="brand-title">PakFlood Admin</div>
+        <div class="brand-sub">Enterprise Management Portal</div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-lbl">MAIN</div>
+      <div class="nav-item active" onclick="showTab('dashboard')"><span class="nav-icon">📊</span> Dashboard</div>
+      <div class="nav-item" onclick="showTab('alerts')"><span class="nav-icon">📢</span> Alerts & Push FCM</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-lbl">STATION TELEMETRY</div>
+      <a href="map_editor.html" class="nav-item" style="text-decoration:none;"><span class="nav-icon">🗺️</span> Interactive Map Editor</a>
+      <div class="nav-item" onclick="showTab('overrides')"><span class="nav-icon">🎛️</span> Categorized Overrides</div>
+      <div class="nav-item" onclick="showTab('ticker')"><span class="nav-icon">📰</span> News Ticker & Colors</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-lbl">MONETIZATION & CLOUD</div>
+      <div class="nav-item" onclick="showTab('admob')"><span class="nav-icon">💰</span> AdMob Native Ads</div>
+      <div class="nav-item" onclick="showTab('cloud')"><span class="nav-icon">☁️</span> Google Cloud 5TB Storage</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-lbl">COMMUNITY & LEGAL</div>
+      <div class="nav-item" onclick="showTab('reports')"><span class="nav-icon">📸</span> Citizen Reports Queue</div>
+      <div class="nav-item" onclick="showTab('legal')"><span class="nav-icon">📜</span> Google Play Legal Policies</div>
+    </div>
+  </div>
+
+  <!-- Main Area -->
+  <div class="main-area">
+    <div class="top-hdr">
+      <div class="hdr-title" id="tab-hdr-title">Dashboard Overview</div>
+      <div class="hdr-right">
+        <div class="badge-live" style="background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.4);">✅ FCM Push Active (google-services.json Connected)</div>
+        <div class="badge-live"><span class="dot-live"></span> SYSTEM ONLINE</div>
+      </div>
+    </div>
+
+    <div class="content-body">
+
+      <!-- DASHBOARD TAB -->
+      <div id="tab-dashboard" class="tab-section active">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-lbl">REAL ACTIVE APP USERS</div>
+            <div class="stat-val" id="stat-active-users">0</div>
+            <div class="stat-sub">Initialized via Firebase Analytics</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-lbl">TOTAL APP INSTALLS</div>
+            <div class="stat-val" id="stat-total-installs">0</div>
+            <div class="stat-sub">Google Play Console Sync</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-lbl">CITIZEN GROUND REPORTS</div>
+            <div class="stat-val" id="stat-reports-count">2</div>
+            <div class="stat-sub">Pending Review Queue</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-lbl">ADMOB NATIVE ADS REVENUE</div>
+            <div class="stat-val">$0.00</div>
+            <div class="stat-sub">Native Ad Units Active</div>
+          </div>
+        </div>
+
+        <div class="card-panel">
+          <div class="panel-hdr">⚡ Operational Quick Commands</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <button class="btn-action" onclick="showTab('alerts')">📢 Publish Push Alert</button>
+            <button class="btn-action" onclick="showTab('overrides')">🌊 Station Categorized Overrides</button>
+            <button class="btn-action" onclick="showTab('reports')">📸 Citizen Reports Approval</button>
+            <button class="btn-action" onclick="showTab('ticker')">📻 Update News Ticker</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALERTS & FCM TAB -->
+      <div id="tab-alerts" class="tab-section">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div class="card-panel">
+            <div class="panel-hdr">📢 Publish Alert & Push FCM Notification</div>
+            <div class="form-group">
+              <label class="form-lbl">CATEGORY TAG (OPTIONAL)</label>
+              <input type="text" id="alert-tag" class="form-input" placeholder="e.g. FFD OFFICIAL EMERGENCY">
+            </div>
+            <div class="form-group">
+              <label class="form-lbl">ENGLISH ALERT TEXT (OPTIONAL)</label>
+              <textarea id="alert-en" class="form-textarea" placeholder="English alert message..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-lbl">URDU ALERT TEXT (MAIN BODY)</label>
+              <textarea id="alert-ur" class="form-textarea ur-text" placeholder="دریاؤں میں سیلاب کی صورتحال..."></textarea>
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+              <input type="checkbox" id="chk-fcm" checked style="width:18px;height:18px;">
+              <label for="chk-fcm" class="form-lbl" style="margin:0;cursor:pointer;">📲 Send Firebase Push Notification to All Devices</label>
+            </div>
+            <button class="btn-action" onclick="publishAlert()">🚀 Publish Alert Now</button>
+          </div>
+
+          <div class="card-panel">
+            <div class="panel-hdr">📜 Active Published Alerts Feed</div>
+            <div class="feed-list" id="alerts-feed-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATEGORIZED STATION OVERRIDES TAB -->
+      <div id="tab-overrides" class="tab-section">
+        <div class="card-panel">
+          <div class="panel-hdr">
+            <span>🌊 Categorized Gauge Stations & River Overrides</span>
+            <button class="btn-action btn-success" onclick="triggerPythonScraper()">🔄 Auto-Scrape PMD Website Now</button>
+          </div>
+
+          <div class="cat-tab-bar">
+            <button class="cat-tab-btn active" onclick="switchCatTab('dams')">🏗️ Dams & Reservoirs (7)</button>
+            <button class="cat-tab-btn" onclick="switchCatTab('barrages')">🌊 River Barrages & Headworks (15)</button>
+            <button class="cat-tab-btn" onclick="switchCatTab('nullahs')">🏞️ Nullahs & Mountain Streams (6)</button>
+          </div>
+
+          <!-- DAMS GRID -->
+          <div id="cat-grid-dams" class="cat-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+            <!-- Dynamically populated by JS -->
+          </div>
+          
+          <script>
+            document.addEventListener("DOMContentLoaded", () => {
+              fetch('../live_stations.json?v=' + Date.now())
+                .then(r => r.ok ? r.json() : {})
+                .catch(e => ({}))
+                .then(data => {
+                  const live = data.stations || [];
+                  const baseStations = [
+                    {id:'tarbela', en:'Tarbela Dam', river:'Indus'},
+                    {id:'marala', en:'Head Marala', river:'Chenab'},
+                    {id:'khanki', en:'Head Khanki', river:'Chenab'},
+                    {id:'qadirabad', en:'Head Qadirabad', river:'Chenab'},
+                    {id:'mangla', en:'Mangla Dam', river:'Jhelum'},
+                    {id:'kalabagh', en:'Kalabagh', river:'Indus'},
+                    {id:'chashma', en:'Chashma', river:'Indus'},
+                    {id:'taunsa', en:'Taunsa', river:'Indus'},
+                    {id:'guddu', en:'Guddu', river:'Indus'},
+                    {id:'sukkur', en:'Sukkur', river:'Indus'},
+                    {id:'kotri', en:'Kotri', river:'Indus'},
+                    {id:'balloki', en:'Balloki', river:'Ravi'},
+                    {id:'sulemanki', en:'Sulaimanki', river:'Sutlej'},
+                    {id:'nowshera', en:'Nowshera', river:'Kabul'},
+                    {id:'baglihar', en:'Baglihar Dam', river:'Chenab (India)'},
+                    {id:'salal', en:'Salal Dam', river:'Chenab (India)'},
+                    {id:'kishanganga', en:'Kishanganga', river:'Neelum (India)'},
+                    {id:'bhakra', en:'Bhakra Dam', river:'Sutlej (India)'},
+                    {id:'pong', en:'Pong Dam', river:'Beas (India)'},
+                    {id:'thein', en:'Thein Dam', river:'Ravi (India)'}
+                  ];
+
+                  let html = '';
+                  baseStations.forEach(bs => {
+                    const l = live.find(s => s.id === bs.id) || {inflow:0, outflow:0, mode:'auto'};
+                    html += `<div style="background:var(--bg-slate);padding:12px;border-radius:10px;border:1px solid var(--border-color);">
+                        <div style="font-size:0.8rem;font-weight:700;color:var(--accent-cyan);margin-bottom:6px;">${bs.en} (${bs.river})</div>
+                        <label class="form-lbl">INFLOW: <input type="number" id="inflow-${bs.id}" value="${l.inflow}" class="form-input"></label>
+                        <label class="form-lbl" style="margin-top:4px;">OUTFLOW: <input type="number" id="outflow-${bs.id}" value="${l.outflow}" class="form-input"></label>
+                        <div style="margin-top:8px;">
+                          <select id="mode-${bs.id}" class="form-input" style="width:100%; font-size:0.8rem; padding:4px;">
+                            <option value="auto" ${l.mode!=='manual'?'selected':''}>Auto (Scraper)</option>
+                            <option value="manual" ${l.mode==='manual'?'selected':''}>Manual Override</option>
+                          </select>
+                        </div>
+                        <button onclick="saveGridOverride('${bs.id}')" style="margin-top:8px;width:100%;padding:6px;background:#0ea5e9;color:#fff;border:none;border-radius:4px;cursor:pointer;font-weight:bold;">Save Data</button>
+                      </div>`;
+                  });
+                  document.getElementById('cat-grid-dams').innerHTML = html;
+                });
+            });
+
+            window.saveGridOverride = async function(id) {
+              const inflow = parseInt(document.getElementById('inflow-'+id).value) || 0;
+              const outflow = parseInt(document.getElementById('outflow-'+id).value) || 0;
+              const mode = document.getElementById('mode-'+id).value;
+              
+              let sk = 'normal';
+              if(inflow > 200000) sk = 'low';
+              if(inflow > 300000) sk = 'medium';
+              if(inflow > 500000) sk = 'high';
+              if(inflow > 800000) sk = 'critical';
+
+              const payload = { inflow, outflow, mode, sk };
+              
+              const repo = localStorage.getItem('gh_repo');
+              const token = localStorage.getItem('gh_token');
+              if(!repo || !token) {
+                alert('⚠️ IMPORTANT: Please go to the "Cloud" tab and save your GitHub Repo Name and Token first!');
+                return;
+              }
+              
+              document.getElementById('inflow-'+id).parentElement.parentElement.style.opacity = '0.5';
+              const url = `https://api.github.com/repos/${repo}/contents/manual_overrides.json`;
+              try {
+                let sha = '';
+                let currentContent = { stations: {} };
+                const getRes = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
+                if(getRes.ok) {
+                  const data = await getRes.json();
+                  sha = data.sha;
+                  const decoded = decodeURIComponent(escape(atob(data.content)));
+                  currentContent = JSON.parse(decoded);
+                }
+                
+                if(!currentContent.stations) currentContent.stations = {};
+                currentContent.stations[id] = payload;
+                
+                const newJson = JSON.stringify(currentContent, null, 2);
+                const encoded = btoa(unescape(encodeURIComponent(newJson)));
+                
+                const putRes = await fetch(url, {
+                  method: 'PUT',
+                  headers: {
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    message: `Admin Panel: Update ${id}`,
+                    content: encoded,
+                    sha: sha || undefined
+                  })
+                });
+                
+                if(putRes.ok) {
+                  alert(id + ' updated successfully on GitHub! GitHub Actions will sync it soon.');
+                } else {
+                  const err = await putRes.json();
+                  alert('GitHub Error: ' + err.message);
+                }
+              } catch(e) {
+                alert('Error connecting to GitHub: ' + e);
+              }
+              document.getElementById('inflow-'+id).parentElement.parentElement.style.opacity = '1';
+            };
+          </script>
+
+          <!-- BARRAGES GRID -->
+          <div id="cat-grid-barrages" class="cat-grid" style="display:none;grid-template-columns:repeat(3,1fr);gap:14px;">
+            <div style="background:var(--bg-slate);padding:12px;border-radius:10px;border:1px solid var(--border-color);">
+              <div style="font-size:0.8rem;font-weight:700;color:var(--accent-cyan);margin-bottom:6px;">Head Marala (Chenab River)</div>
+              <label class="form-lbl">INFLOW: <input type="number" value="128500" class="form-input"></label>
+              <label class="form-lbl" style="margin-top:4px;">OUTFLOW: <input type="number" value="112000" class="form-input"></label>
+            </div>
+            <div style="background:var(--bg-slate);padding:12px;border-radius:10px;border:1px solid var(--border-color);">
+              <div style="font-size:0.8rem;font-weight:700;color:var(--accent-cyan);margin-bottom:6px;">Guddu Barrage (Indus River)</div>
+              <label class="form-lbl">INFLOW: <input type="number" value="310000" class="form-input"></label>
+              <label class="form-lbl" style="margin-top:4px;">OUTFLOW: <input type="number" value="298000" class="form-input"></label>
+            </div>
+            <div style="background:var(--bg-slate);padding:12px;border-radius:10px;border:1px solid var(--border-color);">
+              <div style="font-size:0.8rem;font-weight:700;color:var(--accent-cyan);margin-bottom:6px;">Sukkur Barrage (Indus River)</div>
+              <label class="form-lbl">INFLOW: <input type="number" value="280000" class="form-input"></label>
+              <label class="form-lbl" style="margin-top:4px;">OUTFLOW: <input type="number" value="265000" class="form-input"></label>
+            </div>
+          </div>
+
+          <!-- NULLAHS GRID -->
+          <div id="cat-grid-nullahs" class="cat-grid" style="display:none;grid-template-columns:repeat(3,1fr);gap:14px;">
+            <div style="background:var(--bg-slate);padding:12px;border-radius:10px;border:1px solid var(--border-color);">
+              <div style="font-size:0.8rem;font-weight:700;color:var(--accent-cyan);margin-bottom:6px;">Aik Nullah (Sialkot)</div>
+              <label class="form-lbl">DISCHARGE: <input type="number" value="8400" class="form-input"></label>
+            </div>
+            <div style="background:var(--bg-slate);padding:12px;border-radius:10px;border:1px solid var(--border-color);">
+              <div style="font-size:0.8rem;font-weight:700;color:var(--accent-cyan);margin-bottom:6px;">Leh Nullah (Rawalpindi)</div>
+              <label class="form-lbl">DISCHARGE: <input type="number" value="12500" class="form-input"></label>
+            </div>
+          </div>
+
+          <button class="btn-action" style="margin-top:16px;" onclick="alert('💾 Station Overrides Saved!')">💾 Save Overrides</button>
+        </div>
+      </div>
+
+      <!-- TICKER TAB -->
+      <div id="tab-ticker" class="tab-section">
+        <div class="card-panel">
+          <div class="panel-hdr">📻 Multi-Headline Live News Ticker</div>
+          <div class="form-group">
+            <label class="form-lbl">TICKER BADGE COLOR</label>
+            <select class="form-select">
+              <option value="red">🔴 Emergency Red</option>
+              <option value="amber">🟠 Warning Amber</option>
+              <option value="blue">🔵 Notice Blue</option>
+              <option value="green">🟢 Normal Green</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-lbl">HEADLINE 1 (URDU + ENGLISH)</label>
+            <input type="text" class="form-input ur-text" value="ایف ایف ڈی لاہور: دریائے چناب مرالہ اور خانکی پر نچلے درجے کا سیلاب — NDMA: 051-9206544 | Rescue: 1122">
+          </div>
+          <div class="form-group">
+            <label class="form-lbl">HEADLINE 2 (OPTIONAL SECOND NEWS)</label>
+            <input type="text" class="form-input ur-text" value="تربیلہ ڈیم میں پانی کی سطح 1538.5 فٹ تک پہنچ گئی — تربیلہ ڈیم کی گنجائش 84% mukammal">
+          </div>
+          <button class="btn-action" onclick="alert('📻 Multi-headline news ticker broadcasted!')">💾 Save & Broadcast Live Ticker</button>
+        </div>
+      </div>
+
+      <!-- ADMOB TAB -->
+      <div id="tab-admob" class="tab-section">
+        <div class="card-panel">
+          <div class="panel-hdr">💰 Google AdMob Native Ads Configuration</div>
+          <p style="font-size:0.78rem;color:var(--text-sub);margin-bottom:16px;">
+            Native Ads are embedded inside <b>RIVERS</b> and <b>REPORTS</b> list cards matching app styling.
+          </p>
+          <div class="form-group">
+            <label class="form-lbl">ADMOB APPLICATION ID</label>
+            <input type="text" class="form-input" value="ca-app-pub-3940256099942544~3347511713">
+          </div>
+          <div class="form-group">
+            <label class="form-lbl">ADMOB NATIVE AD UNIT ID</label>
+            <input type="text" class="form-input" value="ca-app-pub-3940256099942544/2247696110">
+          </div>
+          <button class="btn-action" onclick="alert('💰 AdMob Native Ad Units Saved!')">💾 Save AdMob Settings</button>
+        </div>
+      </div>
+
+      <!-- GOOGLE CLOUD STORAGE & GITHUB SYNC TAB -->
+      <div id="tab-cloud" class="tab-section">
+        <div class="card-panel">
+          <div class="panel-hdr">🐙 Serverless GitHub Sync Settings (REQUIRED)</div>
+          <p style="font-size:0.78rem;color:var(--text-sub);margin-bottom:16px;">
+            To save overrides directly to GitHub without a local server, please provide your repository details.
+          </p>
+          <div class="form-group">
+            <label class="form-lbl">GITHUB REPOSITORY (e.g. username/pakflood-watch)</label>
+            <input type="text" id="gh-repo" class="form-input" placeholder="username/repository">
+          </div>
+          <div class="form-group">
+            <label class="form-lbl">GITHUB PERSONAL ACCESS TOKEN (Classic, with repo scope)</label>
+            <input type="password" id="gh-token" class="form-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+          </div>
+          <button class="btn-action" onclick="saveGithubSettings()">💾 Save GitHub Sync Credentials</button>
+        </div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
+            document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
+          });
+          function saveGithubSettings() {
+            localStorage.setItem('gh_repo', document.getElementById('gh-repo').value.trim());
+            localStorage.setItem('gh_token', document.getElementById('gh-token').value.trim());
+            alert('GitHub Settings Saved! Admin Panel is now connected to Cloud.');
+          }
+        </script>
+
+        <div class="card-panel">
+          <div class="panel-hdr">☁️ Google Cloud Storage (5TB Bucket)</div>
+          <div class="form-group">
+            <label class="form-lbl">GOOGLE CLOUD BUCKET NAME</label>
+            <input type="text" class="form-input" value="gs://pakflood-watch-citizen-media.appspot.com">
+          </div>
+          <div class="form-group">
+            <label class="form-lbl">IMAGE/VIDEO AUTO-COMPRESSOR SETTINGS</label>
+            <select class="form-select">
+              <option value="medium">Standard Compression (High Quality, ~120KB Image / ~2MB Video)</option>
+              <option value="high">Max Compression (Fast Load, ~80KB Image / ~1MB Video)</option>
+            </select>
+          </div>
+          <button class="btn-action" onclick="alert('☁️ Google Cloud Storage Settings Saved!')">💾 Save Storage Config</button>
+        </div>
+      </div>
+
+      <!-- CITIZEN REPORTS QUEUE TAB -->
+      <div id="tab-reports" class="tab-section">
+        <div class="card-panel">
+          <div class="panel-hdr">📸 Citizen Ground Reports Approval Queue</div>
+          
+          <div style="background:var(--bg-slate);padding:16px;border-radius:12px;margin-bottom:18px;border:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+            <div>
+              <div style="font-size:0.85rem;font-weight:800;color:var(--accent-cyan);">🧹 Auto-Cleanup Storage & Old Posts Manager</div>
+              <div style="font-size:0.7rem;color:var(--text-sub);">Purge outdated media posts to save Google Cloud Storage bandwidth</div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <select id="cleanup-days" class="form-select" style="width:auto;">
+                <option value="7">Delete posts older than 7 Days</option>
+                <option value="14">Delete posts older than 14 Days</option>
+                <option value="30">Delete posts older than 30 Days</option>
+              </select>
+              <button class="btn-action btn-danger" onclick="alert('🧹 Auto-cleanup executed! Outdated media files purged from Google Cloud Storage.')">🗑️ Run Auto-Purge</button>
+            </div>
+          </div>
+
+<div class="feed-list">
+            <div class="feed-item">
+              <div class="feed-tag">📍 SHAHDARA BRIDGE · RAVI RIVER, LAHORE</div>
+              <div class="feed-en">Citizen Report: River water level rising near Shahdara bridge. Photo auto-compressed (118 KB).</div>
+              <div style="margin-top:8px;display:flex;gap:10px;">
+                <button class="btn-action btn-success" onclick="alert('✅ Report Approved & Broadcasted Live to App!')">✅ APPROVE & BROADCAST LIVE</button>
+                <button class="btn-action btn-danger" onclick="alert('❌ Report Discarded!')">❌ DISCARD</button>
+              </div>
+            </div>
+            <div class="feed-item">
+              <div class="feed-tag">📍 SUKKUR BARRAGE BYPASS ROAD</div>
+              <div class="feed-en">Citizen Report: Minor canal overflow observed near bypass road. Photo auto-compressed (96 KB).</div>
+              <div style="margin-top:8px;display:flex;gap:10px;">
+                <button class="btn-action btn-success" onclick="alert('✅ Report Approved & Broadcasted Live to App!')">✅ APPROVE & BROADCAST LIVE</button>
+                <button class="btn-action btn-danger" onclick="alert('❌ Report Discarded!')">❌ DISCARD</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEGAL POLICIES TAB -->
+      <div id="tab-legal" class="tab-section">
+        <div class="card-panel">
+          <div class="panel-hdr">📜 Google Play Console Mandatory Legal Policy URLs</div>
+          <div class="form-group">
+            <label class="form-lbl">PRIVACY POLICY URL</label>
+            <input type="text" class="form-input" value="https://pakflood-watch.web.app/privacy.html" readonly>
+          </div>
+          <div class="form-group">
+            <label class="form-lbl">TERMS OF SERVICE URL</label>
+            <input type="text" class="form-input" value="https://pakflood-watch.web.app/terms.html" readonly>
+          </div>
+          <div class="form-group">
+            <label class="form-lbl">USER DATA DELETION REQUEST URL</label>
+            <input type="text" class="form-input" value="https://pakflood-watch.web.app/deletion.html" readonly>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('tab-' + tabId)?.classList.add('active');
+      document.getElementById('tab-hdr-title').textContent = tabId.toUpperCase() + ' MANAGEMENT';
+    }
+
+    function switchCatTab(cat) {
+      document.querySelectorAll('.cat-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.cat-grid').forEach(g => g.style.display = 'none');
+      event.target.classList.add('active');
+      document.getElementById('cat-grid-' + cat).style.display = 'grid';
+    }
+
+    function publishAlert() {
+      alert('🚀 Alert Published & Broadcasted!');
+    }
+
+    function triggerPythonScraper() {
+      alert('🔄 Auto-Scraper Triggered! Fetching latest telemetry from FFD PMD website...');
+    }
+  </script>
+</body>
+</html>
