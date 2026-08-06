@@ -111,7 +111,7 @@
 
     <div class="nav-section">
       <div class="nav-lbl">MONETIZATION & CLOUD</div>
-      <div class="nav-item" onclick="showTab('admob')"><span class="nav-icon">💰</span> AdMob Native Ads</div>
+      <div class="nav-item" onclick="showTab('banners')"><span class="nav-icon">🖼️</span> Manage Banners</div>
       <div class="nav-item" onclick="showTab('cloud')"><span class="nav-icon">☁️</span> Google Cloud 5TB Storage</div>
     </div>
 
@@ -222,7 +222,7 @@
           
           <script>
             document.addEventListener("DOMContentLoaded", () => {
-              fetch('../live_stations.json?v=' + Date.now())
+              fetch('https://raw.githubusercontent.com/leodeveloperstore-cyber/ffd-flood-watch/main/live_stations.json?v=' + Date.now())
                 .then(r => r.ok ? r.json() : {})
                 .catch(e => ({}))
                 .then(data => {
@@ -395,23 +395,174 @@
         </div>
       </div>
 
-      <!-- ADMOB TAB -->
-      <div id="tab-admob" class="tab-section">
+      <!-- MANAGE BANNERS TAB -->
+      <div id="tab-banners" class="tab-section">
         <div class="card-panel">
-          <div class="panel-hdr">💰 Google AdMob Native Ads Configuration</div>
-          <p style="font-size:0.78rem;color:var(--text-sub);margin-bottom:16px;">
-            Native Ads are embedded inside <b>RIVERS</b> and <b>REPORTS</b> list cards matching app styling.
-          </p>
-          <div class="form-group">
-            <label class="form-lbl">ADMOB APPLICATION ID</label>
-            <input type="text" class="form-input" value="ca-app-pub-3940256099942544~3347511713">
+          <div class="panel-hdr">➕ [ Add New Banner ]</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="form-group">
+              <label class="form-lbl">IMAGE URL *</label>
+              <input type="text" id="banner-img" class="form-input" placeholder="https://example.com/banner.png">
+              <div style="font-size:0.65rem;color:var(--text-sub);margin-top:4px;">Recommended size: 1000 x 400 pixels</div>
+            </div>
+            <div class="form-group">
+              <label class="form-lbl">REDIRECT URL (OPTIONAL)</label>
+              <input type="text" id="banner-link" class="form-input" placeholder="https://example.com/promo-target">
+            </div>
+            <div class="form-group">
+              <label class="form-lbl">TAG *</label>
+              <select id="banner-tag" class="form-input">
+                <option value="Sponsor">Sponsor</option>
+                <option value="Hot News">Hot News</option>
+                <option value="Alert">Alert</option>
+                <option value="No Tag">No Tag (No Text)</option>
+              </select>
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;gap:10px;margin-top:28px;">
+              <input type="checkbox" id="banner-active" checked style="width:18px;height:18px;">
+              <label class="form-lbl" style="margin:0;cursor:pointer;">IS ACTIVE</label>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-lbl">ADMOB NATIVE AD UNIT ID</label>
-            <input type="text" class="form-input" value="ca-app-pub-3940256099942544/2247696110">
+          <div style="text-align:right;margin-top:16px;">
+            <button class="btn-action" onclick="saveNewBanner()">☁️ Upload & Save Banner</button>
           </div>
-          <button class="btn-action" onclick="alert('💰 AdMob Native Ad Units Saved!')">💾 Save AdMob Settings</button>
         </div>
+
+        <div class="card-panel" style="margin-top:20px;">
+          <div class="panel-hdr">📋 Existing Banners</div>
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;text-align:left;font-size:0.8rem;">
+              <thead>
+                <tr style="border-bottom:1px solid var(--border-color);">
+                  <th style="padding:10px;">Banner Image Preview</th>
+                  <th style="padding:10px;">Tag</th>
+                  <th style="padding:10px;">Redirect URL</th>
+                  <th style="padding:10px;">Status</th>
+                  <th style="padding:10px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="banners-tbody">
+                <tr><td colspan="5" style="padding:20px;text-align:center;color:var(--text-sub);">Loading banners from GitHub...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <script>
+          let existingBanners = [];
+          
+          async function fetchBanners() {
+            try {
+              const res = await fetch('https://raw.githubusercontent.com/leodeveloperstore-cyber/ffd-flood-watch/main/banners.json?v=' + Date.now());
+              if(res.ok) {
+                existingBanners = await res.json();
+                renderBanners();
+              }
+            } catch(e) { console.error('Error fetching banners', e); }
+          }
+          
+          function renderBanners() {
+            const tbody = document.getElementById('banners-tbody');
+            if(existingBanners.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="5" style="padding:20px;text-align:center;color:var(--text-sub);">No banners found.</td></tr>';
+              return;
+            }
+            tbody.innerHTML = existingBanners.map((b, i) => `
+              <tr style="border-bottom:1px solid var(--border-color);">
+                <td style="padding:10px;"><img src="${b.imageUrl}" style="height:40px;border-radius:4px;object-fit:cover;"></td>
+                <td style="padding:10px;font-weight:700;">${b.tag}</td>
+                <td style="padding:10px;color:var(--accent-cyan);">${b.redirectUrl || '-'}</td>
+                <td style="padding:10px;"><span style="color:${b.isActive ? 'var(--accent-green)' : 'var(--accent-red)'};font-weight:700;">${b.isActive ? 'ACTIVE' : 'INACTIVE'}</span></td>
+                <td style="padding:10px;">
+                  <button onclick="toggleBanner(${i})" style="padding:4px 8px;background:var(--bg-slate);color:white;border:1px solid var(--border-color);border-radius:4px;cursor:pointer;">Toggle Status</button>
+                  <button onclick="deleteBanner(${i})" style="padding:4px 8px;background:rgba(239, 68, 68, 0.2);color:var(--accent-red);border:1px solid rgba(239, 68, 68, 0.3);border-radius:4px;cursor:pointer;margin-left:6px;">🗑️ Delete</button>
+                </td>
+              </tr>
+            `).join('');
+          }
+          
+          async function commitBannersToGithub(bannersArray) {
+            const repo = localStorage.getItem('gh_repo');
+            const token = localStorage.getItem('gh_token');
+            if(!repo || !token) {
+              alert('Please configure GitHub Sync credentials in the Cloud tab first!');
+              return false;
+            }
+            const url = 'https://api.github.com/repos/' + repo + '/contents/banners.json';
+            try {
+              let sha = null;
+              const getRes = await fetch(url, { headers: { 'Authorization': 'token ' + token } });
+              if(getRes.ok) {
+                const data = await getRes.json();
+                sha = data.sha;
+              }
+              const newJson = JSON.stringify(bannersArray, null, 2);
+              const encoded = btoa(unescape(encodeURIComponent(newJson)));
+              const payload = {
+                message: 'Update custom banners via Admin Panel',
+                content: encoded
+              };
+              if(sha) payload.sha = sha;
+              
+              const putRes = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+              });
+              if(putRes.ok) {
+                return true;
+              } else {
+                alert('GitHub API Error: ' + (await putRes.json()).message);
+                return false;
+              }
+            } catch(e) {
+              alert('Error connecting to GitHub API');
+              return false;
+            }
+          }
+          
+          async function saveNewBanner() {
+            const img = document.getElementById('banner-img').value.trim();
+            const link = document.getElementById('banner-link').value.trim();
+            const tag = document.getElementById('banner-tag').value;
+            const active = document.getElementById('banner-active').checked;
+            
+            if(!img) return alert('Image URL is required!');
+            
+            const btn = event.target;
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
+            
+            existingBanners.unshift({ id: Date.now().toString(), imageUrl: img, redirectUrl: link, tag: tag, isActive: active });
+            
+            if(await commitBannersToGithub(existingBanners)) {
+              alert('Banner Saved & Synced!');
+              document.getElementById('banner-img').value = '';
+              document.getElementById('banner-link').value = '';
+              renderBanners();
+            } else {
+              existingBanners.shift(); // revert
+            }
+            btn.textContent = '☁️ Upload & Save Banner';
+            btn.disabled = false;
+          }
+          
+          async function toggleBanner(index) {
+            existingBanners[index].isActive = !existingBanners[index].isActive;
+            renderBanners();
+            await commitBannersToGithub(existingBanners);
+          }
+          
+          async function deleteBanner(index) {
+            if(confirm('Are you sure you want to delete this banner?')) {
+              existingBanners.splice(index, 1);
+              renderBanners();
+              await commitBannersToGithub(existingBanners);
+            }
+          }
+          
+          document.addEventListener('DOMContentLoaded', fetchBanners);
+        </script>
       </div>
 
       <!-- GOOGLE CLOUD STORAGE & GITHUB SYNC TAB -->
