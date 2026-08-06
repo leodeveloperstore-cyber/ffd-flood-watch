@@ -135,11 +135,17 @@ def scrape():
             if 'mangla' in scraped_values and 'mangla' in storage_data:
                 scraped_values['mangla']['storage'] = storage_data['mangla']
 
+            if len(scraped_values) == 0:
+                print("[ERROR] Scraped 0 stations. The HTML structure might have changed.")
+                import sys; sys.exit(1)
+
             print(f"[SUCCESS] Scraped data for {len(scraped_values)} stations from HTML.")
         else:
             print(f"[ERROR] HTTP {res.status_code}. Using fallback data.")
+            import sys; sys.exit(1)
     except Exception as e:
         print(f"[ERROR] Network/Parsing error: {e}. Using fallback data.")
+        import sys; sys.exit(1)
 
     overrides = load_overrides()
 
