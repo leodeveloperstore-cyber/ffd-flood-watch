@@ -462,7 +462,7 @@ html, body {
 .hc-num:hover { background:var(--pk-green); color:#fff; }
 
 /* ── Modals ── */
-.modal-bg { position:fixed; inset:0; background:rgba(0,0,0,0.72); backdrop-filter:blur(10px); z-index:100; display:none; align-items:center; justify-content:center; padding:16px; }
+.modal-bg { position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:99999; display:none; align-items:center; justify-content:center; padding:16px; }
 .modal-bg.active { display:flex; }
 .modal-box { background:var(--bg-modal); border:1px solid var(--border-mid); border-top:3px solid var(--pk-green); border-radius:16px; padding:22px; max-width:520px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.4); position:relative; animation:modal-in 0.3s cubic-bezier(0.16,1,0.3,1); transition:var(--transition); }
 @keyframes modal-in { from{opacity:0;transform:scale(0.94) translateY(14px)} to{opacity:1;transform:scale(1) translateY(0)} }
@@ -892,7 +892,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="brand-logo">🌊</div>
       <div class="brand-texts">
         <h1>PakFlood Watch</h1>
-        <p>PMD Flood Forecasting Division · GloFAS Satellite · WAPDA Telemetry</p>
+        <p style="display:none;"></p>
       </div>
     </div>
     <div class="topbar-right">
@@ -1018,6 +1018,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     <!-- RIVERS PANE -->
     <div id="pane-rivers" class="pane active">
+      <!-- PROMO BANNER CONTAINER -->
+      <div id="promo-banner-container" style="display:none; margin-bottom:16px; border-radius:12px; overflow:hidden; position:relative; box-shadow:var(--shadow-panel);">
+        <a id="promo-banner-link" href="#" target="_blank" style="display:block;">
+          <img id="promo-banner-img" src="" style="width:100%; display:block; object-fit:cover; aspect-ratio:1000/400;" alt="Promotional Banner">
+        </a>
+        <div id="promo-banner-tag" style="position:absolute; top:8px; left:8px; background:rgba(0,0,0,0.6); color:white; font-size:0.6rem; font-weight:700; padding:2px 6px; border-radius:4px; backdrop-filter:blur(4px);"></div>
+      </div>
+
       <div class="sec-head">Reservoir Capacity</div>
       <div class="dam-row">
         <div class="dam-card">
@@ -1041,17 +1049,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     <!-- WEATHER PANE -->
     <div id="pane-weather" class="pane">
-            <div class="sec-head" style="display:flex; justify-content:space-between; align-items:center;">
-        <span>Live Weather — Major Pakistani Cities</span>
-        <input type="text" id="weather-search" placeholder="Search city..." style="padding:4px 8px; border-radius:4px; border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-main); font-size:0.8rem; width:150px;">
-      </div>
-      <div class="weather-top-strip" id="weather-cards">
-        <!-- JS populated -->
-        <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text-faint);font-size:0.82rem;">
-          🔄 Loading live weather data...
-        </div>
-      </div>
-
       <div class="sec-head" style="margin-top:4px">Pakistan Overview</div>
       <div class="weather-detail-grid">
         <div class="wdg-card"><span class="wdg-icon">🌡️</span><div class="wdg-label">Avg Temp</div><div class="wdg-val" id="avg-temp">34°C</div></div>
@@ -1062,6 +1059,17 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="wdg-card"><span class="wdg-icon">🌧️</span><div class="wdg-label">Max Rainfall</div><div class="wdg-val" id="max-rain">22 mm</div></div>
         <div class="wdg-card"><span class="wdg-icon">👁️</span><div class="wdg-label">Visibility</div><div class="wdg-val">8–12 km</div></div>
         <div class="wdg-card"><span class="wdg-icon">🌅</span><div class="wdg-label">UV Index</div><div class="wdg-val" style="color:#d97706">High 8</div></div>
+      </div>
+      
+      <div class="sec-head" style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+        <span>Live Weather — Major Pakistani Cities</span>
+        <input type="text" id="weather-search" placeholder="Search city..." style="padding:4px 8px; border-radius:4px; border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-main); font-size:0.8rem; width:130px;">
+      </div>
+      <div class="weather-top-strip" id="weather-cards">
+        <!-- JS populated -->
+        <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text-faint);font-size:0.82rem;">
+          🔄 Loading live weather data...
+        </div>
       </div>
     </div>
 
@@ -2746,27 +2754,14 @@ stations.forEach(st => {
   // Premium FFD Gauge Marker: Full discharge number (with commas e.g. 216,900) above, square status badge in middle, station name below
   const ffdGaugeIcon = L.divIcon({
     className: '',
-    iconAnchor: [35, 20],
-    html: `<div style="display:flex;flex-direction:column;align-items:center;width:70px;pointer-events:auto;cursor:pointer;line-height:1.1;">
-      <span style="font-family:'Poppins',sans-serif;font-size:8.5px;font-weight:700;color:${col};white-space:nowrap;background:rgba(255,255,255,0.92);padding:1px 4px;border-radius:3px;border:1px solid ${col}44;box-shadow:0 1px 4px rgba(0,0,0,0.2);margin-bottom:2px;">
+    iconAnchor: [20, 20],
+    html: `<div style="display:flex;flex-direction:column;align-items:center;width:40px;pointer-events:auto;cursor:pointer;line-height:1.1;">
+      <span style="font-family:'Poppins',sans-serif;font-size:7.5px;font-weight:800;color:${col};white-space:nowrap;background:rgba(255,255,255,0.92);padding:1px 3px;border-radius:2px;border:1px solid ${col}44;box-shadow:0 1px 4px rgba(0,0,0,0.2);margin-bottom:2px;">
         ${st.inflow ? st.inflow.toLocaleString() : '0'}
       </span>
-      <div style="position:relative; width:34px; height:34px; display:flex; align-items:center; justify-content:center; margin-bottom:2px;">
-        <!-- Outer Glow -->
-        <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:${col}; opacity:0.35; filter:blur(4px);"></div>
-        <!-- Pin Background -->
-        <div style="position:absolute; width:28px; height:28px; background:linear-gradient(135deg, ${col}ee, ${col}); border:2px solid #ffffff; border-radius:50%; box-shadow:0 3px 6px rgba(0,0,0,0.5);"></div>
-        <!-- Pro Dam SVG Icon -->
-        <svg style="z-index:2; filter:drop-shadow(0 1px 1px rgba(0,0,0,0.4));" width="15" height="15" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 3C4.5 3 4.1 3.3 4 3.8L2.2 13H21.8L20 3.8C19.9 3.3 19.5 3 19 3H5Z" opacity="0.95"/>
-          <path d="M10 13V20H14V13H10Z" fill="#bae6fd"/>
-          <path d="M2 13H22V15H2Z" opacity="0.9"/>
-          <path d="M2 19C3.5 19 4.5 18 6 18C7.5 18 8.5 19 10 19C11.5 19 12.5 18 14 18C15.5 18 16.5 19 18 19C19.5 19 20.5 18 22 18V22H2V19Z" fill="#7dd3fc"/>
-        </svg>
+      <div style="width:12px;height:12px;background:white;border:2px solid ${col};border-radius:3px;box-shadow:0 0 6px ${col}88;display:flex;align-items:center;justify-content:center;">
+        <div style="width:5px;height:5px;background:${col};border-radius:1px;"></div>
       </div>
-      <span style="font-family:'Poppins',sans-serif;font-size:8.5px;font-weight:700;color:#0f172a;white-space:nowrap;margin-top:2px;text-shadow:0 1px 2px rgba(255,255,255,0.9);">
-        ${st.en}
-      </span>
     </div>`
   });
 
@@ -2775,7 +2770,7 @@ stations.forEach(st => {
 
   // Exact FFD Popup Card (Matching FFD Reference Image 3)
   marker.bindPopup(`
-    <div style="font-family:'Poppins',sans-serif;width:260px;margin:-14px -20px -14px -20px;border-radius:12px;overflow:hidden;background:#ffffff;color:#1e293b;box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+    <div style="font-family:'Poppins',sans-serif;width:260px;margin:-14px -20px -14px -20px;border-radius:12px;overflow:hidden;background:#ffffff;color:#1e293b;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:9999;">
       <div style="background:${col};padding:12px 14px;color:#ffffff;">
         <div style="font-size:1.05rem;font-weight:800;line-height:1.2;">${st.en}</div>
         <div style="font-size:0.75rem;font-weight:600;opacity:0.92;margin-top:1px;">${st.sk.toUpperCase()} FLOW</div>
@@ -2799,18 +2794,15 @@ stations.forEach(st => {
 
   const flowColumnIcon = L.divIcon({
     className: '',
-    iconAnchor: [28, colHeight + 25],
-    html: `<div class="flow-col-container" style="display:flex;flex-direction:column;align-items:center;width:56px;pointer-events:auto;cursor:pointer;line-height:1.1;">
-      <span style="font-family:'Poppins',sans-serif;font-size:8px;font-weight:800;color:#ffffff;background:${col};padding:2px 6px;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,0.4);white-space:nowrap;margin-bottom:3px;border:1px solid rgba(255,255,255,0.4);">
+    iconAnchor: [20, colHeight + 25],
+    html: `<div class="flow-col-container" style="display:flex;flex-direction:column;align-items:center;width:40px;pointer-events:auto;cursor:pointer;line-height:1.1;">
+      <span style="font-family:'Poppins',sans-serif;font-size:7.5px;font-weight:800;color:#ffffff;background:${col};padding:1px 3px;border-radius:3px;box-shadow:0 2px 8px rgba(0,0,0,0.4);white-space:nowrap;margin-bottom:3px;border:1px solid rgba(255,255,255,0.4);">
         ${st.inflow ? st.inflow.toLocaleString() : '0'}
       </span>
       <div style="width:12px;height:${colHeight}px;background:linear-gradient(to top, ${col}, #ffffff);border:1.5px solid ${col};border-radius:3px 3px 1px 1px;box-shadow:0 4px 12px rgba(0,0,0,0.45);position:relative;">
         <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#ffffff;border-radius:2px;"></div>
       </div>
       <div style="width:10px;height:4px;background:rgba(0,0,0,0.3);border-radius:50%;margin-top:1px;"></div>
-      <span style="font-family:'Poppins',sans-serif;font-size:8px;font-weight:700;color:#0f172a;white-space:nowrap;margin-top:2px;text-shadow:0 1px 2px rgba(255,255,255,0.95);">
-        ${st.en}
-      </span>
     </div>`
   });
 
@@ -2839,7 +2831,53 @@ document.getElementById('lyr-cols').addEventListener('change',     e => columnLa
 
 /* ── 30-Minute Live Auto-Telemetry Sync Engine ── */
 function syncLiveTelemetry() {
-  fetch('live_stations.json?v=' + Date.now())
+  // Fetch Custom Banners
+  let promoBanners = [];
+  let currentBannerIdx = 0;
+  let bannerInterval = null;
+
+  function fetchBanners() {
+    fetch('https://raw.githubusercontent.com/leodeveloperstore-cyber/ffd-flood-watch/main/banners.json?v=' + Date.now())
+      .then(r => r.ok ? r.json() : [])
+      .then(data => {
+        promoBanners = data.filter(b => b.isActive);
+        if (promoBanners.length > 0) {
+          document.getElementById('promo-banner-container').style.display = 'block';
+          showBanner(0);
+          if (promoBanners.length > 1) {
+            bannerInterval = setInterval(() => {
+              currentBannerIdx = (currentBannerIdx + 1) % promoBanners.length;
+              showBanner(currentBannerIdx);
+            }, 5000);
+          }
+        }
+      })
+      .catch(e => console.error('Banners failed to load', e));
+  }
+
+  function showBanner(index) {
+    const banner = promoBanners[index];
+    document.getElementById('promo-banner-img').src = banner.imageUrl;
+    const linkEl = document.getElementById('promo-banner-link');
+    if(banner.redirectUrl) {
+      linkEl.href = banner.redirectUrl;
+      linkEl.style.pointerEvents = 'auto';
+    } else {
+      linkEl.removeAttribute('href');
+      linkEl.style.pointerEvents = 'none';
+    }
+    const tagEl = document.getElementById('promo-banner-tag');
+    if (banner.tag && banner.tag !== 'No Tag') {
+      tagEl.textContent = banner.tag;
+      tagEl.style.display = 'block';
+    } else {
+      tagEl.style.display = 'none';
+    }
+  }
+
+  fetchBanners();
+
+  fetch('https://raw.githubusercontent.com/leodeveloperstore-cyber/ffd-flood-watch/main/live_stations.json?v=' + Date.now())
     .then(r => r.json())
     .then(data => {
       if (data && data.stations) {
@@ -3020,7 +3058,7 @@ document.getElementById('river-grid').innerHTML = stations.map(st=>{
     </div>
     <div class="rc-footer">
       <span class="rc-trend ${tCls}">${tIcon} ${tUrdu}</span>
-      <button class="rc-btn" onclick="openHydro('${st.en}',${st.lat},${st.lon})">📊 7-Day Forecast</button>
+      <button class="rc-btn" onclick="event.stopPropagation(); openHydro('${st.en}',${st.lat},${st.lon})">📊 7-Day Forecast</button>
     </div>
   </div>`;
 }).join('');
@@ -3110,7 +3148,7 @@ async function loadWeather(){
     if(document.getElementById('max-rain'))  document.getElementById('max-rain').textContent  = Math.max(...rains).toFixed(1)+' mm';
     if(document.getElementById('max-cloud')) document.getElementById('max-cloud').textContent = Math.round(Math.max(...hums))+'%';
 
-    document.getElementById('weather-cards').innerHTML = results.map(r=>{
+    const weatherHtml = results.map(r=>{
       const {icon, desc} = wmoIcon(r.weathercode||0);
       const tc = wTempColor(r.temperature_2m||25);
       return `<div class="weather-city-card" style="--wc-color:${tc}">
@@ -3126,22 +3164,31 @@ async function loadWeather(){
         </div>
       </div>`;
     }).join('');
+    
+    document.querySelectorAll('#weather-cards').forEach(el => el.innerHTML = weatherHtml);
+    
+    // In case the mobile panel is open and was cloned before load finished, re-clone if needed, or simply let the querySelectorAll handle if they exist.
   } catch(e){
-    document.getElementById('weather-cards').innerHTML =
-      '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-faint);font-size:0.8rem;">⚠️ Live weather unavailable. Check internet connection.</div>';
+    document.querySelectorAll('#weather-cards').forEach(el => el.innerHTML =
+      '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-faint);font-size:0.8rem;">⚠️ Live weather unavailable. Check internet connection.</div>');
   }
 }
-
-document.getElementById('weather-search').addEventListener('input', (e) => {
-  const term = e.target.value.toLowerCase();
-  const cards = document.querySelectorAll('.weather-city-card');
-  cards.forEach(card => {
-    const city = card.querySelector('.wc-city').innerText.toLowerCase();
-    if(city.includes(term)) card.style.display = 'flex';
-    else card.style.display = 'none';
-  });
+// Use event delegation for weather search because elements might be cloned
+document.addEventListener('input', (e) => {
+  if(e.target && e.target.id === 'weather-search') {
+    const term = e.target.value.toLowerCase();
+    // find the closest parent container to only filter the visible cards
+    const container = e.target.closest('.pane') || e.target.closest('.f-screen-panel');
+    if(container) {
+      const cards = container.querySelectorAll('.weather-city-card');
+      cards.forEach(card => {
+        const city = card.querySelector('.wc-city').innerText.toLowerCase();
+        if(city.includes(term)) card.style.display = 'flex';
+        else card.style.display = 'none';
+      });
+    }
+  }
 });
-
 loadWeather();
 
 /* ============================================================
