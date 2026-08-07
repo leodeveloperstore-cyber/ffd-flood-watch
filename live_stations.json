@@ -1,6 +1,6 @@
 {
   "source": "PakFlood Auto-Scraper (GitHub Actions)",
-  "last_updated": "Dated: 6th August-2026 06:00 PKT",
+  "last_updated": "Dated: 7th August-2026 06:00 PKT",
   "total_stations": 20,
   "stations": [
     {
@@ -10,11 +10,11 @@
       "river": "Indus",
       "lat": 34.08,
       "lon": 72.7,
-      "inflow": 278000,
-      "outflow": 233900,
+      "inflow": 252000,
+      "outflow": 218400,
       "mode": "auto",
       "sk": "low",
-      "storage": 95.88
+      "storage": 96.92
     },
     {
       "id": "marala",
@@ -23,8 +23,8 @@
       "river": "Chenab",
       "lat": 32.67,
       "lon": 74.46,
-      "inflow": 81300,
-      "outflow": 62100,
+      "inflow": 68300,
+      "outflow": 48000,
       "mode": "auto",
       "sk": "normal"
     },
@@ -35,8 +35,8 @@
       "river": "Chenab",
       "lat": 32.4,
       "lon": 73.96,
-      "inflow": 71900,
-      "outflow": 65200,
+      "inflow": 61200,
+      "outflow": 54100,
       "mode": "auto",
       "sk": "normal"
     },
@@ -47,8 +47,8 @@
       "river": "Chenab",
       "lat": 32.32,
       "lon": 73.69,
-      "inflow": 68700,
-      "outflow": 61700,
+      "inflow": 60400,
+      "outflow": 53400,
       "mode": "auto",
       "sk": "normal"
     },
@@ -59,11 +59,11 @@
       "river": "Jhelum",
       "lat": 33.14,
       "lon": 73.64,
-      "inflow": 46000,
+      "inflow": 36000,
       "outflow": 7000,
       "mode": "auto",
       "sk": "normal",
-      "storage": 95.88
+      "storage": 96.92
     },
     {
       "id": "kalabagh",
@@ -72,8 +72,8 @@
       "river": "Indus",
       "lat": 32.96,
       "lon": 71.55,
-      "inflow": 364900,
-      "outflow": 357800,
+      "inflow": 346400,
+      "outflow": 338800,
       "mode": "auto",
       "sk": "medium"
     },
@@ -84,8 +84,8 @@
       "river": "Indus",
       "lat": 32.44,
       "lon": 71.37,
-      "inflow": 321700,
-      "outflow": 313300,
+      "inflow": 309600,
+      "outflow": 301100,
       "mode": "auto",
       "sk": "medium"
     },
@@ -96,8 +96,8 @@
       "river": "Indus",
       "lat": 30.51,
       "lon": 70.84,
-      "inflow": 236800,
-      "outflow": 216100,
+      "inflow": 247800,
+      "outflow": 227100,
       "mode": "auto",
       "sk": "low"
     },
@@ -108,8 +108,8 @@
       "river": "Indus",
       "lat": 28.42,
       "lon": 69.7,
-      "inflow": 237100,
-      "outflow": 196200,
+      "inflow": 217800,
+      "outflow": 176100,
       "mode": "auto",
       "sk": "low"
     },
@@ -120,10 +120,10 @@
       "river": "Indus",
       "lat": 27.57,
       "lon": 68.85,
-      "inflow": 206700,
-      "outflow": 155800,
+      "inflow": 194300,
+      "outflow": 141100,
       "mode": "auto",
-      "sk": "low"
+      "sk": "normal"
     },
     {
       "id": "kotri",
@@ -132,7 +132,7 @@
       "river": "Indus",
       "lat": 25.37,
       "lon": 68.31,
-      "inflow": 163900,
+      "inflow": 165300,
       "outflow": 131000,
       "mode": "auto",
       "sk": "normal"
@@ -144,8 +144,8 @@
       "river": "Ravi",
       "lat": 31.22,
       "lon": 73.86,
-      "inflow": 30200,
-      "outflow": 5800,
+      "inflow": 32200,
+      "outflow": 8100,
       "mode": "auto",
       "sk": "normal"
     },
@@ -168,8 +168,8 @@
       "river": "Kabul",
       "lat": 34.01,
       "lon": 71.97,
-      "inflow": 49500,
-      "outflow": 49500,
+      "inflow": 44000,
+      "outflow": 44000,
       "mode": "auto",
       "sk": "normal"
     },
