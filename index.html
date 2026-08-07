@@ -1019,11 +1019,12 @@ document.addEventListener('DOMContentLoaded', () => {
     <!-- RIVERS PANE -->
     <div id="pane-rivers" class="pane active">
       <!-- PROMO BANNER CONTAINER -->
-      <div id="promo-banner-container" style="display:none; margin-bottom:16px; border-radius:12px; overflow:hidden; position:relative; box-shadow:var(--shadow-panel);">
+      <div id="promo-banner-container" style="display:none; margin-bottom:16px; border-radius:12px; overflow:hidden; position:relative; box-shadow:var(--shadow-panel); background:#1e293b;">
         <a id="promo-banner-link" href="#" target="_blank" style="display:block;">
-          <img id="promo-banner-img" src="" style="width:100%; display:block; object-fit:cover; aspect-ratio:1000/400;" alt="Promotional Banner">
+          <img id="promo-banner-img" src="" style="width:100%; display:block; object-fit:cover; aspect-ratio:1000/400; transition: opacity 0.4s ease-in-out;" alt="Promotional Banner">
         </a>
         <div id="promo-banner-tag" style="position:absolute; top:8px; left:8px; background:rgba(0,0,0,0.6); color:white; font-size:0.6rem; font-weight:700; padding:2px 6px; border-radius:4px; backdrop-filter:blur(4px);"></div>
+        <div id="promo-banner-dots" style="position:absolute; bottom:8px; left:0; right:0; display:flex; justify-content:center; gap:6px;"></div>
       </div>
 
       <div class="sec-head">Reservoir Capacity</div>
@@ -2891,12 +2892,31 @@ function syncLiveTelemetry() {
         promoBanners = data.filter(b => b.isActive);
         if (promoBanners.length > 0) {
           document.getElementById('promo-banner-container').style.display = 'block';
+          
+          // Generate dots
+          const dotsContainer = document.getElementById('promo-banner-dots');
+          dotsContainer.innerHTML = '';
+          if (promoBanners.length > 1) {
+            promoBanners.forEach((b, i) => {
+              const dot = document.createElement('div');
+              dot.style.width = '6px';
+              dot.style.height = '6px';
+              dot.style.borderRadius = '50%';
+              dot.style.background = 'rgba(255,255,255,0.4)';
+              dot.style.transition = 'all 0.3s';
+              dot.id = 'banner-dot-' + i;
+              dotsContainer.appendChild(dot);
+            });
+          }
+          
           showBanner(0);
+          
+          if (bannerInterval) clearInterval(bannerInterval);
           if (promoBanners.length > 1) {
             bannerInterval = setInterval(() => {
               currentBannerIdx = (currentBannerIdx + 1) % promoBanners.length;
               showBanner(currentBannerIdx);
-            }, 5000);
+            }, 4000);
           }
         }
       })
@@ -2905,22 +2925,43 @@ function syncLiveTelemetry() {
 
   function showBanner(index) {
     const banner = promoBanners[index];
-    document.getElementById('promo-banner-img').src = banner.imageUrl;
-    const linkEl = document.getElementById('promo-banner-link');
-    if(banner.redirectUrl) {
-      linkEl.href = banner.redirectUrl;
-      linkEl.style.pointerEvents = 'auto';
-    } else {
-      linkEl.removeAttribute('href');
-      linkEl.style.pointerEvents = 'none';
+    const imgEl = document.getElementById('promo-banner-img');
+    
+    // Smooth fade effect
+    imgEl.style.opacity = 0;
+    
+    // Update active dot
+    if(promoBanners.length > 1) {
+       for(let i = 0; i < promoBanners.length; i++) {
+         const d = document.getElementById('banner-dot-' + i);
+         if(d) {
+            d.style.background = (i === index) ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.4)';
+            d.style.transform = (i === index) ? 'scale(1.3)' : 'scale(1)';
+         }
+       }
     }
-    const tagEl = document.getElementById('promo-banner-tag');
-    if (banner.tag && banner.tag !== 'No Tag') {
-      tagEl.textContent = banner.tag;
-      tagEl.style.display = 'block';
-    } else {
-      tagEl.style.display = 'none';
-    }
+
+    setTimeout(() => {
+      imgEl.src = banner.imageUrl;
+      const linkEl = document.getElementById('promo-banner-link');
+      if(banner.redirectUrl) {
+        linkEl.href = banner.redirectUrl;
+        linkEl.style.pointerEvents = 'auto';
+      } else {
+        linkEl.removeAttribute('href');
+        linkEl.style.pointerEvents = 'none';
+      }
+      const tagEl = document.getElementById('promo-banner-tag');
+      if (banner.tag && banner.tag !== 'No Tag') {
+        tagEl.textContent = banner.tag;
+        tagEl.style.display = 'block';
+      } else {
+        tagEl.style.display = 'none';
+      }
+      
+      // Fade back in
+      setTimeout(() => { imgEl.style.opacity = 1; }, 50);
+    }, 400); // Wait for fade out to complete before swapping image
   }
 
   fetchBanners();
