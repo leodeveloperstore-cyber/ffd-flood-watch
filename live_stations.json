@@ -13,7 +13,11 @@
       "inflow": 125200,
       "outflow": 125200,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "183,700",
+      "cyp_date": "23-Jul-2026",
+      "cyp_status": "NORMAL"
     },
     {
       "id": "partab",
@@ -25,7 +29,11 @@
       "inflow": 189900,
       "outflow": 189900,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "279,100",
+      "cyp_date": "23-Jul-2026",
+      "cyp_status": "NORMAL"
     },
     {
       "id": "besham",
@@ -37,7 +45,11 @@
       "inflow": 233600,
       "outflow": 233600,
       "mode": "auto",
-      "sk": "low"
+      "sk": "low",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "323,600",
+      "cyp_date": "23-Jul-2026",
+      "cyp_status": "NORMAL"
     },
     {
       "id": "nowshera",
@@ -49,7 +61,14 @@
       "inflow": 46000,
       "outflow": 46000,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "78,500",
+      "cyp_date": "23-Jul-2026",
+      "cyp_status": "LOW",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "45 - 50"
     },
     {
       "id": "tarbela",
@@ -62,7 +81,14 @@
       "outflow": 218400,
       "mode": "auto",
       "sk": "low",
-      "storage": 96.92
+      "storage": 96.92,
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "280,500",
+      "cyp_date": "05-Aug-2026",
+      "cyp_status": "LOW",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "225 - 245"
     },
     {
       "id": "muzaffarabad",
@@ -74,7 +100,11 @@
       "inflow": 8420,
       "outflow": 8420,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "27,040",
+      "cyp_date": "04-Jul-2026",
+      "cyp_status": "NORMAL"
     },
     {
       "id": "chattarkallas",
@@ -86,7 +116,11 @@
       "inflow": 35900,
       "outflow": 35900,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "59,430",
+      "cyp_date": "23-Jul-2026",
+      "cyp_status": "NORMAL"
     },
     {
       "id": "azadpattan",
@@ -98,7 +132,11 @@
       "inflow": 42110,
       "outflow": 42110,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "63,070",
+      "cyp_date": "23-Jul-2026",
+      "cyp_status": "NORMAL"
     },
     {
       "id": "kotli",
@@ -110,7 +148,11 @@
       "inflow": 6050,
       "outflow": 6050,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "37,960",
+      "cyp_date": "19-Jul-2026",
+      "cyp_status": "NORMAL"
     },
     {
       "id": "mangla",
@@ -123,7 +165,14 @@
       "outflow": 7000,
       "mode": "auto",
       "sk": "normal",
-      "storage": 96.92
+      "storage": 96.92,
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "81,534",
+      "cyp_date": "23-Jun-2026",
+      "cyp_status": "LOW",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "40 - 50"
     },
     {
       "id": "marala",
@@ -135,7 +184,14 @@
       "inflow": 68316,
       "outflow": 47966,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "258,608",
+      "cyp_date": "23-Jul-2026",
+      "cyp_status": "HIGH",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "70 - 90"
     },
     {
       "id": "khanki",
@@ -147,7 +203,14 @@
       "inflow": 61293,
       "outflow": 54100,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "256,063",
+      "cyp_date": "23-Jul-2026",
+      "cyp_status": "HIGH",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "50 - 70"
     },
     {
       "id": "qadirabad",
@@ -159,7 +222,14 @@
       "inflow": 59014,
       "outflow": 52014,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "252,159",
+      "cyp_date": "23-Jul-2026",
+      "cyp_status": "HIGH",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "50 - 70"
     },
     {
       "id": "rasul",
@@ -171,7 +241,14 @@
       "inflow": 3600,
       "outflow": 0,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "41,380",
+      "cyp_date": "28-Jun-2026",
+      "cyp_status": "NORMAL",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "No sig. change"
     },
     {
       "id": "chiniot",
@@ -183,7 +260,13 @@
       "inflow": 38196,
       "outflow": 38196,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "246,947",
+      "cyp_date": "24-Jul-2026",
+      "cyp_status": "HIGH",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL"
     },
     {
       "id": "jassar",
@@ -195,7 +278,14 @@
       "inflow": 7350,
       "outflow": 7350,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "36,220",
+      "cyp_date": "22-Jul-2026",
+      "cyp_status": "NORMAL",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "08 - 15"
     },
     {
       "id": "shahdara",
@@ -207,7 +297,14 @@
       "inflow": 18365,
       "outflow": 18365,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "33,585",
+      "cyp_date": "23-Jul-2026",
+      "cyp_status": "NORMAL",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "10 - 20"
     },
     {
       "id": "balloki",
@@ -219,7 +316,14 @@
       "inflow": 31870,
       "outflow": 6920,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "64,515",
+      "cyp_date": "25-Jul-2026",
+      "cyp_status": "LOW",
+      "forecast_status": "LOW",
+      "forecast_qual": "LOW FLOOD",
+      "forecast_quant": "20 - 40"
     },
     {
       "id": "gandasingh",
@@ -231,7 +335,14 @@
       "inflow": 360,
       "outflow": 360,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "3,620",
+      "cyp_date": "24-Jul-2026",
+      "cyp_status": "NORMAL",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "0.2 - 01"
     },
     {
       "id": "sulemanki",
@@ -243,7 +354,14 @@
       "inflow": 15680,
       "outflow": 3075,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "7,047",
+      "cyp_date": "26-Jul-2026",
+      "cyp_status": "NORMAL",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "No sig. change"
     },
     {
       "id": "islam",
@@ -255,7 +373,14 @@
       "inflow": 2855,
       "outflow": 725,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "4,408",
+      "cyp_date": "17-Jun-2026",
+      "cyp_status": "NORMAL",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "No sig. change"
     },
     {
       "id": "sidhnai",
@@ -267,7 +392,14 @@
       "inflow": 14781,
       "outflow": 881,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "47,603",
+      "cyp_date": "27-Jul-2026",
+      "cyp_status": "MEDIUM",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "15 - 30"
     },
     {
       "id": "trimmu",
@@ -279,7 +411,14 @@
       "inflow": 72930,
       "outflow": 61230,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "185,709",
+      "cyp_date": "25-Jul-2026",
+      "cyp_status": "LOW",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "70 - 80"
     },
     {
       "id": "taunsa",
@@ -291,7 +430,14 @@
       "inflow": 315603,
       "outflow": 294903,
       "mode": "auto",
-      "sk": "medium"
+      "sk": "medium",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "366,038",
+      "cyp_date": "28-Jul-2026",
+      "cyp_status": "LOW",
+      "forecast_status": "LOW",
+      "forecast_qual": "LOW FLOOD",
+      "forecast_quant": "250 R 290"
     },
     {
       "id": "panjnad",
@@ -303,7 +449,14 @@
       "inflow": 63332,
       "outflow": 50282,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "132,960",
+      "cyp_date": "28-Jul-2026",
+      "cyp_status": "NORMAL",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "50 - 60"
     },
     {
       "id": "guddu",
@@ -315,7 +468,14 @@
       "inflow": 229956,
       "outflow": 187992,
       "mode": "auto",
-      "sk": "low"
+      "sk": "low",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "386,860",
+      "cyp_date": "31-Jul-2026",
+      "cyp_status": "MEDIUM",
+      "forecast_status": "LOW",
+      "forecast_qual": "LOW FLOOD",
+      "forecast_quant": "190 - 200"
     },
     {
       "id": "sukkur",
@@ -327,7 +487,14 @@
       "inflow": 194330,
       "outflow": 141080,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "314,764",
+      "cyp_date": "02-Aug-2026",
+      "cyp_status": "LOW",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "170 - 180"
     },
     {
       "id": "kotri",
@@ -339,7 +506,14 @@
       "inflow": 179191,
       "outflow": 142486,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "normal",
+      "recording_time": "07-Aug 18 PKT",
+      "cyp_discharge": "142,486",
+      "cyp_date": "07-Aug-2026",
+      "cyp_status": "NORMAL",
+      "forecast_status": "NORMAL",
+      "forecast_qual": "NORMAL",
+      "forecast_quant": "135 - 165"
     },
     {
       "id": "baglihar",
