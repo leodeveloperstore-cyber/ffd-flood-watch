@@ -578,6 +578,11 @@ html, body {
   padding: 18px;
 }
 .native-screen-panel.active { display: block; }
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0,0,0, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0,0,0, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0,0,0, 0); }
+}
 </style>
 
 
@@ -2718,32 +2723,58 @@ const realRiverPaths = [
   }
 ];
 
-const riverLayers = [];
-realRiverPaths.forEach(r => {
-  // Layer 1: Outer River Bank Outline (Thicker dark river channel line)
-  const outerLine = L.polyline(r.coords, {
-    color: isDark ? '#022c22' : (r.name === 'INDUS RIVER' ? '#003882' : '#045e43'),
-    weight: r.name === 'INDUS RIVER' ? 5.5 : 4.2,
-    opacity: 0.92,
-    lineCap: 'round',
-    lineJoin: 'round'
-  }).addTo(map);
+let riverLayers = [];
+function renderRivers() {
+  riverLayers.forEach(l => map.removeLayer(l));
+  riverLayers = [];
 
-  // Layer 2: Inner Water Flow Core (Vibrant inner water line)
-  const innerLine = L.polyline(r.coords, {
-    color: r.name === 'INDUS RIVER' ? '#0284c7' : '#10b981',
-    weight: r.name === 'INDUS RIVER' ? 3.0 : 2.2,
-    opacity: 0.98,
-    lineCap: 'round',
-    lineJoin: 'round'
-  }).addTo(map);
+  const severity = { 'normal': 0, 'low': 1, 'medium': 2, 'high': 3, 'very_high': 4, 'exceptionally_high': 5 };
 
-  innerLine.bindTooltip(`<b>${r.name}</b><br><span style="font-family:'Noto Nastaliq Urdu',serif">${r.nameUr}</span>`, {
-    sticky: true
+  realRiverPaths.forEach(r => {
+    let worstLevel = 0;
+    let worstSk = 'normal';
+    stations.forEach(st => {
+      if (st.river && st.river.toUpperCase().includes(r.name.replace(' RIVER', ''))) {
+        let l = severity[st.sk] || 0;
+        if (l > worstLevel) { worstLevel = l; worstSk = st.sk; }
+      }
+    });
+
+    const isIndus = r.name === 'INDUS RIVER';
+    const innerColor = (worstSk === 'normal') ? (isIndus ? '#0284c7' : '#10b981') : (skColor[worstSk] || '#10b981');
+
+    const outerLine = L.polyline(r.coords, {
+      color: isDark ? '#022c22' : (isIndus ? '#003882' : '#045e43'),
+      weight: isIndus ? 5.5 : 4.2,
+      opacity: 0.92,
+      lineCap: 'round',
+      lineJoin: 'round'
+    });
+
+    const innerLine = L.polyline(r.coords, {
+      color: innerColor,
+      weight: isIndus ? 3.0 : 2.2,
+      opacity: 0.98,
+      lineCap: 'round',
+      lineJoin: 'round'
+    });
+
+    innerLine.bindTooltip(`<b>${r.name}</b><br><span style="font-family:'Noto Nastaliq Urdu',serif">${r.nameUr}</span>`, {
+      sticky: true
+    });
+
+    if (document.getElementById('lyr-rivers') && document.getElementById('lyr-rivers').checked) {
+       outerLine.addTo(map);
+       innerLine.addTo(map);
+       if(typeof is3D !== 'undefined' && is3D) {
+          setTimeout(() => { if(innerLine._path) innerLine._path.classList.add('river-water-anim'); }, 50);
+       }
+    }
+
+    riverLayers.push(outerLine, innerLine);
   });
-
-  riverLayers.push(outerLine, innerLine);
-});
+}
+renderRivers();
 
 /* Clean FFD Markers (Minimal text & square dot icon, matching bottom reference image) */
 let markerLayers = [];
@@ -2758,15 +2789,16 @@ function renderMapMarkers() {
     const ffdGaugeIcon = L.divIcon({
       className: '',
       iconAnchor: [20, 20],
-      html: `<div style="display:flex;flex-direction:column;align-items:center;width:40px;pointer-events:auto;cursor:pointer;line-height:1.1;">
-        <span style="font-family:'Poppins',sans-serif;font-size:7.5px;font-weight:800;color:${col};white-space:nowrap;background:rgba(255,255,255,0.92);padding:1px 3px;border-radius:2px;border:1px solid ${col}44;box-shadow:0 1px 4px rgba(0,0,0,0.2);margin-bottom:2px;">
-          ${st.inflow ? st.inflow.toLocaleString() : '0'}
-        </span>
-        <div style="width:12px;height:12px;background:white;border:2px solid ${col};border-radius:3px;box-shadow:0 0 6px ${col}88;display:flex;align-items:center;justify-content:center;">
-          <div style="width:5px;height:5px;background:${col};border-radius:1px;"></div>
+      html: `<div style="display:flex;flex-direction:column;align-items:center;width:60px;pointer-events:auto;cursor:pointer;line-height:1.1;margin-left:-10px;">
+        <div style="position:relative; width:14px; height:14px;">
+           <div class="pulse-ring" style="position:absolute; top:-4px; left:-4px; width:22px; height:22px; border-radius:50%; background:${col}; opacity:0.4; animation: pulse 2s infinite;"></div>
+           <div style="position:absolute; top:0; left:0; width:14px; height:14px; background:${col}; border:2px solid white; border-radius:50%; box-shadow:0 0 6px rgba(0,0,0,0.5);"></div>
         </div>
-        <span style="font-family:'Poppins',sans-serif;font-size:7.5px;font-weight:700;color:#ffffff;text-shadow:0px 0px 3px #000, 0px 0px 3px #000;white-space:nowrap;margin-top:2px;">
+        <span style="font-family:'Poppins',sans-serif;font-size:8px;font-weight:800;color:#ffffff;text-shadow:0px 0px 4px #000, 0px 0px 2px #000;white-space:nowrap;margin-top:4px;">
           ${st.en}
+        </span>
+        <span style="font-family:'Poppins',sans-serif;font-size:7px;font-weight:800;color:#222;background:white;padding:1px 4px;border-radius:10px;box-shadow:0 2px 4px rgba(0,0,0,0.3);margin-top:2px;">
+          ${st.inflow ? st.inflow.toLocaleString() : '0'}
         </span>
       </div>`
     });
@@ -2945,6 +2977,7 @@ function syncLiveTelemetry() {
           }
         });
         if (typeof renderRiverCards === 'function') renderRiverCards();
+        if (typeof renderRivers === 'function') renderRivers();
         if (typeof renderMapMarkers === 'function') renderMapMarkers();
         if (typeof renderColumnMarkers === 'function') renderColumnMarkers();
         if (data.last_updated) {
