@@ -171,7 +171,7 @@ def scrape():
         final_stations.append(st_data)
 
     payload = {
-        "source": "PakFlood Auto-Scraper (GitHub Actions) - Live API",
+        "source": "PakFlood PC Auto-Scraper - Live API",
         "last_updated": bulletin_date,
         "total_stations": len(final_stations),
         "stations": final_stations
