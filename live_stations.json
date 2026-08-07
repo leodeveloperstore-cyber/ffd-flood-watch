@@ -1,6 +1,6 @@
 {
   "source": "PakFlood Auto-Scraper (GitHub Actions) - Live API",
-  "last_updated": "Dated: 07-Aug 12 PKT",
+  "last_updated": "Dated: 07-Aug 18 PKT",
   "total_stations": 20,
   "stations": [
     {
@@ -10,8 +10,8 @@
       "river": "Indus",
       "lat": 34.08,
       "lon": 72.7,
-      "inflow": 248000,
-      "outflow": 234100,
+      "inflow": 241000,
+      "outflow": 218400,
       "mode": "auto",
       "sk": "low",
       "storage": 96.92
@@ -23,8 +23,8 @@
       "river": "Chenab",
       "lat": 32.67,
       "lon": 74.46,
-      "inflow": 63611,
-      "outflow": 43261,
+      "inflow": 68316,
+      "outflow": 47966,
       "mode": "auto",
       "sk": "normal"
     },
@@ -47,8 +47,8 @@
       "river": "Chenab",
       "lat": 32.32,
       "lon": 73.69,
-      "inflow": 53778,
-      "outflow": 46778,
+      "inflow": 59014,
+      "outflow": 52014,
       "mode": "auto",
       "sk": "normal"
     },
@@ -59,7 +59,7 @@
       "river": "Jhelum",
       "lat": 33.14,
       "lon": 73.64,
-      "inflow": 33000,
+      "inflow": 46000,
       "outflow": 7000,
       "mode": "auto",
       "sk": "normal",
@@ -84,8 +84,8 @@
       "river": "Indus",
       "lat": 32.44,
       "lon": 71.37,
-      "inflow": 317208,
-      "outflow": 308708,
+      "inflow": 326864,
+      "outflow": 318364,
       "mode": "auto",
       "sk": "medium"
     },
@@ -96,10 +96,10 @@
       "river": "Indus",
       "lat": 30.51,
       "lon": 70.84,
-      "inflow": 299729,
-      "outflow": 279029,
+      "inflow": 315603,
+      "outflow": 294903,
       "mode": "auto",
-      "sk": "low"
+      "sk": "medium"
     },
     {
       "id": "guddu",
@@ -108,8 +108,8 @@
       "river": "Indus",
       "lat": 28.42,
       "lon": 69.7,
-      "inflow": 217836,
-      "outflow": 176124,
+      "inflow": 229956,
+      "outflow": 187992,
       "mode": "auto",
       "sk": "low"
     },
@@ -132,8 +132,8 @@
       "river": "Indus",
       "lat": 25.37,
       "lon": 68.31,
-      "inflow": 170710,
-      "outflow": 135985,
+      "inflow": 179191,
+      "outflow": 142486,
       "mode": "auto",
       "sk": "normal"
     },
@@ -144,8 +144,8 @@
       "river": "Ravi",
       "lat": 31.22,
       "lon": 73.86,
-      "inflow": 33380,
-      "outflow": 9230,
+      "inflow": 31870,
+      "outflow": 6920,
       "mode": "auto",
       "sk": "normal"
     },
@@ -168,8 +168,8 @@
       "river": "Kabul",
       "lat": 34.01,
       "lon": 71.97,
-      "inflow": 42200,
-      "outflow": 42200,
+      "inflow": 46000,
+      "outflow": 46000,
       "mode": "auto",
       "sk": "normal"
     },
