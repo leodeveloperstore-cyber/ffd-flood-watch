@@ -1,3 +1,0 @@
-ndaries & Green Overlay (Local High-Res GeoJSON) ── */
-    .then(geojson => {
-      pakFillLayer = L.geoJSON(geojson, {
