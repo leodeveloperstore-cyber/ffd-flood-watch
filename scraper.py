@@ -132,7 +132,17 @@ def scrape():
             
             for bs in base_stations:
                 if 'search' in bs and bs['search'] in name:
-                    scraped_values[bs['id']] = {"inflow": inv, "outflow": outv}
+                    scraped_values[bs['id']] = {
+                        "inflow": inv, 
+                        "outflow": outv,
+                        "recording_time": pst.get("recording_time"),
+                        "cyp_discharge": pst.get("cyp_discharge"),
+                        "cyp_date": pst.get("cyp_date"),
+                        "cyp_status": pst.get("cyp_status"),
+                        "forecast_status": pst.get("forecast_status"),
+                        "forecast_qual": pst.get("forecast_qual"),
+                        "forecast_quant": pst.get("forecast_quant")
+                    }
                     if "recording_time" in pst:
                         bulletin_date = f"Dated: {pst['recording_time']}"
                     break
@@ -157,6 +167,9 @@ def scrape():
             st_data['sk'] = old_data[sid].get('sk', 'normal')
             if 'storage' in old_data[sid]:
                 st_data['storage'] = old_data[sid]['storage']
+            for k in ["recording_time", "cyp_discharge", "cyp_date", "cyp_status", "forecast_status", "forecast_qual", "forecast_quant"]:
+                if k in old_data[sid]:
+                    st_data[k] = old_data[sid][k]
         else:
             st_data['inflow'] = 0
             st_data['outflow'] = 0
@@ -168,6 +181,10 @@ def scrape():
             st_data['inflow'] = scraped_values[sid]['inflow']
             st_data['outflow'] = scraped_values[sid]['outflow']
             st_data['sk'] = determine_sk(st_data['inflow'])
+            
+            for k in ["recording_time", "cyp_discharge", "cyp_date", "cyp_status", "forecast_status", "forecast_qual", "forecast_quant"]:
+                if scraped_values[sid].get(k) is not None:
+                    st_data[k] = scraped_values[sid][k]
             
         # Apply Storage Data
         if sid in bulletin_storage:
