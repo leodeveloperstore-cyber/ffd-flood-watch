@@ -2913,9 +2913,9 @@ function syncLiveTelemetry() {
         if (typeof renderRiverCards === 'function') renderRiverCards();
         if (typeof renderMapMarkers === 'function') renderMapMarkers();
         if (typeof renderColumnMarkers === 'function') renderColumnMarkers();
-        if (data.updatedAt) {
+        if (data.last_updated) {
           document.querySelectorAll('.update-info').forEach(el => {
-            el.innerHTML = `<span class="live-dot" style="display:inline-block;margin-right:4px;"></span> Updated <strong>${data.updatedAt}</strong>`;
+            el.innerHTML = `<span class="live-dot" style="display:inline-block;margin-right:4px;"></span> Updated <strong>${data.last_updated}</strong>`;
           });
         }
       }
