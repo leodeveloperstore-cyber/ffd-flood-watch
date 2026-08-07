@@ -2777,19 +2777,33 @@ function renderMapMarkers() {
     }
     markerLayers.push(marker);
 
+    const pmdDate = st.recording_time || 'N/A';
+    const cypStr = (st.cyp_discharge && st.cyp_status && st.cyp_date) 
+        ? `${st.cyp_discharge} ${st.cyp_status} &bull; ${st.cyp_date}`
+        : 'N/A';
+    const fcstStr = st.forecast_status ? `<span style="background:${skColor[st.forecast_status.toLowerCase()] || '#15803d'};color:#fff;padding:2px 8px;border-radius:12px;font-size:0.65rem;font-weight:700;">${st.forecast_status}</span>` : `<span style="background:#15803d;color:#fff;padding:2px 8px;border-radius:12px;font-size:0.65rem;font-weight:700;">NORMAL</span>`;
+
     marker.bindPopup(`
-      <div style="font-family:'Poppins',sans-serif;width:260px;margin:-14px -20px -14px -20px;border-radius:12px;overflow:hidden;background:#ffffff;color:#1e293b;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:9999;">
+      <div style="font-family:'Poppins',sans-serif;width:280px;margin:-14px -20px -14px -20px;border-radius:12px;overflow:hidden;background:#ffffff;color:#1e293b;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:9999;">
         <div style="background:${col};padding:12px 14px;color:#ffffff;">
-          <div style="font-size:1.05rem;font-weight:800;line-height:1.2;">${st.en}</div>
+          <div style="font-size:1.15rem;font-weight:800;line-height:1.2;">${st.en}</div>
           <div style="font-size:0.75rem;font-weight:600;opacity:0.92;margin-top:1px;">${st.sk.toUpperCase()} FLOW</div>
         </div>
         <div style="padding:12px 14px;font-size:0.75rem;">
-          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">River / Area</span><strong>${st.river} River</strong></div>
-          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">Station Height</span><strong>${st.height}</strong></div>
-          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">OUTFLOW</span><strong>${st.outflow.toLocaleString()} cfs <span style="color:#dc2626">▲ Rising</span></strong></div>
-          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">INFLOW</span><strong>${st.inflow.toLocaleString()} cfs <span style="color:#dc2626">▲ Rising</span></strong></div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">River / Area</span><strong>${st.river}</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">Station Height</span><strong>${st.height || 'N/A'} m</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">OUTFLOW</span><strong>${st.outflow.toLocaleString()} cfs</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">INFLOW</span><strong>${st.inflow.toLocaleString()} cfs</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">Coordinates</span><strong>${st.lat.toFixed(3)}, ${st.lon.toFixed(3)}</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">Last Reading</span><strong>${pmdDate}</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;align-items:center;"><span style="color:#64748b;">Forecast (24h)</span>${fcstStr}</div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">Max. Peak</span><strong style="text-align:right;">${cypStr}</strong></div>
+          <div style="text-align:center;margin-top:10px;font-size:0.65rem;color:#94a3b8;line-height:1.4;">
+             &copy; Flood Forecasting Division, Lahore<br>
+             <a href="https://ffd.pmd.gov.pk" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;">ffd.pmd.gov.pk</a> &bull; 042-99200139
+          </div>
         </div>
-      </div>`, {maxWidth:280});
+      </div>`, {maxWidth:300});
   });
 }
 renderMapMarkers();
@@ -2826,20 +2840,33 @@ function renderColumnMarkers() {
     if (document.getElementById('lyr-cols') && document.getElementById('lyr-cols').checked) {
        colMarker.addTo(map);
     }
+    const pmdDate = st.recording_time || 'N/A';
+    const cypStr = (st.cyp_discharge && st.cyp_status && st.cyp_date) 
+        ? `${st.cyp_discharge} ${st.cyp_status} &bull; ${st.cyp_date}`
+        : 'N/A';
+    const fcstStr = st.forecast_status ? `<span style="background:${skColor[st.forecast_status.toLowerCase()] || '#15803d'};color:#fff;padding:2px 8px;border-radius:12px;font-size:0.65rem;font-weight:700;">${st.forecast_status}</span>` : `<span style="background:#15803d;color:#fff;padding:2px 8px;border-radius:12px;font-size:0.65rem;font-weight:700;">NORMAL</span>`;
+
     colMarker.bindPopup(`
-      <div style="font-family:'Poppins',sans-serif;width:260px;margin:-14px -20px -14px -20px;border-radius:12px;overflow:hidden;background:#ffffff;color:#1e293b;box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+      <div style="font-family:'Poppins',sans-serif;width:280px;margin:-14px -20px -14px -20px;border-radius:12px;overflow:hidden;background:#ffffff;color:#1e293b;box-shadow:0 10px 30px rgba(0,0,0,0.3);">
         <div style="background:${col};padding:12px 14px;color:#ffffff;">
-          <div style="font-size:1.05rem;font-weight:800;line-height:1.2;">${st.en}</div>
+          <div style="font-size:1.15rem;font-weight:800;line-height:1.2;">${st.en}</div>
           <div style="font-size:0.75rem;font-weight:600;opacity:0.92;margin-top:1px;">${st.sk.toUpperCase()} FLOW (3D DISCHARGE COLUMN)</div>
         </div>
         <div style="padding:12px 14px;font-size:0.75rem;">
-          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">River / Area</span><strong>${st.river} River</strong></div>
-          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">Station Height</span><strong>${st.height}</strong></div>
-          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">OUTFLOW</span><strong>${st.outflow.toLocaleString()} cfs <span style="color:#dc2626">▲ Rising</span></strong></div>
-          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">INFLOW</span><strong>${st.inflow.toLocaleString()} cfs <span style="color:#dc2626">▲ Rising</span></strong></div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">River / Area</span><strong>${st.river}</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">Station Height</span><strong>${st.height || 'N/A'} m</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">OUTFLOW</span><strong>${st.outflow.toLocaleString()} cfs</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">INFLOW</span><strong>${st.inflow.toLocaleString()} cfs</strong></div>
           <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">Coordinates</span><strong>${st.lat.toFixed(3)}, ${st.lon.toFixed(3)}</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">Last Reading</span><strong>${pmdDate}</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;align-items:center;"><span style="color:#64748b;">Forecast (24h)</span>${fcstStr}</div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">Max. Peak</span><strong style="text-align:right;">${cypStr}</strong></div>
+          <div style="text-align:center;margin-top:10px;font-size:0.65rem;color:#94a3b8;line-height:1.4;">
+             &copy; Flood Forecasting Division, Lahore<br>
+             <a href="https://ffd.pmd.gov.pk" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;">ffd.pmd.gov.pk</a> &bull; 042-99200139
+          </div>
         </div>
-      </div>`, {maxWidth:280});
+      </div>`, {maxWidth:300});
     columnLayers.push(colMarker);
   });
 }
@@ -2908,6 +2935,13 @@ function syncLiveTelemetry() {
             match.inflow = liveSt.inflow;
             match.outflow = liveSt.outflow;
             match.trend = liveSt.trend || 'rising';
+            if(liveSt.recording_time) match.recording_time = liveSt.recording_time;
+            if(liveSt.cyp_discharge) match.cyp_discharge = liveSt.cyp_discharge;
+            if(liveSt.cyp_date) match.cyp_date = liveSt.cyp_date;
+            if(liveSt.cyp_status) match.cyp_status = liveSt.cyp_status;
+            if(liveSt.forecast_status) match.forecast_status = liveSt.forecast_status;
+            if(liveSt.forecast_qual) match.forecast_qual = liveSt.forecast_qual;
+            if(liveSt.forecast_quant) match.forecast_quant = liveSt.forecast_quant;
           }
         });
         if (typeof renderRiverCards === 'function') renderRiverCards();
