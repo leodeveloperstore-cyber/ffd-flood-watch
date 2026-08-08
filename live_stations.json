@@ -68,7 +68,7 @@
       "cyp_status": "LOW",
       "forecast_status": "NORMAL",
       "forecast_qual": "NORMAL",
-      "forecast_quant": "45 - 50"
+      "forecast_quant": "40 - 50"
     },
     {
       "id": "tarbela",
@@ -88,7 +88,7 @@
       "cyp_status": "LOW",
       "forecast_status": "NORMAL",
       "forecast_qual": "NORMAL",
-      "forecast_quant": "225 - 245"
+      "forecast_quant": "200 - 220"
     },
     {
       "id": "muzaffarabad",
@@ -172,7 +172,7 @@
       "cyp_status": "LOW",
       "forecast_status": "NORMAL",
       "forecast_qual": "NORMAL",
-      "forecast_quant": "40 - 50"
+      "forecast_quant": "35 - 45"
     },
     {
       "id": "marala",
@@ -191,7 +191,7 @@
       "cyp_status": "HIGH",
       "forecast_status": "NORMAL",
       "forecast_qual": "NORMAL",
-      "forecast_quant": "70 - 90"
+      "forecast_quant": "60 - 90"
     },
     {
       "id": "khanki",
@@ -257,7 +257,10 @@
       "recording_time": "08-Aug 06 PKT",
       "cyp_discharge": "367,257",
       "cyp_date": "25-Jul-2026",
-      "cyp_status": "LOW"
+      "cyp_status": "LOW",
+      "forecast_status": "LOW",
+      "forecast_qual": "LOW FLOOD",
+      "forecast_quant": "320 - 340"
     },
     {
       "id": "rasul",
@@ -313,7 +316,7 @@
       "cyp_status": "NORMAL",
       "forecast_status": "NORMAL",
       "forecast_qual": "NORMAL",
-      "forecast_quant": "08 - 15"
+      "forecast_quant": "15 - 25"
     },
     {
       "id": "shahdara",
@@ -332,7 +335,7 @@
       "cyp_status": "NORMAL",
       "forecast_status": "NORMAL",
       "forecast_qual": "NORMAL",
-      "forecast_quant": "10 - 20"
+      "forecast_quant": "20 - 30"
     },
     {
       "id": "balloki",
@@ -351,7 +354,7 @@
       "cyp_status": "LOW",
       "forecast_status": "LOW",
       "forecast_qual": "LOW FLOOD",
-      "forecast_quant": "20 - 40"
+      "forecast_quant": "35 - 45"
     },
     {
       "id": "gandasingh",
@@ -370,7 +373,7 @@
       "cyp_status": "NORMAL",
       "forecast_status": "NORMAL",
       "forecast_qual": "NORMAL",
-      "forecast_quant": "0.2 - 01"
+      "forecast_quant": "01 - 02"
     },
     {
       "id": "sulemanki",
@@ -427,7 +430,7 @@
       "cyp_status": "MEDIUM",
       "forecast_status": "NORMAL",
       "forecast_qual": "NORMAL",
-      "forecast_quant": "15 - 30"
+      "forecast_quant": "10 - 15"
     },
     {
       "id": "trimmu",
@@ -446,7 +449,7 @@
       "cyp_status": "LOW",
       "forecast_status": "NORMAL",
       "forecast_qual": "NORMAL",
-      "forecast_quant": "70 - 80"
+      "forecast_quant": "50 - 65"
     },
     {
       "id": "taunsa",
@@ -465,7 +468,7 @@
       "cyp_status": "LOW",
       "forecast_status": "LOW",
       "forecast_qual": "LOW FLOOD",
-      "forecast_quant": "250 R 290"
+      "forecast_quant": "330 - 350"
     },
     {
       "id": "panjnad",
@@ -484,7 +487,7 @@
       "cyp_status": "NORMAL",
       "forecast_status": "NORMAL",
       "forecast_qual": "NORMAL",
-      "forecast_quant": "50 - 60"
+      "forecast_quant": "55 - 65"
     },
     {
       "id": "guddu",
@@ -503,7 +506,7 @@
       "cyp_status": "MEDIUM",
       "forecast_status": "LOW",
       "forecast_qual": "LOW FLOOD",
-      "forecast_quant": "190 - 200"
+      "forecast_quant": "240 - 260"
     },
     {
       "id": "sukkur",
@@ -520,9 +523,9 @@
       "cyp_discharge": "314,764",
       "cyp_date": "02-Aug-2026",
       "cyp_status": "LOW",
-      "forecast_status": "NORMAL",
-      "forecast_qual": "NORMAL",
-      "forecast_quant": "170 - 180"
+      "forecast_status": "LOW",
+      "forecast_qual": "LOW FLOOD",
+      "forecast_quant": "170 - 200"
     },
     {
       "id": "kotri",
@@ -541,7 +544,7 @@
       "cyp_status": "NORMAL",
       "forecast_status": "NORMAL",
       "forecast_qual": "NORMAL",
-      "forecast_quant": "135 - 165"
+      "forecast_quant": "160 - 180"
     },
     {
       "id": "baglihar",
