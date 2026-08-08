@@ -23,6 +23,8 @@ base_stations = [
     {"id": "marala", "search": "marala", "en": "Marala", "ur": "\u0645\u0631\u0627\u0644\u06c1", "river": "Chenab", "lat": 32.6713, "lon": 74.4646},
     {"id": "khanki", "search": "khanki", "en": "Khanki", "ur": "\u062e\u0627\u0646\u06a9\u06cc", "river": "Chenab", "lat": 32.4, "lon": 73.87},
     {"id": "qadirabad", "search": "qadirabad", "en": "Qadirabad", "ur": "\u0642\u0627\u062f\u0631\u0622\u0628\u0627\u062f", "river": "Chenab", "lat": 32.32, "lon": 73.69},
+    {"id": "kalabagh", "search": "kalabagh", "en": "Kalabagh", "ur": "\u06a9\u0627\u0644\u0627 \u0628\u0627\u063a", "river": "Indus", "lat": 32.9667, "lon": 71.55},
+    {"id": "chashma", "search": "chashma", "en": "Chashma", "ur": "\u0686\u0634\u0645\u06c1", "river": "Indus", "lat": 32.44, "lon": 71.39},
     {"id": "rasul", "search": "rasul", "en": "New Rasul", "ur": "\u0631\u0633\u0648\u0644 \u0628\u06cc\u0631\u0627\u062c", "river": "Jhelum", "lat": 32.6865, "lon": 73.5283},
     {"id": "chiniot", "search": "chiniot", "en": "Chiniot Bridge", "ur": "\u0686\u0646\u06cc\u0648\u0679 \u067e\u0644", "river": "Chenab", "lat": 31.72, "lon": 72.98},
     {"id": "jassar", "search": "jassar", "en": "Jassar", "ur": "\u062c\u0633\u0631", "river": "Ravi", "lat": 32.1, "lon": 74.87},
