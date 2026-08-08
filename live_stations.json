@@ -1,7 +1,7 @@
 {
   "source": "PakFlood PC Auto-Scraper - Live API",
   "last_updated": "Dated: 08-Aug 06 PKT",
-  "total_stations": 36,
+  "total_stations": 37,
   "stations": [
     {
       "id": "skardu",
@@ -104,6 +104,22 @@
       "recording_time": "08-Aug 06 PKT",
       "cyp_discharge": "27,040",
       "cyp_date": "04-Jul-2026",
+      "cyp_status": "NORMAL"
+    },
+    {
+      "id": "domel",
+      "en": "Domel",
+      "ur": "ڈومیل",
+      "river": "Jhelum",
+      "lat": 34.35,
+      "lon": 73.46,
+      "inflow": 18040,
+      "outflow": 18040,
+      "mode": "auto",
+      "sk": "normal",
+      "recording_time": "08-Aug 06 PKT",
+      "cyp_discharge": "24,060",
+      "cyp_date": "04-Aug-2026",
       "cyp_status": "NORMAL"
     },
     {
@@ -238,10 +254,17 @@
       "river": "Indus",
       "lat": 32.9667,
       "lon": 71.55,
-      "inflow": 0,
-      "outflow": 0,
+      "inflow": 351961,
+      "outflow": 344321,
       "mode": "auto",
-      "sk": "normal"
+      "sk": "medium",
+      "recording_time": "08-Aug 06 PKT",
+      "cyp_discharge": "373,538",
+      "cyp_date": "06-Aug-2026",
+      "cyp_status": "LOW",
+      "forecast_status": "LOW",
+      "forecast_qual": "LOW FLOOD",
+      "forecast_quant": "290 - 320"
     },
     {
       "id": "chashma",
